@@ -31,6 +31,7 @@ class HashTable:
             self.storage = [None] * self.capacity
         self.stored_keys = 0
         self.load_factor = 0.7
+        self.minimum_load_factor = 0.2
 
 
     def get_num_slots(self):
@@ -131,6 +132,10 @@ class HashTable:
 
         Implement this.
         """
+        if self.stored_keys / self.capacity < self.minimum_load_factor:
+            if self.capacity // 2 >= 8:
+                print(f"Sizing down to {self.capacity // 2}")
+                self.resize(self.capacity // 2)
         target_index = self.hash_index(key)
         entry = self.storage[target_index]
         if not entry:
