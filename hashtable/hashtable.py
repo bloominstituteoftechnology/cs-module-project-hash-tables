@@ -144,6 +144,7 @@ class HashTable:
                         entry.value = None
                         return
                 previous_entry = entry
+                entry = entry.next
             print("Key not found. Key not found!")
             raise KeyError
 
