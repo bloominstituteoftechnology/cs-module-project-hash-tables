@@ -29,6 +29,7 @@ class HashTable:
             print(f"Error: provided capactity is insufficient. Initializing with minimum capacity of {MIN_CAPACITY}.")
             self.capacity = MIN_CAPACITY
             self.storage = [None] * self.capacity
+        self.stored_keys = 0
         self.load_factor = 0.7
 
 
@@ -102,6 +103,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.stored_keys / self.capacity > self.load_factor:
+            self.resize(self.capacity * 2)
         target_index = self.hash_index(key)
         entry = self.storage[target_index]
         if not entry:
@@ -117,6 +120,7 @@ class HashTable:
 
             entry = HashTableEntry(key, value)
             previous_entry.next = entry
+        self.stored_keys += 1
 
 
     def delete(self, key):
@@ -172,7 +176,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.capacity = new_capacity
+        old_storage = self.storage
+        self.storage = [None] * self.capacity
+
+        for entry in old_storage:
+            while entry:
+                self.put(entry.key, entry.value)
+                entry = entry.next
 
 
 
