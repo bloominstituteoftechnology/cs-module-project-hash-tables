@@ -107,12 +107,16 @@ class HashTable:
         if not entry:
             self.storage[target_index] = HashTableEntry(key, value)
         else:
+            previous_entry = None
             while entry:
                 if entry.key == key:
                     entry.value = value
                     return
+                previous_entry = entry
                 entry = entry.next
+
             entry = HashTableEntry(key, value)
+            previous_entry.next = entry
 
 
     def delete(self, key):
