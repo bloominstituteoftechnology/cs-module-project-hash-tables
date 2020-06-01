@@ -1,3 +1,4 @@
+# In Python, a dict key can be any immutable type... including a tuple.
 # Your code here
 
 
