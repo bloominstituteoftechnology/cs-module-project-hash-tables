@@ -9,23 +9,25 @@ def slowfun_too_slow(x, y):
 
     return v
 
+remainders = {}
+unique_count = 0
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """    
-    products = {}
-    factorials = {}
-    quotients = {}
-    remainders = {}
+    # products = {}
+    # factorials = {}
+    # quotients = {}
     
     def helper(a, b):
-        # products[(a, b)] = math.pow(a, b)
-        build_products(a, b)
-        # factorials[a, b] = math.factorial(products[a, b])
-        build_factorials(products[(a, b)])
-        quotients[a, b] = factorials[products[(a, b)]] // (a + b)
-        remainders[a, b] =  quotients[a, b] % 982451653
+        x = math.pow(a, b)
+        # build_products(a, b)
+        y = math.factorial(x)
+        # build_factorials(products[(a, b)])
+        # print(products[(a, b)])
+        z = y // (a + b)
+        remainders[(a, b)] =  z % 982451653
 
     def build_products(a, b):
         total = 1
@@ -45,11 +47,14 @@ def slowfun(x, y):
                 factorials[num] = math.factorial(num)
 
 
-    if (x, y) not in products:
-        for i in range(1, x+1):
-            for j in range(1, y+1):
-                if (i, j) not in products:
-                    helper(i, j)
+    if (x, y) not in remainders:
+        # for i in range(1, x+1):
+            # for j in range(1, y+1):
+            #     if (i, j) not in products:
+        global unique_count
+        unique_count += 1
+        print(f"New one! Now at {unique_count} unique combinations.")
+        helper(x, y)
 
     return remainders[(x,y)]
 
