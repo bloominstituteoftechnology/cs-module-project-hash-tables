@@ -15,22 +15,18 @@ def slowfun(x, y):
     v = math.pow(x,y)
     # if we havent already done so
     if v not in cache:
-        print('not in cache')
         # save factorial in cache
         cache[v] = math.factorial(v)
-        print('factorial(v)', cache[v])
+        cache[v] //= (x + y)
+        cache[v] %= 982451653
         v = cache[v]
-        print('in if v', v)
     else: # we have factorial in cache already
         v = cache[v]
-        print('in else v', v)
-    v //= (x + y)
-    v %= 982451653
-    print('after floor & mod v', v)
     return v
     
 
-
+# Time: 99.49276447296143 seconds ... ugh
+# Time: 28.740193367004395 seconds WOOO
 
 # Do not modify below this line!
 start_time = time.time()
