@@ -62,7 +62,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        pass
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
     def hash_index(self, key):
         """
@@ -70,7 +73,7 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         # return self.fnv1(key) % self.capacity
-        # return self.djb2(key) % self.capacity
+        return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
