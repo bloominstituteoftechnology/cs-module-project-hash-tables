@@ -22,7 +22,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.data = [None] * capacity
+        self.capacity = capacity
 
     def get_num_slots(self):
         """
@@ -35,6 +36,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.data)
+
 
 
     def get_load_factor(self):
@@ -44,6 +47,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        filled_spots = 0
+        for i in self.data:
+            if i is not None:
+                filled_spots += 1
+        return filled_spots / self.capacity
 
 
     def fnv1(self, key):
@@ -63,6 +71,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
@@ -82,6 +94,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        slot = self.hash_index(key)
+        if self.data[slot] is not None:
+            for k in self.data[slot]:
+                if k[0] == key:
+                    k[1] = value
+                    break
+            else:
+                self.data[slot].append([key, value])
+        else:
+            self.data[slot] = []
+            self.data[slot].append([key,value])
 
 
     def delete(self, key):
@@ -93,6 +116,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.put(key, None)
 
 
     def get(self, key):
@@ -104,6 +128,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        for k,value in self.data[self.hash_index(key)]:
+            if k == key:
+                return value
+        return None
 
 
     def resize(self, new_capacity):
@@ -114,7 +142,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        second_table = HashTable(new_capacity)
 
+        for i in range(len(self.data)):
+            if self.data[i] is None:
+                continue
+            for k in self.data[i]:
+                second_table.add(k[0], k[1])
+        
+        self.data = second_table
 
 
 if __name__ == "__main__":
