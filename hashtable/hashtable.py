@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../hashtable/linked_list')
+from linked_list import LinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -21,7 +25,7 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = [None] * MIN_CAPACITY
+        self.capacity = [LinkedList()] * MIN_CAPACITY
 
     def get_num_slots(self):
         """
@@ -35,7 +39,6 @@ class HashTable:
         """
         # Your code here
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -43,7 +46,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
     def fnv1(self, key):
         """
@@ -72,7 +74,6 @@ class HashTable:
             hash = (( hash << 5) + hash) + ord(key)
         return hash & 0xFFFFFFFF
 
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
@@ -90,10 +91,15 @@ class HashTable:
         Implement this.
         """
         slot = self.hash_index(key)
+        current = self.capacity[slot].head
+        while current:
+            if current.key == key:
+                current.value = value
+            current = current.next
+            
         entry = HashTableEntry(key, value)
-        self.capacity[slot] = entry
-
-
+        self.capacity[slot].insert_at_head(entry)
+            
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -103,8 +109,7 @@ class HashTable:
         Implement this.
         """
         self.put(key, None)
-
-
+            
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -114,12 +119,12 @@ class HashTable:
         Implement this.
         """
         slot = self.hash_index(key)
-        entry = self.capacity[slot]
-
-        if entry:
-            return entry.value
+        current = self.capacity[slot].head
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
         return None
-
 
     def resize(self, new_capacity):
         """
@@ -129,8 +134,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-
 
 if __name__ == "__main__":
     ht = HashTable(8)
