@@ -12,19 +12,20 @@ class HashTableEntry:
 MIN_CAPACITY = 8
 
 
-class HashTable:
-    """
-    A hash table that with `capacity` buckets
-    that accepts string keys
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    Implement this.
-    """
+
+class HashTable:
+
+
 
     def __init__(self, capacity):
         # Your code 
         self.capacity = capacity
-        self.storage = [None] * capacity
-        self.item_count = 0
+        self.storage = [LinkedList()] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -34,7 +35,7 @@ class HashTable:
 
         One of the tests relies on this.
 
-        Implement this.
+
         """
         # Your code here
         return len(self.storage)
@@ -44,9 +45,8 @@ class HashTable:
         """
         Return the load factor for this hash table.
 
-        Implement this.
         """
-        return self.item_count / len(self.storage)
+        return self.count / len(self.storage)
         # Your code here
 
 
@@ -54,7 +54,6 @@ class HashTable:
         """
         FNV-1 Hash, 64-bit
 
-        Implement this, and/or DJB2.
         """
         hashed = 0xCBF29CE484222325
         fnv_prime = 0x100000001b3
@@ -72,7 +71,6 @@ class HashTable:
         """
         DJB2 hash, 32-bit
 
-        Implement this, and/or FNV-1.
         """
         hash = 5381
         for x in key:
@@ -101,8 +99,24 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.storage[index] = value
-        self.item_count += 1
+
+        # if LL is empty
+        if self.storage[index].head == None:
+            self.storage[index].head = HashTableEntry(key, value)
+            self.count += 1
+            return
+
+        else:
+            curr = self.storage[index].head
+
+            while curr.next:
+
+                if curr.key == key:
+                    curr.value = value
+                curr = curr.next
+
+            curr.next = HashTableEntry(key, value)
+            self.count += 1
 
 
     def delete(self, key):
@@ -115,12 +129,20 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        curr = self.storage[index].head
 
-        if self.storage[index] == None:
-            print("Value not found in hash table")
-        else:
-            self.storage[index] = None
-            self.item_count -= 1
+        if curr.key == key:
+            self.storage[index].head = self.storage[index].head.next
+            self.count -= 1
+            return
+
+        while curr.next:
+            prev = curr
+            curr = curr.next
+            if curr.key == key:
+                prev.next = curr.next
+                self.count -= 1
+                return None
 
 
     def get(self, key):
@@ -133,8 +155,19 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        curr = self.storage[index].head
 
-        return self.storage[index]
+        if curr == None:
+            return None
+
+        if curr.key == key:
+            return curr.value
+
+        while curr.next:
+            curr = curr.next
+            if curr.key == key:
+                return curr.value
+        return None
 
 
     def resize(self, new_capacity):
@@ -144,7 +177,26 @@ class HashTable:
 
         Implement this.
         """
-        pass
+        self.capacity = new_capacity
+        new_list = [LinkedList()] * new_capacity
+
+        for i in self.storage:
+            curr = i.head
+
+            while curr is not None:
+                index = self.hash_index(curr.key)
+
+                if new_list[index].head == None:
+                    new_list[index].head = HashTableEntry(curr.key, curr.value)
+                else:
+                    node = HashTableEntry(curr.key, curr.value)
+
+                    node.next = new_list[index].head
+
+                    new_list[index].head = node
+                curr = curr.next
+        self.storage = new_list
+
         # Your code here
 
 
