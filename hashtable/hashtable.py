@@ -91,11 +91,11 @@ class HashTable:
         
         # If hash table position is filled
         if self.storage[position] != None:
-            # Enter a HashTableEntry
+            # Create a HashTableEntry
             entry = self.storage[position]
-            # While a node exists
+            # While an entry exists
             while entry:
-                # If our value is in our HashTableEntry
+                # If our value is in our HashTableEntry, replace value
                 if entry.key == key:
                     # Set the value of the entry to value being put
                     entry.value = value
@@ -105,9 +105,12 @@ class HashTable:
                     # If arrived at the end of the HashTableEntry
                     # add new value
                     entry.next = HashTableEntry(key, value)
+                    # insertion complete
                     break
                 else:
                     entry = entry.next
+
+        # If hash table position is empty, add entry
         else:
             self.storage[position] = HashTableEntry(key, value)
 
@@ -126,20 +129,25 @@ class HashTable:
         if self.storage[position] == None:
             return('There is no key & value at that position!')
         
+        # If our hash table entry is a no-collision, one entry long case
         if entry.next == None:
-            
+            # Delete value
             if entry.key == key:
                 entry.value = None
                 return
+            # Return error message if no slot is filled but with no hash table entry    
             else:
                 return("Can't remove it if it doesn't exist!")
         
-        # While there are entries at that position of the hash table
+        # While there are multiple entries at that position of the hash table
         while entry:
+            # base case of removing value
             if entry.key == key:
                 entry.value = None
                 return(f"Value for key '{key}' deleted.")
+            # cycling through linked list of entries    
             entry = entry.next
+        # Outlier case where we go through list of collided entries but no value were deleted
         return('There is no key of that value!')
 
 
@@ -151,12 +159,16 @@ class HashTable:
 
         Implement this.
         """
+        # Get position and entry information for key
         position = self.hash_index(key)
         entry = self.storage[position]
         
+        # Staged lookup value for get command
         lookup = None
         
+        # While entry is not None
         while entry:
+            # cycle 
             if entry.key == key:
                 lookup = entry.value
                 return lookup
