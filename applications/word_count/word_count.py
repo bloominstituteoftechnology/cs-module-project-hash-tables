@@ -1,6 +1,8 @@
 cache = {}
 def word_count(s):
-    name= s.replace('"','').replace(':','').replace(';','').replace(',','').replace('.','').replace('-','').replace('+','').replace('=','').replace('/','').replace("|",'').replace('[','').replace(']','').replace('{','').replace('}','').replace('(','').replace(')','').replace('*','').replace('^','').replace('&','').replace('\\','')
+    bad_chars = r'" : ; , . - + = / \ | [ ] { } ( ) * ^ &'
+    # Replace invalid chars
+    name = s.translate({ord(c): ' ' for c in bad_chars})
     if name == '':
         return {}
     split = name.lower().split()

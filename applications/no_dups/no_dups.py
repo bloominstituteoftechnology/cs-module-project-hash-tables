@@ -7,7 +7,7 @@ def no_dups(s):
         return ''
     # Split string input into a list
     l = s.split(' ')
-    # Turning array into dict as keys removes duplicates
+    # Turning our array into a dict as keys removes the duplicates
     a = dict.fromkeys(l)
     for key in a.keys():
         # Loops keys and appends them to List of keys
