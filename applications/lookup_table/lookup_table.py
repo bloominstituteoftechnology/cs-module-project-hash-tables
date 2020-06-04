@@ -3,12 +3,12 @@ import random
 
 
 def slowfun_too_slow(x, y):
-    v = math.pow(x, y)
-    v = math.factorial(v)
-    v //= (x + y)
-    v %= 982451653
+    j = math.pow(x, y)
+    j = math.factorial(j)
+    j //= (x + y)
+    j %= 982451653
 
-    return v
+    return j
 
 
 power_cache = {}
