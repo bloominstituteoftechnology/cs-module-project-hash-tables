@@ -1,6 +1,17 @@
+# from Collections import counter
+
+
 def word_count(s):
     # Your code here
-
+    words = s.split(' ')
+    word_counts = {}
+    print(words)
+    for w in words:
+        if w in word_counts:
+            word_counts[w] += 1
+        else:
+            word_counts[w] = 1
+    print(word_counts)
 
 
 if __name__ == "__main__":

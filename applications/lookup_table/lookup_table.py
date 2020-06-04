@@ -1,4 +1,12 @@
 # Your code here
+import math
+inv_sqrt = {}
+
+def build_lookup_table():
+    for i in range (1, 1000):
+        inv_sqrt[i] = 1/ math.sqrt(i)
+
+build_lookup_table()
 
 
 def slowfun_too_slow(x, y):
