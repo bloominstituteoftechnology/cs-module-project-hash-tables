@@ -5,6 +5,7 @@ class HashTableEntry:
     def __init__(self, key, value):
         self.key = key
         self.value = value
+        self.next = None
 
     def __repr__(self):
         return f'HashTableEntry({repr(self.key)},{repr(self.value)})'
@@ -41,16 +42,21 @@ def put(key, value):
 def delete(key):
     put(key, None)
 
-#print(get_slot("☠ arr"))
-#print(get_slot("beej"))
-#print(get_slot("foo"))
-#print(get_slot("bar"))
+# print(get_slot("☠ arr"))
+# print(get_slot("beej"))
+# print(get_slot("foo"))
+# print(get_slot("bar"))
+# print(get_slot("baz"))
 
 put("beej", 3490)
+print(data)
 put("foo", 999)
+print(data)
+put('baz', 111)
+print(data)
 
-#print(data)
+# #print(data)
 
-print(get("beej"))
-#print(get("foo"))
+# print(get("beej"))
+# #print(get("foo"))
 print(get("bar"))
