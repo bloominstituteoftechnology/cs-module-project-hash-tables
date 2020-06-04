@@ -1,78 +1,100 @@
-import os
-import random
-from Crypto.Cipher import AES
-from Crypto.Hash import SHA256
+# Use frequency analysis to find the key to ciphertext.txt, and then
+# decode it.
+
+# Your code here
+# Read in all the words in one go
+with open("applications/crack_caesar/ciphertext.txt") as f:
+    words = f.read()
 
 
-def encrypt(key, filename):
-    chunksize = 64*1024
-    outputFile = "(encrypted)"+filename
-    filesize = str(os.path.getsize(filename)).zfill(16)
-    IV = ''
+def letter_count(s):
+    # Your code here
+    cache = {}
 
-    for i in range(16):
-        IV += chr(random.randint(0, 0xFF))
+    for c in s:
+        if c in cache:
+            cache[c] += 1
+        else:
+            cache[c] = 1
 
-    encryptor = AES.new(key, AES.MODE_CBC, IV)
+    letters_only = []
 
-    with open(filename, 'rb') as infile:
-        with open(outputFile, 'wb') as outfile:
-            outfile.write(filesize)
-            outfile.write(IV)
+    for k, v in cache.items():
+        if k.isalpha():
+            letters_only.append((k, v))
 
-            while True:
-                chunk = infile.read(chunksize)
+    letters_only.sort(key=lambda e: e[1], reverse=True)
 
-                if len(chunk) == 0:
-                    break
-                elif len(chunk) % 16 != 0:
-                    chunk += ' ' * (16 - (len(chunk) % 16))
+    # letters_only = dict(letters_only[:26])
 
-                outfile.write(encryptor.encrypt(chunk))
+    return letters_only
 
 
-def decrypt(key, filename):
-    chunksize = 64*1024
-    outputFile = filename[11:]
+cipher_letters = letter_count(words)
 
-    with open(filename, 'rb') as infile:
-        filesize = long(infile.read(16))
-        IV = infile.read(16)
+encode_table = {
+    'E': cipher_letters[0][0],
+    'T': cipher_letters[1][0],
+    'A': cipher_letters[2][0],
+    'O': cipher_letters[3][0],
+    'H': cipher_letters[4][0],
+    'N': cipher_letters[5][0],
+    'R': cipher_letters[6][0],
+    'I': cipher_letters[7][0],
+    'S': cipher_letters[8][0],
+    'D': cipher_letters[9][0],
+    'L': cipher_letters[10][0],
+    'W': cipher_letters[11][0],
+    'U': cipher_letters[12][0],
+    'G': cipher_letters[13][0],
+    'F': cipher_letters[14][0],
+    'B': cipher_letters[15][0],
+    'M': cipher_letters[16][0],
+    'Y': cipher_letters[17][0],
+    'C': cipher_letters[18][0],
+    'P': cipher_letters[19][0],
+    'K': cipher_letters[20][0],
+    'V': cipher_letters[21][0],
+    'Q': cipher_letters[22][0],
+    'J': cipher_letters[23][0],
+    'X': cipher_letters[24][0],
+    'Z': cipher_letters[25][0]
+}
 
-        decryptor = AES.new(key, AES.MODE_CBC, IV)
+decode_table = {
 
-        with open(outputFile, 'wb') as outfile:
-            while True:
-                chunk = infile.read(chunksize)
-
-                if len(chunk) == 0:
-                    break
-
-                outfile.write(decryptor.decrypt(chunk))
-            outfile.truncate(filesize)
-
-
-def getKey(password):
-    hasher = SHA256.new(password)
-    return hasher.digest()
-
-
-def Main():
-    choice = input("Would you like to (E)ncrypt or (D)ecrypt?: ")
-
-    if choice == 'E':
-        filename = input("File to encrypt: ")
-        password = input("Password: ")
-        encrypt(getKey(password), filename)
-        print("Done.")
-    elif choice == 'D':
-        filename = input("File to decrypt: ")
-        password = input("Password: ")
-        decrypt(getKey(password), filename)
-        print("Done.")
-    else:
-        print("No Option selected, closing...")
+}
 
 
-if __name__ == '__main__':
-    Main()
+def build_decode_table():
+    for key, value in encode_table.items():
+        decode_table[value] = key
+
+
+def encode(s):
+    r = ""
+
+    for c in s:
+        if c in encode_table:
+            r += encode_table[c]
+        else:
+            r += c
+
+    return r
+
+
+def decode(s):
+    r = ""
+
+    for c in s:
+        if c in decode_table:
+            r += decode_table[c]
+        else:
+            r += c
+
+    return r
+
+
+build_decode_table()
+
+print(decode(words))

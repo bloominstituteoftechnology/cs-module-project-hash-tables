@@ -152,6 +152,9 @@ class HashTable:
         return None
 
     def resize(self, new_capacity=None):
+        # Array = less of a chance
+        # make array bigger
+        # Have O(n) lookup
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.

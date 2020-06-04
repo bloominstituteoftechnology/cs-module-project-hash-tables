@@ -1,5 +1,7 @@
 def no_dups(s):
     # Your code here
+
+    # dict
     cache = {}
     text = ""
     words = s.split()
@@ -17,6 +19,7 @@ def no_dups(s):
     for i in list(cache):
         text += i + " "
 
+        # return rstrip() removed characters
     return text.rstrip()
 
 
