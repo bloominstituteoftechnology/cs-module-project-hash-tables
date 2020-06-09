@@ -1,5 +1,12 @@
 def no_dups(s):
-    # Your code here
+    words = s.strip().split()
+    new = ""
+    lex = {}
+    for word in words:
+        if word not in lex.keys():
+            lex[word] = 1
+            new += word + ' '
+    return new.strip()
 
 
 
