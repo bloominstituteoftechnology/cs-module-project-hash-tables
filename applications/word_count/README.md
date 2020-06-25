@@ -28,4 +28,4 @@ Ignore each of the following characters:
 " : ; , . - + = / \ | [ ] { } ( ) * ^ &
 ```
 
-If the input contains no ignored characters, return an empty dictionary.
+If a "word" contains only ignored characters, do not add it to the dictionary.
