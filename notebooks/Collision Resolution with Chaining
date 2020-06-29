@@ -1,0 +1,38 @@
+Slot
+Index Chain (linked list)
+----- -------------------------------
+ 0    -> ("qux", 10) -> None
+ 1    -> ("plugh", 20) -> ("foo", 999) -> None
+ 2    -> ("xyzzy", 50) -> ("baz", 999) -> ("bar", 30) -> None
+ 3    -> None
+
+put("foo", 12)   # hashes to 1
+put("bar", 30)   # hashes to 2
+put("baz", 999 ) # hashes to 2--collision with "bar"!
+
+put("qux", 10)   # hashes to 0
+put("plugh", 20) # hashes to 1 (collision!)
+put("xyzzy", 50) # hashes to 2 (collision!)
+
+put("foo", 999)   # hashes to 1
+
+Put:
+
+* Find the slot for the key
+* Search the linked list for the key
+* If found, update it
+* If not found, make a new HashTableEntry and add it to the list
+
+Get:
+
+* Find the slot for the key
+* Search the linked list for the key
+* If found, return the value
+* If not found, return None
+
+Delete:
+
+* Find the slot for the key
+* Search the linked list for the key
+* If found, delete it from the linked list, then return the deleted value
+* If not found, return None

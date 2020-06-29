@@ -1,7 +1,16 @@
+"""
+Import Statements
+"""
+from linked_list import LinkedList
+import sys
+sys.path.append('../hashtable/linked_list')
+
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -19,10 +28,12 @@ class HashTable:
 
     Implement this.
     """
+    # Your code here
 
-    def __init__(self, capacity):
-        # Your code here
-
+    def __init__(self, capacity=MIN_CAPACITY):
+        self.storage = [LinkedList()] * MIN_CAPACITY
+        self.count = 0
+        self.capacity = capacity
 
     def get_num_slots(self):
         """
@@ -34,8 +45,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # return len(self.table)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -44,7 +55,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.count / self.capacity
 
     def fnv1(self, key):
         """
@@ -55,6 +66,16 @@ class HashTable:
 
         # Your code here
 
+        # Fowler-Noll-Vo hash function
+        # The FNV_offset_basis is the 64-bit FNV offset basis value: 14695981039346656037 (in hex, 0xcbf29ce484222325).
+        # https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1_hash
+        # FNV_prime = 1099511628211
+        # FNV_offset_basis = 14695981039346656037
+        # for b in string_to_bytes:
+        #     our_hash_value = FNV_offset_basis*FNV_prime
+        #     our_hash_value = hash_value ^ b
+        #
+        # return our_hash_value
 
     def djb2(self, key):
         """
@@ -62,18 +83,20 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)  # turns into the ASCII value of key
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
-    def put(self, key, value):
+    def put(self, key: str, value: str) -> None:
         """
         Store the value with the given key.
 
@@ -81,8 +104,18 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # slot equals our index of the array
+        index = self.hash_index(key)
+        # self.data[index] = HashTableEntry(key, value)
+        current = self.storage[index].head
+        while current:
+            if current.key == key:
+                current.value == value
+            current = current.next
 
+        entry = HashTableEntry(key, value)
+        self.storage[index].insert_at_head(entry)
+        self.count += 1
 
     def delete(self, key):
         """
@@ -93,7 +126,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        self.put(key, None)
+        self.count -= 1
 
     def get(self, key):
         """
@@ -103,10 +137,24 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # index = self.hash_index(key)
+        # hash_entry = self.data[index]
+        # if hash_entry is not None:
+        #     return hash_entry.value
+        # else:
+        #     return None
+        slot = self.hash_index(key)
+        current = self.storage[slot].head
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
+        return None
 
-
-    def resize(self, new_capacity):
+    def resize(self, new_capacity=None):
+        # Array = less of a chance
+        # make array bigger
+        # Have O(n) lookup
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
@@ -114,7 +162,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        if self.get_load_factor() > 0.7:
+            old_storage = self.storage
+            self.storage = [LinkedList()] * new_capacity
+            for item in old_storage:
+                current = item.head
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
+            self.capacity = new_capacity
 
 
 if __name__ == "__main__":
@@ -151,3 +207,12 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
+    print(ht.djb2("line_1"))
+    print(ht.hash_index("line_1"))
+
+    print(ht.djb2("line_9"))
+    print(ht.hash_index("line_9"))
+
+    print(ht.djb2("line_10"))
+    print(ht.hash_index("line_10"))

@@ -1,6 +1,25 @@
 def word_count(s):
     # Your code here
+    cache = {}
+    text = ""
+    punctuation = ['"', ':', ';', ',', '.', '-', '+', '=', '/',
+                   '\\', '|', '[', ']', '{', '}', '(', ')', '*', '^', '&']
+    for c in s:
+        if c in punctuation:
+            s.replace(c, ' ')
+        else:
+            text += c
 
+    words = text.split()
+    # for loop through the array of words and formats everything correctly
+    for word in words:
+        word = word.lower()
+        if word in cache:
+            cache[word] += 1
+        else:
+            cache[word] = 1
+
+    return cache
 
 
 if __name__ == "__main__":
