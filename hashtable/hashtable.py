@@ -255,6 +255,10 @@ ht2.delete("key-11")
 ht2.delete("key-10")
 ht2.delete("key-9")
 ht2.delete("key-8")
+x = ht2.capacity // 2
+print(f"Cap // 2: {x}")
+ht2.resize(x)
+print(f"Capacity after resize: {ht2.capacity}")
 y = ht2.get_load_factor()
 print(f"Load Factor: {y}")
 print(f"Entries: {ht2.entries}")
@@ -273,3 +277,20 @@ y = ht2.get_load_factor()
 print(f"Load Factor: {y}")
 print(f"Entries: {ht2.entries}")
 print(f"Capacity: {ht2.capacity}")
+
+# def slowfun_too_slow(x, y):
+#     v = math.pow(x, y)
+#     v = math.factorial(v)
+#     v //= (x + y)
+#     v %= 982451653
+
+#     return v
+import math
+v = math.pow(3, 5)
+print(v)
+v = math.factorial(int(v))
+print(v)
+v //= (3 + 5)
+print(v)
+v %= 982451653
+print(v)
