@@ -1,7 +1,14 @@
+
+
+import sys
+sys.path.append("../../Data-Structures")
+from doubly_linked_list.doubly_linked_list import DoublyLinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -21,8 +28,10 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.ht = [-1]*capacity
+        # Monday self.ht = [-1]*capacity
+        self.slots = [DoublyLinkedList() for i in range(capacity)]
         self.capacity = capacity
+        self.num_items = 0
 
     def get_num_slots(self):
         """
@@ -34,8 +43,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return len(self.slots)
 
     def get_load_factor(self):
         """
@@ -43,8 +51,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return 1.0 - ((self.capacity - self.num_items) / self.capacity)
 
     def fnv1(self, key):
         """
@@ -54,7 +61,6 @@ class HashTable:
         """
 
         # Your code here
-
 
     def djb2(self, key):
         """
@@ -67,13 +73,12 @@ class HashTable:
             hash = (hash << 5) + hash + ord(char)
         return hash
 
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -86,8 +91,9 @@ class HashTable:
         """
         entry = HashTableEntry(key, value)
         hi = self.hash_index(key)
-        self.ht[hi] = entry
-
+        self.slots[hi].add_to_tail(entry)
+        self.num_items += 1
+        self.calculate_load()
 
     def delete(self, key):
         """
@@ -98,11 +104,15 @@ class HashTable:
         Implement this.
         """
         hi = self.hash_index(key)
-        e = self.ht[hi]
-        if e == -1:
-            return "Key not found"
-        self.ht[hi] = -1
-
+        ll = self.slots[hi]
+        for n in ll:
+            if n.value.key == key:
+                ll.delete(n)
+                self.num_items -= 1
+                self.calculate_load()
+                return
+        return "Key not found"
+  
 
     def get(self, key):
         """
@@ -113,11 +123,12 @@ class HashTable:
         Implement this.
         """
         hi = self.hash_index(key)
-        e = self.ht[hi]
-        if e == -1:
-            return None
-        return e.value
+        ll = self.slots[hi]
+        for n in ll:
+            if n.value.key == key:
+                return n.value.value
 
+        return None
 
     def resize(self, new_capacity):
         """
@@ -126,9 +137,22 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.capacity = new_capacity
+        old_slots = self.slots
+        self.slots = [DoublyLinkedList() for i in range(self.capacity)]
+        for ll in old_slots:
+            for n in ll:
+                self.put(n.value.key, n.value.value)
 
 
+    def calculate_load(self):
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+        elif self.get_load_factor() < 0.2:
+            if self.capacity < MIN_CAPACITY * 2:
+                self.resize(MIN_CAPACITY)
+            else:
+                self.resize(self.capacity // 2)
 
 if __name__ == "__main__":
     ht = HashTable(8)
@@ -146,24 +170,23 @@ if __name__ == "__main__":
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
 
-    # print("")
+    print("")
 
-    # # Test storing beyond capacity
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
+    # Test storing beyond capacity
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # # Test if data intact after resizing
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # print("")
+    print("")
 
 
-    print(ht.hash_index("names"))
