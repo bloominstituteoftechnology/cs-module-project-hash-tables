@@ -21,8 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.__storage__ = [None] * capacity
+        self.capacity = capacity
 
     def get_num_slots(self):
         """
@@ -34,7 +34,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.__storage__)
 
 
     def get_load_factor(self):
@@ -55,15 +55,21 @@ class HashTable:
 
         # Your code here
 
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        key_bytes = key.encode()
 
+        hash = 5381
+
+        for byte in key_bytes:
+            hash = ((hash << 5) + hash) + byte # same as hash * 33 + byte
+            hash &= 0xffffffff
+
+        return hash
 
     def hash_index(self, key):
         """
@@ -81,8 +87,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
 
+        self.__storage__[index] = value
 
     def delete(self, key):
         """
@@ -92,7 +99,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        self.__storage__[index] = None
 
 
     def get(self, key):
@@ -103,7 +112,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        return self.__storage__[index]
 
 
     def resize(self, new_capacity):
