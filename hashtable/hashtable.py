@@ -132,7 +132,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        # if self.data[i] > self.capacity:
+        #     self.capacity = new_capacity
 
 
 
