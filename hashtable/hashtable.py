@@ -56,13 +56,29 @@ class HashTable:
         """
 
         # Your code here
+        # encoded = key.encode()
+        # total = 0
+        # for c in e:
+        #     total += c
 
-        byte_of_data = key.encode()
+        # octuple = 
+
+        # StrKey = str(key).encode()
+        # print(StrKey, "string Key")
  
-        hash = 14695981039346656037
-        for byte in byte_of_data:
-            hash = bin(hash ^ byte)
-            hash = hash * 1099511628211
+        # hash = 14695981039346656037
+        # for byte in StrKey:
+        #     hash = bin(hash ^ byte)
+        #     hash = hash * 1099511628211
+        # return hash
+
+        # Cast the key to a string and get bytes
+        str_key = str(key).encode()
+        hash = 0xcbf29ce484222325
+        for byte in str_key:
+            hash *= 0x100000001b3
+            hash ^= byte
+            hash &= 0xffffffffffffffff  # 64-bit hash
         return hash
 
 
@@ -80,7 +96,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        return self.fnv1(key) % self.capacity
+        return self.fnv1(key) % len(self.capacity)
         # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -106,11 +122,12 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        print(self.capacity[index].key)
 
         if (self.capacity[index].key == key):
             self.capacity[index] = None
         else:
-            return("Warning")
+            print("Key not found")
 
 
     def get(self, key):
@@ -122,9 +139,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # print(self.capacity)
         index = self.hash_index(key)
+        # print(self.capacity[index].key)
         
-        if (self.capacity[index].key == key):
+        if (self.capacity[index] and self.capacity[index].key == key):
+            # print("return runs")
             return self.capacity[index].value
         else:
             return None
@@ -141,37 +161,47 @@ class HashTable:
 
 
 
-if __name__ == "__main__":
-    ht = HashTable(8)
+# if __name__ == "__main__":
+#     ht = HashTable(8)
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
+#     ht.put("line_1", "'Twas brillig, and the slithy toves")
+#     ht.put("line_2", "Did gyre and gimble in the wabe:")
+#     ht.put("line_3", "All mimsy were the borogoves,")
+#     ht.put("line_4", "And the mome raths outgrabe.")
+#     ht.put("line_5", '"Beware the Jabberwock, my son!')
+#     ht.put("line_6", "The jaws that bite, the claws that catch!")
+#     ht.put("line_7", "Beware the Jubjub bird, and shun")
+#     ht.put("line_8", 'The frumious Bandersnatch!"')
+#     ht.put("line_9", "He took his vorpal sword in hand;")
+#     ht.put("line_10", "Long time the manxome foe he sought--")
+#     ht.put("line_11", "So rested he by the Tumtum tree")
+#     ht.put("line_12", "And stood awhile in thought.")
 
-    print("")
+#     print("")
 
-    # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+#     # Test storing beyond capacity
+#     for i in range(1, 13):
+#         print(ht.get(f"line_{i}"))
 
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+#     # Test resizing
+#     old_capacity = ht.get_num_slots()
+#     ht.resize(ht.capacity * 2)
+#     new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+#     # Test if data intact after resizing
+#     for i in range(1, 13):
+#         print(ht.get(f"line_{i}"))
 
-    print("")
+#     print("")
+
+ht = HashTable(8)
+
+# print(ht)
+
+ht.put("key-0", "val-0")
+# print(ht.get("key-0"))
+ht.delete("key-0")
+print(ht.get("key-0"))
+# print(ht)
