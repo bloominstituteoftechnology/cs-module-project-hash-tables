@@ -19,9 +19,14 @@ class HashTable:
 
     Implement this.
     """
-
+    data = []
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        if MIN_CAPACITY > capacity:
+            self.data = [None] * MIN_CAPACITY
+        else: 
+            self.data = [None] * capacity
 
 
     def get_num_slots(self):
@@ -54,6 +59,17 @@ class HashTable:
         """
 
         # Your code here
+        sb = key.encode()
+
+        # total = 0
+        offset_basis = 14695981039346656037
+        hash = offset_basis
+
+        for b in sb:
+            hash = hash ^ b
+            hash = hash * 1099511628211
+        
+        return hash
 
 
     def djb2(self, key):
@@ -63,6 +79,7 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        pass
 
 
     def hash_index(self, key):
@@ -70,8 +87,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
