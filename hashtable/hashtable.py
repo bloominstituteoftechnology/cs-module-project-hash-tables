@@ -22,6 +22,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        self.data = [None] * MIN_CAPACITY
 
 
     def get_num_slots(self):
@@ -35,25 +37,30 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        a = self.capacity
+        print(a)
+        return a
 
 
-    def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
+    # def get_load_factor(self):
+    #     """
+    #     Return the load factor for this hash table.
 
-        Implement this.
-        """
-        # Your code here
+    #     Implement this.
+    #     """
+    #     # Your code here
+    #     pass
 
 
-    def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
+    # def fnv1(self, key):
+    #     """
+    #     FNV-1 Hash, 64-bit
 
-        Implement this, and/or DJB2.
-        """
+    #     Implement this, and/or DJB2.
+    #     """
 
-        # Your code here
+    #     # Your code here
+    #     pass
 
 
     def djb2(self, key):
@@ -63,6 +70,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -82,6 +93,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
+        self.data[i] = value
+
 
 
     def delete(self, key):
@@ -93,6 +107,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
+        self.data[i] = None
 
 
     def get(self, key):
@@ -104,8 +120,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
+        return self.data[i]
 
-
+        
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -114,6 +132,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
 
 
