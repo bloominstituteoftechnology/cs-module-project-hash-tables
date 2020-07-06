@@ -21,7 +21,7 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = [None] * MIN_CAPACITY
 
 
     def get_num_slots(self):
@@ -52,9 +52,16 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        seed = 0
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
 
-        # Your code here
 
+        hash = offset_basis + seed
+        for char in key:
+            hash = hash * FNV_prime
+            hash = hash ^ ord(char)
+        return hash
 
     def djb2(self, key):
         """
@@ -62,16 +69,18 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash = 5381
+        for _ in key:
+            hash = (( hash << 5) + hash) + ord(key)
+        return hash & 0xFFFFFFF
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % len(self.capacity)
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,8 +90,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        slot = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        self.capacity[slot] = entry
 
     def delete(self, key):
         """
@@ -92,7 +102,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.put(key, None)
 
 
     def get(self, key):
@@ -103,7 +113,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        slot = self.hash_index(key)
+        entry = self.capacity[slot]
+
+        if entry:
+            return entry.value
+        return None
 
 
     def resize(self, new_capacity):
@@ -113,7 +128,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+         # Your code here
 
 
 
