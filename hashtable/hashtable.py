@@ -54,25 +54,6 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
-        # Your code here
-        # encoded = key.encode()
-        # total = 0
-        # for c in e:
-        #     total += c
-
-        # octuple = 
-
-        # StrKey = str(key).encode()
-        # print(StrKey, "string Key")
- 
-        # hash = 14695981039346656037
-        # for byte in StrKey:
-        #     hash = bin(hash ^ byte)
-        #     hash = hash * 1099511628211
-        # return hash
-
-        # Cast the key to a string and get bytes
         str_key = str(key).encode()
         hash = 0xcbf29ce484222325
         for byte in str_key:
@@ -122,7 +103,6 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        print(self.capacity[index].key)
 
         if (self.capacity[index].key == key):
             self.capacity[index] = None
@@ -139,12 +119,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        # print(self.capacity)
         index = self.hash_index(key)
-        # print(self.capacity[index].key)
         
         if (self.capacity[index] and self.capacity[index].key == key):
-            # print("return runs")
             return self.capacity[index].value
         else:
             return None
@@ -195,13 +172,3 @@ class HashTable:
 #         print(ht.get(f"line_{i}"))
 
 #     print("")
-
-ht = HashTable(8)
-
-# print(ht)
-
-ht.put("key-0", "val-0")
-# print(ht.get("key-0"))
-ht.delete("key-0")
-print(ht.get("key-0"))
-# print(ht)
