@@ -7,7 +7,6 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -85,9 +84,49 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        self.array[index] = value
 
+        # get the index in the hash table for the key
+        index = self.hash_index(key)
+
+        # create node with key, value
+        hte = HashTableEntry(key, value)
+
+        # check hash table for a linked list
+        if self.array[index] is not None:
+            cur = self.array[index]
+
+            temp = 0
+
+            prev = cur
+
+            while cur is not None:
+                if cur.key == key:
+                    cur = hte
+                    temp = 1
+                else:
+                    prev = cur
+                    cur = cur.next
+
+            if temp == 0:
+                prev.next = hte
+        else:
+            self.array[index] = hte
+
+
+        self.print_me()
+
+    def print_me(self):
+        print("\nHASH TABLE\n----------")
+        counter = 0
+        for item in self.array:
+            if item is not None:
+                cur = item
+                while cur is not None:
+                    print(counter, ":", cur.key, cur.value)
+                    cur = cur.next
+            else:
+                print(counter, ":", item)
+            counter += 1
 
     def delete(self, key):
         """
@@ -109,8 +148,22 @@ class HashTable:
 
         Implement this.
         """
+
+
+
         index = self.hash_index(key)
-        return self.array[index]
+
+        if self.array[index] is not None:
+            cur = self.array[index]
+
+            while cur is not None:
+                if cur.key == key:
+                    return cur.value
+                cur = cur.next
+        else:
+            return None
+
+        # return self.array[index].value
 
 def resize(self, new_capacity):
         """
