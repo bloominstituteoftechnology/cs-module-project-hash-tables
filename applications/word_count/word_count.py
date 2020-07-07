@@ -1,5 +1,21 @@
 def word_count(s):
-    # Your code here
+    s = s.translate(str.maketrans(s, s, ':,;.-+=/\|[]{}()*^&"'))
+    s = s.replace("\n", " ")
+    s = s.replace("\t", " ")
+    s = s.replace("\r", " ")
+    if len(s) == 0:
+        return {}
+        
+    a = [w.lower() for w in s.split(" ") if w is not ""]
+    
+    d = {}
+    for word in a:
+        if word in d.keys():
+            d[word]+=1
+        else:
+            d[word] = 1
+    return d
+
 
 
 

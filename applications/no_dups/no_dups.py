@@ -1,5 +1,9 @@
 def no_dups(s):
-    # Your code here
+    d = {}
+    for w in s.split(" "):
+        d[w] = True
+    return " ".join(d.keys())
+            
 
 
 
