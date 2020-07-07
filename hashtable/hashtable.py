@@ -46,9 +46,9 @@ class HashTable:
 
         Implement this.
         """
-        # number of keys in the hash table divided by the capacity
+        # number of items in the hash table divided by the capacity
         # Your code here
-        # return get_num_slots() / self.capacity
+        return items / get_num_slots()
 
     def fnv1(self, key):
         """
@@ -58,6 +58,10 @@ class HashTable:
         """
 
         # Your code here
+        # fnv_prime = 1099511628211
+        # for x in key:
+        #     hash=((hash * fnv_prime)& XOR(x))
+        # r
 
     def djb2(self, key):
         """
@@ -88,6 +92,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        items = 0
+        for items in self.capacity:
+            items += 1
+
         self.capacity[self.hash_index(key)] = value
 
     def delete(self, key):
@@ -118,6 +126,12 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
+
+        if the load size > .7 -> resize the hash table
+        make a new array with double the capacity of the old one
+        have a hash table refer to the new array
+        run through all the nodes of the old hash table array
+            put them in the new hash table
         """
         # Your code here
 
