@@ -1,12 +1,11 @@
-import sys
-sys.path.append('..')
-from linked_list import LinkedList
+# from linked_list import LinkedList
 
 
 class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -15,6 +14,11 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
 
 class HashTable:
@@ -26,10 +30,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
-        self.capacity =[LinkedList()] * MIN_CAPACITY
-
+        self.capacity = capacity
+        self.data = [LinkedList()] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -43,8 +46,7 @@ class HashTable:
         """
         # Your code here
 
-        # return len(self.data)
-
+        return len(self.data)
 
     def get_load_factor(self):
         """
@@ -53,7 +55,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.count / len(self.capacity)
 
     def fnv1(self, key):
         """
@@ -61,9 +63,16 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        hashed = 0xCBF29CE484222325
+        fnv_prime = 0x100000001b3
+
+        for byte in key.encode():
+            hashed *= byte
+            hashed ^= byte
+
+        return hashed
 
         # Your code here
-
 
     def djb2(self, key):
         """
@@ -72,20 +81,26 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        # turn the key in to a string and get its bytes
+        str_key = str(key).encode()
 
-        hash = 5381
-        for _ in key:
-            hash = (( hash << 5) + hash) + ord(key)
-        return hash & 0xFFFFFFFF
+        # start from an abitary large prime
+        hash_value = 5381
 
+        # loop over the str_key extracting the byte (b)
+        for b in str_key:
+            hash_value = ((hash_value << 5) + hash_value) + b
+            hash_value &= 0xFFFFFFFF
+
+        return hash_value
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -96,15 +111,24 @@ class HashTable:
         Implement this.
         """
         slot = self.hash_index(key)
-        current = self.capacity[slot].head
-        while current:
-            if current.key == key:
-                current.value = value
-            current = current.next
 
-        entry = HashTableEntry(key, value)
+        # if LL is empty
+        if self.data[slot].head == None:
+            self.data[slot].head = HashTableEntry(key, value)
+            self.count += 1
+            return
 
-        self.capacity[slot].insert_at_head(entry)
+        else:
+            curr = self.data[slot].head
+
+            while curr.next:
+
+                if curr.key == key:
+                    curr.value = value
+                curr = curr.next
+
+            curr. next = HashTableEntry(key, value)
+            self.count += 1
 
     def delete(self, key):
         """
@@ -115,8 +139,21 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.put(key, None)
+        slot = self.hash_index(key)
+        curr = self.data[slot].head
 
+        if curr.key == key:
+            self.data[slot].head = self.data[slot].head.next
+            self.count -= 1
+            return
+
+        while curr.next:
+            prev = curr
+            curr = curr.next
+            if curr.key == key:
+                prev.next = curr.next
+                self.count -= 1
+                return None
 
     def get(self, key):
         """
@@ -129,13 +166,19 @@ class HashTable:
         # Your code here
         slot = self.hash_index(key)
 
-        current = self.capacity[slot].head
-        while current:
-            if current.key == key:
-                return current.value
-            current = current.next
-        return None
+        curr = self.data[slot].head
 
+        if curr == None:
+            return None
+
+        if curr.key == key:
+            return curr.value
+
+        while curr.next:
+            curr = curr.next
+            if curr.key == key:
+                return curr.value
+        return None
 
     def resize(self, new_capacity):
         """
@@ -145,7 +188,25 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.capacity = new_capacity
+        new_list = [LinkedList()] * new_capacity
 
+        for i in self.data:
+            curr = i.head
+
+            while curr is not None:
+                slot = self.hash_index(curr.key)
+
+                if new_list[slot].head == None:
+                    new_list[slot].head = HashTableEntry(curr.key, curr.value)
+                else:
+                    node = HashTableEntry(curr.key, curr.value)
+
+                    node.next = new_list[slot].head
+
+                    new_list[slot].head = node
+                curr = curr.next
+            self.storage = new_list
 
 
 if __name__ == "__main__":
