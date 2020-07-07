@@ -96,7 +96,7 @@ class HashTable:
             self.list[index] = HashTableEntry(key, value)
             self.count += 1
             if self.count == self.capacity - 1:
-                self.resize()
+                self.resize(self.capacity * 2)
         elif self.list[index].key == key:
             self.list[index].value = value
         else:
@@ -108,7 +108,7 @@ class HashTable:
                 current.next = HashTableEntry(key, value)
                 self.count += 1
                 if self.count == self.capacity - 1:
-                    self.resize()
+                    self.resize(self.capacity * 2)
 
 
     def delete(self, key):
@@ -183,7 +183,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.capacity *= 2
+        self.capacity = new_capacity
         old_list = self.list
         self.list = [None] * self.capacity
         for item in old_list:
