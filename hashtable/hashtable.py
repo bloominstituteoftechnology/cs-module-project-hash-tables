@@ -22,6 +22,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        # Sets the capacity to an array of Nones with the length equal to the capacity
         self.capacity = [None] * capacity
 
 
@@ -36,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        return len(self.capacity)
 
 
     def get_load_factor(self):
@@ -54,12 +55,15 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        # makes sure the key is a string and then encode it into bytes
         str_key = str(key).encode()
+        # hash value set according to the algorithm
         hash = 0xcbf29ce484222325
+
         for byte in str_key:
             hash *= 0x100000001b3
             hash ^= byte
-            hash &= 0xffffffffffffffff  # 64-bit hash
+            hash &= 0xffffffffffffffff 
         return hash
 
 
@@ -77,7 +81,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        return self.fnv1(key) % len(self.capacity)
+        return self.fnv1(key) % self.get_num_slots()
         # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
