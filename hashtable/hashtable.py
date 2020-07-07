@@ -41,7 +41,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.capacity)
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -51,7 +51,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        
 
 
     def fnv1(self, key):
@@ -102,6 +102,22 @@ class HashTable:
         index = self.hash_index(key)
         self.storage[index] = HashTableEntry(key, value)
         return value
+
+
+        """
+        # hash_index creates the hash value of the key
+        index = self.hash_index(key)
+        # create a new Linked List to assign our HashTableEntry
+        ht = HashTableEntry(key, value)
+        # we find the corresponding node in our hash
+        node = self.storage[index]
+        # we set out the node to None
+        if node is None:
+            node = ht
+            node.next = node
+        else:
+            node = ht
+        """
 
 
     def delete(self, key):
