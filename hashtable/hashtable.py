@@ -7,6 +7,18 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    #  def __repr__(self):
+    #     contents = ''
+    #     current_node = self
+
+    #     while current_node.next:
+    #         contents += str(self.value) + ' => '
+    #         current_node = current_node.next
+
+    #     contents += 'None'
+
+    #     return contents
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -21,7 +33,15 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.items_stored = 0
+        self.storage = [None] * capacity
+
+    def __repr__(self):
+        report = f"Hashtable\n {self.items_stored}/{self.capacity} items stored.\n"
+        contents = "\n".join([str(index) + ": " + str(linked_list) for index, linked_list in enumerate(self.storage)])
+
+        return report + contents
 
 
     def get_num_slots(self):
@@ -63,6 +83,14 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        key_bytes = key.encode()
+        hash = 5381
+        for k_byte in key_bytes:
+            hash = hash * 33 + k_byte
+            hash &= 0xffffffff
+            
+        return hash
+                
 
 
     def hash_index(self, key):
@@ -82,7 +110,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        i = self.hash_index(key)
+        self.storage[i] = value
 
     def delete(self, key):
         """
@@ -93,6 +122,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
+        self.storage[i] = None
 
 
     def get(self, key):
@@ -104,6 +135,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
+        return self.storage[i]
 
 
     def resize(self, new_capacity):
