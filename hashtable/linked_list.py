@@ -9,16 +9,16 @@ class Node:
 class LinkedList:
     def __init__(self):
         self.head = None
-    def __str__(self):
-        r = ""
-        cur = self.head
+    # def __str__(self):
+    #     r = ""
+    #     cur = self.head
 
-        while cur is not None:
-            r += f'({cur.value})'
-            if cur.next is not None:
-                r += ' -> '
-            cur = cur.next
-        return r
+    #     while cur is not None:
+    #         r += f'({cur.value})'
+    #         if cur.next is not None:
+    #             r += ' -> '
+    #         cur = cur.next
+    #     return r
 
     def insert_at_head(self, node):
         node.next = self.head
@@ -29,7 +29,7 @@ class LinkedList:
         # walk the linked list
         while cur is not None:
             if cur.value == value:
-                # Found it!
+                # Found
                 return cur
             cur = cur.next
         return None
@@ -37,7 +37,7 @@ class LinkedList:
     def delete(self, value):
         cur = self.head
 
-        # Special case of deleting the head of the list
+        # Special case (delete the head of the list)
         if cur.value == value:
             self.head = self.head.next
             return cur
