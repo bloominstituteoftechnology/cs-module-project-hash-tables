@@ -152,7 +152,23 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+
+        prev_stor = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+
+        for i in range(len(prev_stor)):
+
+            old = prev_stor[i]
+
+            if old:
+                # Look through this hash index list
+                while old:
+                    if old.key:
+                        # If found, rehash to new storage
+                        self.put(old.key, old.value)
+                        # Continue looking through list until None
+                        old = old.next
 
 
 if __name__ == "__main__":
