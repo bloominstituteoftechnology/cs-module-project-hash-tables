@@ -99,7 +99,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+        index = self.hash_index(key)
+        self.storage[index] = HashTableEntry(key, value)
         return value
 
 
@@ -112,7 +113,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.storage[self.hash_index(key)] = None
+        index = self.hash_index(key)
+        self.storage[index] = None
 
 
 
@@ -125,8 +127,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if self.storage[self.hash_index(key)] is not None:
-            return self.storage[self.hash_index(key)].value
+        index = self.hash_index(key)
+        if self.storage[index] is not None:
+            return self.storage[index].value
     
       
 
