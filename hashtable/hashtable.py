@@ -94,6 +94,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+        return value
 
 
     def delete(self, key):
@@ -105,6 +107,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.storage[self.hash_index(key)] = None
+
 
 
     def get(self, key):
@@ -116,6 +120,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.storage[self.hash_index(key)] is not None:
+            return self.storage[self.hash_index(key)].value
+    
+      
 
 
     def resize(self, new_capacity):
