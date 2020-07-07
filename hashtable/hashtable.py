@@ -9,7 +9,7 @@ class HashTableEntry:
 
 
 # Hash table can't have fewer than this many slots
-MIN_CAPACITY = 8
+# MIN_CAPACITY = 8
 
 
 class HashTable:
@@ -23,7 +23,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
-        self.data = [None] * MIN_CAPACITY
+        self.data = [None] * capacity
 
 
     def get_num_slots(self):
@@ -75,6 +75,12 @@ class HashTable:
             hash = (( hash << 5) + hash) + ord(x)
         return hash & 0xFFFFFFFF
 
+        # key_bytes = key.encode()
+        # hash = 5381
+        # for k_byte in key_bytes:
+        #     hash = hash * 33 + k_byte
+        #     hash &= 0xffffffff
+        # return hash
 
     def hash_index(self, key):
         """
@@ -138,7 +144,7 @@ class HashTable:
 
 
 if __name__ == "__main__":
-    ht = HashTable(8)
+    ht = HashTable(8)  
 
     ht.put("line_1", "'Twas brillig, and the slithy toves")
     ht.put("line_2", "Did gyre and gimble in the wabe:")
