@@ -110,8 +110,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        self.storage[i] = value
+
+        # i = self.hash_index(key)
+        # self.storage[i] = value
+
+        hash_index = self.hash_index(key)
+
+        if not self.storage[hash_index]:
+            self.storage[hash_index] = HashTableEntry(key, value)
+            self.items_stored += 1
+
+        else:
+            current_node = self.storage[hash_index]
+
+            while current_node.key != key and current_node.next:
+                current_node = current_node.next
+
+            if current_node.key == key:
+                current_node.value = value
+
+            else:
+                current_node.next = HashTableEntry(key, value)
+                self.items_stored += 1
+
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
