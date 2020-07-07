@@ -21,7 +21,12 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = capacity
+        
+        self.storage = [None for x in range(self.capacity)]
 
 
     def get_num_slots(self):
@@ -34,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -62,7 +67,12 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        h = 5381
+
+        for char in key:
+            h = ((h << 5) + h) + ord(char)
+
+        return h
 
 
     def hash_index(self, key):
@@ -81,7 +91,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        loc = self.hash_index(key)
+        self.storage[loc] = value
+        # TODO for tomorrow: update to handle collisions
 
 
     def delete(self, key):
@@ -92,7 +104,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        loc = self.hash_index(key)
+        if self.storage[loc] is None:
+            raise LookupError('key does not exist in hash table')
+        else:
+            self.storage[loc] = None
 
 
     def get(self, key):
@@ -103,7 +119,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        loc = self.hash_index(key)
+        if self.storage[loc] is None:
+            return None
+        else:
+            return self.storage[loc]
 
 
     def resize(self, new_capacity):
