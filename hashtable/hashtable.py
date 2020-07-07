@@ -99,6 +99,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
+
+        self.data[i] = value
 
 
     def delete(self, key):
@@ -110,7 +113,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
 
+        self.data[i] = None
 
     def get(self, key):
         """
@@ -121,7 +126,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
 
+        return self.data[i]
 
     def resize(self, new_capacity):
         """
@@ -131,7 +138,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
 
 if __name__ == "__main__":
