@@ -1,6 +1,11 @@
+import re
 def word_count(s):
     # Your code here
-
+    words = re.sub(r'[":;,.\-+=/\\|\[\]{}()*^&]', ' ', s)
+    count = {}
+    for word in words.split():
+        count[word.lower()] = 1 if word.lower() not in count else count[word.lower()] + 1
+    return count
 
 
 if __name__ == "__main__":
