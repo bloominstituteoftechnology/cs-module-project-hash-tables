@@ -7,10 +7,8 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
-
 
 class HashTable:
     """
@@ -27,7 +25,8 @@ class HashTable:
             self.capacity = capacity
         
         self.storage = [None for x in range(self.capacity)]
-
+        self.count = 0
+        self.loadfactor = 0
 
     def get_num_slots(self):
         """
@@ -48,8 +47,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return self.loadfactor
 
     def fnv1(self, key):
         """
@@ -92,9 +90,28 @@ class HashTable:
         Implement this.
         """
         loc = self.hash_index(key)
-        self.storage[loc] = value
-        # TODO for tomorrow: update to handle collisions
-
+        if self.storage[loc] is None:
+            # new entry
+            self.storage[loc] = HashTableEntry(key, value)
+            self.count += 1
+            self.loadfactor = self.count / self.capacity
+            if self.loadfactor > 0.7:
+                self.resize(self.capacity * 2)
+        else:
+            # check node(s) for same key, replace if same key
+            # otherwise add to tail
+            cur = self.storage[loc]
+            while cur is not None:
+                if cur.key == key:
+                    cur.value = value
+                    return
+                # break early so the position in the list
+                # isn't lost
+                if cur.next is None:
+                    break
+                cur = cur.next
+            # node not found, append to end of list
+            cur.next = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -106,10 +123,37 @@ class HashTable:
         """
         loc = self.hash_index(key)
         if self.storage[loc] is None:
+            # not found
             raise LookupError('key does not exist in hash table')
         else:
-            self.storage[loc] = None
-
+            # found, only entry
+            if self.storage[loc].next is None:
+                self.storage[loc] = None
+                self.count -= 1
+                self.loadfactor = self.count / self.capacity
+                return
+            else:
+                # traverse down list to delete correct node
+                cur = self.storage[loc]
+                # check the first node
+                if cur.key == key:
+                    # remove the head and stop
+                    self.storage[loc] = self.storage[loc].next
+                    self.count -= 1
+                    self.loadfactor = self.count / self.capacity
+                    return
+                # else, start traversing
+                while cur.next is not None:
+                    # if the next node is the match, remove it
+                    if cur.next.key == key:
+                        cur.next = cur.next.next
+                        self.count -= 1
+                        self.loadfactor = self.count / self.capacity
+                        return
+                    # keep traversing
+                    cur = cur.next
+                # wasn't found for whatever reason
+                raise LookupError('key was not found at location')
 
     def get(self, key):
         """
@@ -123,8 +167,15 @@ class HashTable:
         if self.storage[loc] is None:
             return None
         else:
-            return self.storage[loc]
-
+            cur = self.storage[loc]
+            # start traversing, check each node as you go along
+            while cur is not None:
+                # check each node's key as you go along
+                if cur.key == key:
+                    return cur.value
+                cur = cur.next
+            # not found at location
+            return None
 
     def resize(self, new_capacity):
         """
@@ -133,9 +184,16 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        # save old storage, go through each one and re-hash
+        old_storage = self.storage.copy()
+        # update capacity and storage
+        self.capacity = new_capacity
+        self.count = 0
+        self.storage = [None for x in range(self.capacity)]
+        for node in old_storage:
+            while node is not None:
+                self.put(node.key, node.value)
+                node = node.next
 
 if __name__ == "__main__":
     ht = HashTable(8)
