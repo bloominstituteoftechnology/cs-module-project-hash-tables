@@ -20,8 +20,9 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
+    def __init__(self, capacity = MIN_CAPACITY):
+        self.data_storage = [None] * capacity
+        self.capacity = capacity
 
 
     def get_num_slots(self):
@@ -43,6 +44,7 @@ class HashTable:
 
         Implement this.
         """
+        # tip: https://brilliant.org/wiki/hash-tables/
         # Your code here
 
 
@@ -60,9 +62,17 @@ class HashTable:
         """
         DJB2 hash, 32-bit
 
+        https://stackoverflow.com/a/13809282/108022
+
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for x in key:
+            # http://www.goodmath.org/blog/2013/10/20/basic-data-structures-hash-tables/
+            hash = (hash * 33) + ord(x)
+            # https://gist.github.com/mengzhuo/180cd6be8ba9e2743753
+            # hash = (( hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -81,7 +91,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        i = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        self.data_storage[i] = entry
 
 
     def delete(self, key):
@@ -92,7 +104,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.put(key, None)
 
 
     def get(self, key):
@@ -103,7 +115,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        i = self.hash_index(key)
+        entry = self.data_storage[i]
+
+        if entry:
+            return entry.value
+        return None
 
 
     def resize(self, new_capacity):
@@ -113,7 +130,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        pass
 
 
 
@@ -151,3 +168,8 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+    print(ord('a'))
+    print(((5381 << 5)+ 5381)+ ord('a'))
+    print(5381 << 5)
+    print(5381 * 33)
+    print(5381 * 33 - 5381)
