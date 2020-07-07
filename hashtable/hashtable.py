@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../hashtable/linked_list')
+from linked_list import LinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -20,8 +24,10 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        self.capacity = [None] * MIN_CAPACITY
+    def __init__(self, capacity = MIN_CAPACITY):
+        self.storage = [LinkedList()] * MIN_CAPACITY
+        self.count = 0
+        self.capacity = capacity
 
 
     def get_num_slots(self):
@@ -34,7 +40,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +49,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -79,20 +85,25 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        return self.fnv1(key) % len(self.capacity)
+        return self.fnv1(key) % len(self.storage)
         #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Implement this.
         """
         slot = self.hash_index(key)
+        current = self.storage[slot].head
+        while current:
+            if current.key == key:
+                current.value = value
+            current = current.next
+
         entry = HashTableEntry(key, value)
-        self.capacity[slot] = entry
+        self.storage[slot].insert_at_head(entry)
+        self.count += 1
 
     def delete(self, key):
         """
@@ -103,6 +114,7 @@ class HashTable:
         Implement this.
         """
         self.put(key, None)
+        self.count -= 1
 
 
     def get(self, key):
@@ -114,10 +126,11 @@ class HashTable:
         Implement this.
         """
         slot = self.hash_index(key)
-        entry = self.capacity[slot]
-
-        if entry:
-            return entry.value
+        current = self.storage[slot].head
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
         return None
 
 
@@ -128,8 +141,15 @@ class HashTable:
 
         Implement this.
         """
-         # Your code here
-
+        if self.get_load_factor() > 0.7:
+            old_storage = self.storage
+            self.storage = [LinkedList()] * new_capacity
+            for item in old_storage:
+                current = item.head
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
+            self.capacity = new_capacity
 
 
 if __name__ == "__main__":
