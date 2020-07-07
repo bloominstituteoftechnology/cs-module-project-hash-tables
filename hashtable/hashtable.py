@@ -23,11 +23,14 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         # capacity determines the size of the array
-        self.capacity = capacity 
+        self.capacity = capacity
+        # Logic 
+        if capacity < MIN_CAPACITY:
+            return "Hash table can't have less than 8 slots"
+        else:
+            self.storage = [None] * capacity
         # a storage to store each value
         self.storage = [None] * capacity
-        # a size that will determine the number of the buckets that have been insert
-        self.usage = 0
 
     def get_num_slots(self):
         """
@@ -40,7 +43,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        return len(self.storage)
 
     def get_load_factor(self):
         """
@@ -49,7 +52,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        
 
     def fnv1(self, key):
         """
@@ -90,7 +93,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        if not self.storage[index]:
+            self.storage[index] = HashTableEntry(key, value)
+        else:
+            node = self.storage[index]
+            while node.next:
+                node = node.next
+            node.next = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -101,7 +111,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        node = self.storage[index]
+        while node:
+            if node.key == key:
+                self.storage[index] = None
+            else:
+                return 'node not found'
 
     def get(self, key):
         """
@@ -112,6 +128,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
+         index = self.hash_index(key)
+        node = self.storage[index]
+        while node:
+            if node.key == key:
+                return node.value
+            else:
+                node = node.next
 
 
     def resize(self, new_capacity):
