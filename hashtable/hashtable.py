@@ -71,10 +71,15 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
-        hash = 5381
-        for c in key:
-            hash =(hash * 33) + ord(c)
-        return hash 
+        # turn the key in to a string and get its bytes
+        str_key = str(key).encode()
+        # start from an arbitrary large prime
+        hash_value = 5381
+        # loop over the str_key extracting the byte(b)
+        for b in str_key:
+            hash_value = ((hash_value <<5)+hash_value)+ b
+            hash_value &= 0xffffffff # clamp to 32 bits
+        return hash_value 
 
 
     def hash_index(self, key):
