@@ -145,9 +145,44 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        self.storage[i] = None
 
+        # i = self.hash_index(key)
+        # self.storage[i] = None
+
+        index = self.hash_index(key)
+
+        current_node = self.storage[index]
+
+        if not current_node:
+            return 'none'
+
+        elif not current_node.next:
+            self.storage[index] = None
+            self.items_stored -= 1
+
+        else:
+            previous_node = None
+
+            while current_node.key != key and current_node.next:
+                previous_node = current_node
+                current_node = current_node.next
+
+            if not current_node.next:
+                previous_node.next = None
+                self.items_stored -= 1
+
+            else:
+                previous_node.next = current_node.next
+                self.items_stored -= 1
+
+        if self.get_load_factor() < 0.2:
+
+            new_capacity = self.capacity // 2
+
+            if  new_capacity < MIN_CAPACITY:
+                new_capacity = MIN_CAPACITY
+
+            self.resize(new_capacity)
 
     def get(self, key):
         """
