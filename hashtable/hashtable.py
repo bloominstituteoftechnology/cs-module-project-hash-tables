@@ -21,7 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.usage = 0
+        self.list = [[None] for i in range(capacity)]
 
 
     def get_num_slots(self):
@@ -34,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.capacity)
 
 
     def get_load_factor(self):
@@ -53,7 +55,12 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        key_to_strBytes = str(key).encode()
+        hash_value = 5381
+        for i in key_to_strBytes:
+            hash_value = ((hash_value << 5) + hash_value) + i
+            hash_value &= 0xffffffff
+        return hash_value
 
 
     def djb2(self, key):
@@ -62,7 +69,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash_value = 5381
+        for i in key:
+            hash_value = (hash_value * 33) + ord(i)
+        return hash_value
 
 
     def hash_index(self, key):
@@ -71,6 +81,7 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
+
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,7 +92,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.list[index] is None:
+            self.list[index] = HashTableEntry(key,value)
+        else:
+            self.list[index].value = value
 
 
     def delete(self, key):
@@ -92,7 +107,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.list[index] is None:
+            break
+        else:
+            self.list[index].value = None
 
 
     def get(self, key):
@@ -103,7 +122,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.list[index] is None:
+            return None
+        else:
+            return self.list[index].value
 
 
     def resize(self, new_capacity):
