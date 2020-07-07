@@ -81,7 +81,7 @@ class HashTable:
         # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
-    def put(self, key, value):
+    def put(self, key, value, resize=True):
         """
         Store the value with the given key.
 
@@ -89,11 +89,19 @@ class HashTable:
 
         Implement this.
         """
-        entry = HashTableEntry(key, value)
         hi = self.hash_index(key)
-        self.slots[hi].add_to_tail(entry)
-        self.num_items += 1
-        self.calculate_load()
+        exists = False
+        for n in self.slots[hi]:
+            if n.value.key == key:
+                n.value.value = value
+                exists = True
+        if not exists:
+            entry = HashTableEntry(key, value)
+            self.slots[hi].add_to_tail(entry)
+            self.num_items += 1
+        if resize:
+            self.calculate_load()
+        
 
     def delete(self, key):
         """
@@ -142,7 +150,7 @@ class HashTable:
         self.slots = [DoublyLinkedList() for i in range(self.capacity)]
         for ll in old_slots:
             for n in ll:
-                self.put(n.value.key, n.value.value)
+                self.put(n.value.key, n.value.value, False)
 
 
     def calculate_load(self):

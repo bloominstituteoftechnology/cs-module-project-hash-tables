@@ -3,3 +3,5 @@
 
 # Your code here
 
+with open("./ciphertext.txt", "r") as f:
+    print(f.read())
