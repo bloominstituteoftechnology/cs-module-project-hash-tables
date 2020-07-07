@@ -142,6 +142,8 @@ class HashTable:
                     if current.key == key:
                         return current.value
                     current = current.next
+        print("Could not find value")
+        return None
 
 
     def resize(self, new_capacity):
