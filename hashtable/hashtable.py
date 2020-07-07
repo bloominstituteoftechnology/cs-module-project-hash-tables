@@ -17,7 +17,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -30,7 +29,6 @@ class HashTable:
         self.storage = [LinkedList()] * MIN_CAPACITY
         self.count = 0
         self.capacity = capacity
-
 
     def get_num_slots(self):
         """
@@ -45,7 +43,6 @@ class HashTable:
         # Your code here
         return self.capacity
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -54,7 +51,6 @@ class HashTable:
         """
         # Your code here
         return self.count / self.capacity
-
 
     def fnv1(self, key):
         """
@@ -75,7 +71,6 @@ class HashTable:
             hash = hash * FNV_prime
         return hash
 
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
@@ -87,7 +82,6 @@ class HashTable:
         # for c in key:
         #     hash = (( hash << 5) + hash) + ord(c)
         # return hash & 0xFFFFFFFF
-
 
     def hash_index(self, key):
         """
@@ -118,7 +112,6 @@ class HashTable:
         self.storage[slot].insert_at_head(entry)
         self.count += 1
 
-
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -130,7 +123,6 @@ class HashTable:
         # Your code here
         self.put(key, None)
         self.count -= 1
-
 
     def get(self, key):
         """
@@ -150,7 +142,6 @@ class HashTable:
             current = current.next
         return None
 
-
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -159,7 +150,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
         if self.get_load_factor() >= 0.7:
             old_storage = self.storage
             self.storage = [LinkedList()] * new_capacity
@@ -169,6 +159,19 @@ class HashTable:
                     self.put(current.key, current.value)
                     current = current.next
             self.capacity = new_capacity
+
+        # if self.get_load_factor() <= 0.2:
+        #     old_storage = self.storage
+        #     self.storage = [LinkedList()] * new_capacity
+        #     if new_capacity < MIN_CAPACITY:
+        #         new_capacity = MIN_CAPACITY
+        #         for item in old_storage:
+        #             current = item.head
+        #             while current:
+        #                 self.put(current.key, current.value)
+        #                 current = current.next
+        #         self.capacity = new_capacity
+
 
 if __name__ == "__main__":
     ht = HashTable(8)
