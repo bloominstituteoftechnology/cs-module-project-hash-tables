@@ -104,14 +104,11 @@ class HashTable:
             self.entries += 1
             if self.get_load_factor() > 0.7:
                 self.resize(self.capacity * 2)
+        elif current.key is key:
+            current.value = value
         else:
-            while current:
-                if current.key is key:
-                    current.value = value
-                    return 
-                previous = current
-                current = current.next
-            previous.next = new_entry
+            self.data[index] = new_entry
+            new_entry.next = current
             self.entries += 1
             if self.get_load_factor() > 0.7:
                 self.resize(self.capacity * 2)
@@ -132,6 +129,9 @@ class HashTable:
         if current.key is key:
             current.value = None
             current = None
+            self.entries -= 1
+            if self.get_load_factor() < 0.2 and self.capacity // 2 >= 8:
+                self.resize(self.capacity // 2)
         elif current is None:
             print("Key was not found.")
         else:
@@ -141,6 +141,9 @@ class HashTable:
                 if current.key is key:
                     current.value = None
                     previous.next = None
+                    self.entries -= 1
+                    if self.get_load_factor() < 0.2 and self.capacity // 2 >= 8:
+                        self.resize(self.capacity // 2)
                     return 
             print("Key was not found.")
 

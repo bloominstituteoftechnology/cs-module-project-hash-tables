@@ -32,7 +32,6 @@ for word in words_array:
     if word_dict.__contains__(word) is False:
         word_dict.setdefault(word, [])
     if index >= 0:
-        # previous_word = words_array[index]
         word_dict[previous_word].append(word)
         previous_word = word
     index += 1
