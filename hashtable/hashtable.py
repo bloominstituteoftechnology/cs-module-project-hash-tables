@@ -22,6 +22,12 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        # needs a capacity, will determine the size of the array
+        self.capacity = capacity # the numbers of buckets 
+        # needs a storage to store each value
+        self.storage = [None] * capacity
+        # needs a size which will determine the number of the buckets that have been insert
+        self.usage = 0
 
 
     def get_num_slots(self):
