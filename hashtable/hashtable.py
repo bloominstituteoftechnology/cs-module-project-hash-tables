@@ -120,6 +120,35 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        n = self.list[index]
+        if not n:
+            print("Couldn't find value to remove")
+            return
+
+        if not n.next:
+            if n.key == key:
+                self.list[index] = None
+                self.count -= 1
+            else:
+                print("Couldn't find value to remove")
+        else:
+            current = n
+            previous = None
+            if current.key == key:
+                self.list[index] = current.next
+                self.count -= 1
+            else:
+                while current.next:
+                    previous = current
+                    current = current.next
+                    if current.key == key:
+                        previous.next = current.next
+                        self.count -= 1
+                        return
+                print("Couldn't find a value to remove")
+
+
 
 
     def get(self, key):
@@ -154,6 +183,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.capacity *= 2
+        old_list = self.list
+        self.list = [None] * self.capacity
+        for item in old_list:
+            if item.next:
+                current = item
+                while True:
+                    if current.next: break
+
 
 
 
