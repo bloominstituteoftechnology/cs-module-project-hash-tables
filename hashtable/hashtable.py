@@ -20,6 +20,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
+        if capacity < MIN_CAPACITY:
+            capacity = MIN_CAPACITY
         self.capacity = capacity
         self.array = [None] * capacity
 
@@ -91,23 +93,25 @@ class HashTable:
         # create node with key, value
         hte = HashTableEntry(key, value)
 
+
+
         # check hash table for a linked list
         if self.array[index] is not None:
             cur = self.array[index]
-
-            temp = 0
+            temp = False
 
             prev = cur
 
             while cur is not None:
                 if cur.key == key:
-                    cur = hte
-                    temp = 1
+                    prev.next = hte
+                    # cur = hte
+                    temp = True
                 else:
                     prev = cur
                     cur = cur.next
 
-            if temp == 0:
+            if temp is False:
                 prev.next = hte
         else:
             self.array[index] = hte
@@ -121,9 +125,15 @@ class HashTable:
         for item in self.array:
             if item is not None:
                 cur = item
+                string = ""
                 while cur is not None:
-                    print(counter, ":", cur.key, cur.value)
+                    string += cur.key
+                    string += ","
+                    string += cur.value
+                    string += " -> "
+                    # print(counter, ":", cur.key, cur.value)
                     cur = cur.next
+                print(counter, ":", string)
             else:
                 print(counter, ":", item)
             counter += 1
