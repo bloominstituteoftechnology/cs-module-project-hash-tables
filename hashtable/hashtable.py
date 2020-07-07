@@ -225,6 +225,22 @@ class HashTable:
         """
         # Your code here
 
+        old_storage = self.storage
+
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+
+        for item in old_storage:
+
+            if item:
+
+                current_node = item
+
+                while current_node:
+
+                    self.put(current_node.key, current_node.value)
+
+                    current_node = current_node.next
 
 
 if __name__ == "__main__":
