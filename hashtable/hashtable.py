@@ -91,6 +91,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        if not self.list[index]:
+            self.list[index] = HashTableEntry(key, value)
+        elif self.list[index].key == key:
+            self.list[index].value = value
+        else:
+            current = self.list[index]
+            while current.next:
+                current = current.next
+            if not current.next:
+                print("We in here boys")
+                current.next = HashTableEntry(key, value)
 
 
     def delete(self, key):
