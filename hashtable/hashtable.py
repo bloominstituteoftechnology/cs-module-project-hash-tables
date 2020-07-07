@@ -8,6 +8,40 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def find(self, value):
+        cur = self.handled
+
+        while cur is not None:
+            if cur.value == value:
+                return cur
+            cur = cur.next
+        return None
+
+    def insert_at_head(self, value):
+        n = Node(value)
+        n.next = self.head
+        self.head = n
+
+    def delete_node(self, value):
+        cur = self.head
+        if cur.value == value:
+            self.head = self.head.next
+            cur.next = None
+            return cur
+        # general cases
+        prev = cur
+        cur.next = None
+
+        while cur is not None:
+            if cur.value == value:
+                prev.next = cur.next
+                cur.next = None
+                return cur
+            else:
+                prev = prev.next
+                cur = cur.next
+        return None
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
