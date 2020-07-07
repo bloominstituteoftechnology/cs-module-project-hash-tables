@@ -158,9 +158,28 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        return self.storage[i]
+        
+        # i = self.hash_index(key)
+        # return self.storage[i]
 
+        index = self.hash_index(key)
+
+        if self.storage[index]:
+            current_node = self.storage[index]
+
+            while current_node.key != key and current_node.next:
+                current_node = current_node.next
+
+            if not current_node.next:
+                return current_node.value
+
+            else:
+                return current_node.value
+
+        else:
+            return None
+
+                
 
     def resize(self, new_capacity):
         """
