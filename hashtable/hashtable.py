@@ -25,8 +25,8 @@ class HashTable:
         # capacity determines the size of the array
         self.capacity = capacity
         # Logic 
-        if capacity < MIN_CAPACITY:
-            return "Hash table can't have less than 8 slots"
+        if self.capacity < MIN_CAPACITY:
+            print ("Hash table can't have less than 8 slots")
         else:
             self.storage = [None] * capacity
         # a storage to store each value
@@ -73,7 +73,7 @@ class HashTable:
         # Your code here
         hash = 5381
         for c in key:
-            hash =(hash * 33) + ord(c)
+            hash =((hash << 5) + hash) + ord(c)
         return hash 
 
     def hash_index(self, key):
@@ -93,14 +93,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        index = self.hash_index(key)
-        if not self.storage[index]:
-            self.storage[index] = HashTableEntry(key, value)
-        else:
-            node = self.storage[index]
-            while node.next:
-                node = node.next
-            node.next = HashTableEntry(key, value)
+        # index = self.hash_index(key)
+        # if not self.storage[index]:
+        #     self.storage[index] = HashTableEntry(key, value)
+        # else:
+        #     node = self.storage[index]
+        #     while node.next:
+        #         node = node.next
+        #     node.next = HashTableEntry(key, value)
+         i = self.hash_index(key)
+        self.storage[i] = value
 
     def delete(self, key):
         """
@@ -112,12 +114,13 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        node = self.storage[index]
-        while node:
-            if node.key == key:
-                self.storage[index] = None
-            else:
-                return 'node not found'
+        # node = self.storage[index]
+        # while node:
+        #     if node.key == key:
+        #         self.storage[index] = None
+        #     else:
+        #         return 'node not found'
+        self.storage[index] = None
 
     def get(self, key):
         """
@@ -129,12 +132,13 @@ class HashTable:
         """
         # Your code here
          index = self.hash_index(key)
-        node = self.storage[index]
-        while node:
-            if node.key == key:
-                return node.value
-            else:
-                node = node.next
+        # node = self.storage[index]
+        # while node:
+        #     if node.key == key:
+        #         return node.value
+        #     else:
+        #         node = node.next
+        return self.storage[index]
 
 
     def resize(self, new_capacity):
