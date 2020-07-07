@@ -20,7 +20,7 @@ MIN_CAPACITY = 8
 class HashTable:
     """
     A hash table that with `capacity` buckets
-    that accepts string keys
+    accepts string keys
 
     Implement this.
     """
