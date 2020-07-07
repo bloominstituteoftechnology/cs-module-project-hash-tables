@@ -187,10 +187,15 @@ class HashTable:
         old_list = self.list
         self.list = [None] * self.capacity
         for item in old_list:
-            if item.next:
-                current = item
-                while True:
-                    if current.next: break
+            if not item:
+                continue
+            if not item.next:
+                self.put(item.key, item.value)
+                continue
+            current = item
+            while current.next:
+                self.put(current.key, current.value)
+                current = current.next
 
 
 
