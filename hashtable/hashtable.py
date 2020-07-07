@@ -41,7 +41,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        return len(self.capacity)
 
 
     def get_load_factor(self):
