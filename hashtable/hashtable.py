@@ -63,6 +63,7 @@ class HashTable:
         DJB2 hash, 32-bit
 
         https://stackoverflow.com/a/13809282/108022
+        https://stackoverflow.com/questions/10696223/reason-for-5381-number-in-djb-hash-function/13809282#13809282
 
         Implement this, and/or FNV-1.
         """
