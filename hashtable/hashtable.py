@@ -14,8 +14,7 @@ MIN_CAPACITY = 8
 
 class HashTable:
     """
-    A hash table that with `capacity` buckets
-    that accepts string keys
+    A hash table that with `capacity` buckets that accepts string keys.
     """
     def __init__(self, capacity):
         self.capacity = capacity
@@ -41,9 +40,7 @@ class HashTable:
 
     def fnv1(self, key):
         """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
+        FNV-1 Hash, 64-bit.
         """
         FNV_INIT = 0xcbf29ce484222325
         FNV_PRIME = 0x100000001b3
@@ -56,9 +53,7 @@ class HashTable:
 
     def djb2(self, key):
         """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
+        DJB2 hash, 32-bit.
         """
         hash = 5381
         for c in key:
@@ -74,8 +69,8 @@ class HashTable:
 
     def hash_index(self, key):
         """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
+        Take an arbitrary key and return a valid integer index within the
+        storage capacity of the hash table.
         """
         return self.fnv1(key) % self.capacity
         # return self.djb2(key) % self.capacity
@@ -84,23 +79,31 @@ class HashTable:
         """
         Store the value with the given key.
 
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
+        Hash collisions are handled with linked list chaining.
         """
         index = self.hash_index(key)
+
         if self.storage[index] is None:
+            # No collision. New key; insert value.
             self.storage[index] = HashTableEntry(key, value)
             self.num_items += 1
+
         else:
+            # Collision!
             node = self.storage[index]
+
             while node.key != key and node.next is not None:
                 node = node.next
+
             if node.key == key:
+                # Duplicate key. Update value.
                 node.value = value
             else:
+                # New key. Insert value.
                 node.next = HashTableEntry(key, value)
                 self.num_items += 1
+
+        # Housekeeping. Ensure load factor within designated limits.
         self.update_load_factor()
         if self.load_factor > 0.7:
             self.resize()
@@ -110,29 +113,37 @@ class HashTable:
         Remove the value stored with the given key.
 
         Print a warning if the key is not found.
-
-        Implement this.
         """
         index = self.hash_index(key)
+
         if self.storage[index] is None:
+            # No matching hash, nothing to delete.
+            print('Warning: Key not found.')
             return None
+
         else:
             node = self.storage[index]
             prev = None
             while node.key != key and node.next is not None:
                 prev = node
                 node = node.next
+
             if node.key == key:
+                # Key found. Delete.
                 if prev is None:
                     self.storage[index] = node.next
                 else:
                     prev.next = node.next
+
+                # Housekeeping. Monitor load factor and re-size if necessary.
                 self.num_items -= 1
                 self.update_load_factor()
                 if self.load_factor < 0.2 and self.capacity >= 16:
                     self.resize(self.capacity // 2)
                 return node.value
+
             else:
+                print('Warning: Key not found.')
                 return None
 
     def get(self, key):
@@ -140,19 +151,20 @@ class HashTable:
         Retrieve the value stored with the given key.
 
         Returns None if the key is not found.
-
-        Implement this.
         """
         index = self.hash_index(key)
         if self.storage[index] is None:
+            # Not found.
             return None
         else:
             node = self.storage[index]
             while node.key != key and node.next is not None:
                 node = node.next
             if node.key == key:
+                # Found!
                 return node.value
             else:
+                # Not found.
                 return None
 
     def resize(self, new_capacity=None):
