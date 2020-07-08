@@ -22,6 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
+        self.count = 0
+        self.list = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -35,6 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,6 +48,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -63,6 +68,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for val in key:
+            hash = ((hash << 5) + hash) + ord(val)
+        return hash
 
 
     def hash_index(self, key):
@@ -82,6 +91,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        if not self.list[index]:
+            self.list[index] = HashTableEntry(key, value)
+            self.count += 1
+            if self.count == self.capacity - 1:
+                self.resize(self.capacity * 2)
+        elif self.list[index].key == key:
+            self.list[index].value = value
+        else:
+            current = self.list[index]
+            while current.next:
+                current = current.next
+            if not current.next:
+                print("We in here boys")
+                current.next = HashTableEntry(key, value)
+                self.count += 1
+                if self.count == self.capacity - 1:
+                    self.resize(self.capacity * 2)
 
 
     def delete(self, key):
@@ -93,6 +120,35 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        n = self.list[index]
+        if not n:
+            print("Couldn't find value to remove")
+            return
+
+        if not n.next:
+            if n.key == key:
+                self.list[index] = None
+                self.count -= 1
+            else:
+                print("Couldn't find value to remove")
+        else:
+            current = n
+            previous = None
+            if current.key == key:
+                self.list[index] = current.next
+                self.count -= 1
+            else:
+                while current.next:
+                    previous = current
+                    current = current.next
+                    if current.key == key:
+                        previous.next = current.next
+                        self.count -= 1
+                        return
+                print("Couldn't find a value to remove")
+
+
 
 
     def get(self, key):
@@ -104,6 +160,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        if self.list[index]:
+            n = self.list[index]
+            if n.key == key:
+                return n.value
+            elif n.next:
+                current = n
+                while current.next:
+                    if current.key == key:
+                        return current.value
+                    current = current.next
+        print("Could not find value")
+        return None
 
 
     def resize(self, new_capacity):
@@ -114,6 +183,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.capacity = new_capacity
+        old_list = self.list
+        self.list = [None] * self.capacity
+        for item in old_list:
+            if not item:
+                continue
+            if not item.next:
+                self.put(item.key, item.value)
+                continue
+            current = item
+            while current.next:
+                self.put(current.key, current.value)
+                current = current.next
+
 
 
 
