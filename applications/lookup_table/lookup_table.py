@@ -29,9 +29,10 @@ def slowfun(x, y):
             cache[v] //= x + y
             cache[v] %= 982451653
         v = cache[v]
+
         return v
 
-    return slowfun_inner(x, y)
+    # return slowfun_inner(x, y)
 
 
 # Do not modify below this line!
