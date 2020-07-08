@@ -102,7 +102,7 @@ class HashTable:
             while cur is not None:
                 if cur.key == key:
                     prev.next = hte
-                    # do a delete
+                    self.delete(key)
                     # cur = hte
                     self.print_me("PUT (EARLY EXIT)", key)
                     return
@@ -154,7 +154,8 @@ class HashTable:
             if cur.key == key:
                 if cur.next is not None:
                     cur = cur.next
-                    cur.next = None
+                    self.array[index] = cur
+                    # cur.next = None
                 else:
                     self.array[index] = None
                 self.print_me("DELETE (EARLY EXIT) w/ KEY:", key)
