@@ -1,7 +1,12 @@
 def no_dups(s):
-    # Your code here
-
-
+    wordset = set()
+    wordlist = s.split()
+    str_out = ""
+    for word in wordlist:
+        if word not in wordset:
+            wordset.add(word)
+            str_out += word + " "
+    return str_out.strip()
 
 if __name__ == "__main__":
     print(no_dups(""))

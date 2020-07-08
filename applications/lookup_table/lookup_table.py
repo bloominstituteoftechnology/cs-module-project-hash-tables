@@ -1,5 +1,5 @@
 # Your code here
-
+import math
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -9,15 +9,22 @@ def slowfun_too_slow(x, y):
 
     return v
 
+# imagine this is in a class so I can store a lookup table
+# and not lose my data every time I run the function
+lookup_table = {}
+
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
-    # Your code here
+    if str(f'{x}, {y}') not in lookup_table:
+        lookup_table[str(f'{x}, {y}')] = slowfun_too_slow(x, y)
+        return lookup_table[str(f'{x}, {y}')]
+    else:
+        return lookup_table[str(f'{x}, {y}')]
 
-
-
+import random
 # Do not modify below this line!
 
 for i in range(50000):
