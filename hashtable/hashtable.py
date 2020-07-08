@@ -8,9 +8,50 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __str__(self):
+        return f'{self.value}'
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def find(self, value):
+        current = self.head
+
+        while current:
+            if current.value == value:
+                return current
+            current = current.next
+
+    def delete(self, value):
+        current = self.head
+
+        #if the item to delete is the head
+        if current.value == value:
+            self.head = current.next
+
+        prev = current
+        current = current.next
+
+        while current:
+            if current.value == value:
+                prev.next = current.next
+                return current
+            else:
+                prev = current
+                current = current.next
+        return None
+
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+
+#keeping track of how many items in hash table with global var
+items_in_hashtable = 0
 
 
 class HashTable:
@@ -40,7 +81,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        return len(self.hash_table)
 
     def get_load_factor(self):
         """
@@ -48,8 +89,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        global items_in_hashtable
+
+        load_factor = items_in_hashtable / self.get_num_slots()
+
+        return load_factor
 
 
     def fnv1(self, key):
@@ -92,11 +136,31 @@ class HashTable:
         """
 
         key_sum = self.hash_index(key)
+        entry = HashTableEntry(key, value)
 
-        #inserting the value at the given index
-        self.hash_table[key_sum] = value
+        global items_in_hashtable
 
-        return f'{value} inserted at {key_sum} in the hash table.'
+        #save this long name
+        hashed_key_spot = self.hash_table[key_sum]
+    
+        #if there is not a list set up at this value
+        if not hashed_key_spot:
+            #initiate list
+            hash_list = LinkedList()
+
+            #use list function to insert node
+            hash_list.insert_at_head(entry)
+
+            #save the list to the spot in the hash
+            #hashed_key_spot = hash_list
+            self.hash_table[self.hash_index(key)] = hash_list
+            items_in_hashtable += 1
+            return f'Inserted {self.hash_table[self.hash_index(key)].head.value}'
+
+        else:
+            self.hash_table[self.hash_index(key)].insert_at_head(entry)
+            items_in_hashtable += 1
+            return f'Inserted {value}'
 
     def delete(self, key):
         """
@@ -106,13 +170,27 @@ class HashTable:
 
         Implement this.
         """
-        key_hashed = self.hash_index(key)
+        global items_in_hashtable
+        key_hashed = self.hash_table[self.hash_index(key)]
 
-        deleted = self.hash_table[key_hashed]
+        deleted = key_hashed.head.value
 
-        self.hash_table[key_hashed] = None
+        # self.hash_table[key_hashed] = None
+        current = key_hashed.head
+        if key_hashed:
+            while current:
+                if current.key == key:
+                    key_hashed.delete(key_hashed.head.value)
+                    items_in_hashtable -= 1
+                    return f'{deleted} has been deleted from the hash table.'
+                current = current.next
+            return f'Could not find {key} in hash table.'
 
-        return f'{deleted} has been deleted from the hash table.'
+
+        #hash key
+        #go to hash
+        # check if key matches unhashed key
+        # if so, reweave pointers accordingly (if head, if not head)
 
     def get(self, key):
         """
@@ -123,7 +201,18 @@ class HashTable:
         Implement this.
         """
         #key_hashed = self.djb2(key) % self.capacity
-        return self.hash_table[self.hash_index(key)]
+
+        hashed_key = self.hash_table[self.hash_index(key)]
+        current = hashed_key.head
+
+        if hashed_key:
+            while current:
+                if current.key == key:
+                    return current.value
+                current = current.next
+            return f'Could not find {key} in hash table.'
+
+
 
     def resize(self, new_capacity):
         #this is technically for tomorrows work
@@ -134,8 +223,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        if self.get_load_factor() > 0.7:
 
+            new_hash = HashTable(self.capacity)
+
+            for i in self.hash_table:
+                current = i.head
+                while current:
+                    new_hash.put(i.head.key, i.head.value)
+                    current = current.next
+
+                new_hash.put(i.head.key, i.head.value)
+            return new_hash
+        return 'There is not yet a need to resize.'
 
 
 if __name__ == "__main__":
@@ -157,6 +257,7 @@ if __name__ == "__main__":
     print("")
 
     # Test storing beyond capacity
+    print('Storing all lines beyond capacity:')
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
@@ -173,10 +274,15 @@ if __name__ == "__main__":
 
     print("")
 
-    print('The hashtable:')
-    print(ht)
+    # print('The hashtable:')
+    # print(ht)
 
-    print('Get line five:', ht.get("line_5"))
+    # print('Get line five:', ht.get("line_5"))
 
-    print('Delete line five:', ht.delete("line_5"))
-    print(ht)
+    # print('Delete line five:', ht.delete("line_5"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
+        
+    print(ht.get_load_factor())
+
+    print(ht.get_num_slots())
