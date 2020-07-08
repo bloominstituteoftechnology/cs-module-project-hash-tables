@@ -1,6 +1,14 @@
+cache = {}
 def word_count(s):
     # Your code here
-
+    bad_chars = r'" : ; , . - + = / \ | [ ] { } ( ) * ^ &'
+    # replace bad characters
+    name = s.translate({ord(c): ' ' for c in bad_chars})
+    if name == '':
+        return {}
+    split = name.lower().split()
+    words = {i:split.count(i) for i in split}
+    return words
 
 
 if __name__ == "__main__":
