@@ -64,6 +64,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.items_stored / self.capacity
 
 
     def fnv1(self, key):
@@ -135,6 +136,8 @@ class HashTable:
 
         if self.get_load_factor() > 0.7:
             self.resize(self.capacity * 2)
+
+            return value
 
     def delete(self, key):
         """
@@ -267,7 +270,7 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
+    ht.resize(len(ht.capacity) * 2)
     new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
