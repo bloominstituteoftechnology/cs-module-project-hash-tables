@@ -1,5 +1,24 @@
+
+badchars = [":", ";", ",", ".", "-", "+", "=", "/", "\\", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&", "\""]
+
 def word_count(s):
-    # Your code here
+    dictionary = {}
+    res = s.lower()
+
+    for item in badchars:
+        res = res.replace(item, "")
+
+    res = res.split()
+
+    for item in res:
+        if item in dictionary:
+            x = dictionary[item]
+            x += 1
+            dictionary[item] = x
+        else:
+            dictionary[item] = 1
+
+    return dictionary
 
 
 
