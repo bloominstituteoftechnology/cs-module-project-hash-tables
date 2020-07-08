@@ -93,34 +93,32 @@ class HashTable:
         # create node with key, value
         hte = HashTableEntry(key, value)
 
-
-
         # check hash table for a linked list
         if self.array[index] is not None:
             cur = self.array[index]
-            temp = False
 
             prev = cur
 
             while cur is not None:
                 if cur.key == key:
                     prev.next = hte
+                    # do a delete
                     # cur = hte
-                    temp = True
+                    self.print_me("PUT (EARLY EXIT)", key)
+                    return
                 else:
                     prev = cur
                     cur = cur.next
-
-            if temp is False:
-                prev.next = hte
+            prev.next = hte
         else:
             self.array[index] = hte
 
 
-        self.print_me()
+        self.print_me("PUT", key)
 
-    def print_me(self):
+    def print_me(self, type, key):
         print("\nHASH TABLE\n----------")
+        print("Function Type: ", type, key)
         counter = 0
         for item in self.array:
             if item is not None:
@@ -128,11 +126,12 @@ class HashTable:
                 string = ""
                 while cur is not None:
                     string += cur.key
-                    string += ","
+                    string += ", "
                     string += cur.value
                     string += " -> "
                     # print(counter, ":", cur.key, cur.value)
                     cur = cur.next
+                string += "None"
                 print(counter, ":", string)
             else:
                 print(counter, ":", item)
@@ -147,7 +146,35 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.array[index] = None
+        # self.array[index] = None
+
+        if self.array[index] is not None:
+            cur = self.array[index]
+            # special case of deleting the head
+            if cur.key == key:
+                if cur.next is not None:
+                    cur = cur.next
+                    cur.next = None
+                else:
+                    self.array[index] = None
+                self.print_me("DELETE (EARLY EXIT) w/ KEY:", key)
+                return cur
+
+            prev = cur
+            cur = cur.next
+
+            while cur is not None:
+                if cur.key == key:
+                    prev.next = cur.next  # cuts out the node from the list
+                    cur.next = None
+                    return cur
+                else:
+                    prev = prev.next
+                    cur = cur.next
+            self.print_me("DELETE w/ KEY:", key)
+            return None
+        else:
+            return None
 
 
     def get(self, key):
@@ -158,8 +185,6 @@ class HashTable:
 
         Implement this.
         """
-
-
 
         index = self.hash_index(key)
 
