@@ -48,7 +48,7 @@ class HashTable:
         Return the load factor for this hash table.
         Implement this.
         """
-        Your code here
+        # Your code here
         load = self.data / self.capacity
         print(load)
         return load
@@ -97,25 +97,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # no collisions code
         # i = self.hash_index(key)
         # self.data[i] = value
 
-        # i = self.hash_index(key)
-        # if self.data[i] is None:
-        #     self.data[i] = LinkedList()
-        #     record = HashTableEntry(key, value)
-        #     self.data[i].insert_at_head(record)
-        #     # self.data[i].find(key)
-        # else:
-        #     record = HashTableEntry(key, value)
-        #     self.data[i].insert_at_head(record)
-            # self.data[i].find(key)
-            # if key:
-            #     self.data[i] = value
-            # else:
-            #     record = HashTableEntry(key, value)
-                # self.data.insert_at_head(record)
-
+        #  collisions resolution    
         i = self.hash_index(key)
         current_node = None
 
@@ -133,18 +120,8 @@ class HashTable:
             else:
                 current_node.next = HashTableEntry(key, value)
                 self.items_stored += 1
-
             
-        # list = [i]
-        # for x in list:
-        #     if x:
-        #         # print(i)
-        #         self.data[x] = value
-        #     else:
-        #         record = HashTableEntry(x, value)
-        #         self.data.insert(0, record)
-
-
+        
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -152,12 +129,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # no collisions code
         # i = self.hash_index(key)
         # if i:
         #     self.data[i] = None
         # else:
         #     print('key not found')
 
+        #  collisions resolution
         i = self.hash_index(key)
         previous_node = None
         current_node = self.data[i]
@@ -170,12 +150,10 @@ class HashTable:
             current_node = current_node.next
 
         if current_node.key == key and previous_node:
-            previous_node.next = current_node.next
-            # current_node.next = None          
+            previous_node.next = current_node.next                     
             deleted_value = current_node.value
-            current_node.value = None
-            print(deleted_value, 'else')
-            # return deleted_value
+            current_node.value = None            
+            return deleted_value
         elif current_node.key == key:
             self.data[i] = current_node.next
         else:
@@ -189,6 +167,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # no collisions code
+        # i = self.hash_index(key)
+        # if i:
+        #     return self.data[i]
+        # else:
+        #     return None
+
+        #  collisions resolution
         i = self.hash_index(key)
         current_node = self.data[i]
 
@@ -201,15 +188,7 @@ class HashTable:
         if current_node.key == key:
             return current_node.value            
         else:
-            return None
-
-        # i = self.hash_index(key)
-        # self.data[i] = LinkedList()
-        # self.data[i].find(key)
-        # if key:
-        #     return self.data[i]
-        # else:
-        #     return None            
+            return None                
 
         
     def resize(self, new_capacity):
@@ -218,7 +197,7 @@ class HashTable:
         rehashes all key/value pairs.
         Implement this.
         """
-        Your code here
+        # Your code here
         if len(self.data) > self.capacity:
             self.capacity = new_capacity
 
