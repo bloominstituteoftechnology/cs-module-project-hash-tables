@@ -10,19 +10,19 @@ with open("applications/markov/input.txt") as f:
 # Your code here
 def make_pairs(arr):
     for i in range(len(arr) - 1):
-        yield (arr[i], arr[i + 1])
+        yield (arr[i], arr[i + 1]) # loops through the entire array and gives the word and word following it.
 pairs = make_pairs(inp)
 word_dict = {}
-for word_1, word_2 in pairs:
+for word_1, word_2 in pairs: # adds the word pairs to the dictionary
     if word_1 in word_dict.keys():
         word_dict[word_1].append(word_2)
     else:
         word_dict[word_1] = [word_2]
 f_word = random.choice(inp)
 l_word = random.choice(inp)
-while f_word.islower() and f_word[0] != '"':
+while f_word.islower() and f_word[0] != '"': # stop word
     f_word = random.choice(inp)
-while l_word[-1] not in ['.', '!', '?']:
+while l_word[-1] not in ['.', '!', '?']: # these are stops words
     l_word = random.choice(inp)
 first = [f_word]
 last = [l_word]
