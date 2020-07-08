@@ -12,9 +12,7 @@ def word_count(s):
 
     for item in res:
         if item in dictionary:
-            x = dictionary[item]
-            x += 1
-            dictionary[item] = x
+            dictionary[item] += 1
         else:
             dictionary[item] = 1
 
