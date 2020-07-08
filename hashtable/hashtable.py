@@ -112,6 +112,12 @@ class HashTable:
         self.storage[slot].insert_at_head(entry)
         self.count += 1
 
+        # if self.get_load_factor() >= 0.7:
+        #     self.resize(len(self.storage)*2)
+
+        # if self.get_load_factor() <= 0.2:
+        #     self.resize(len(self.storage) // 2)
+
     def delete(self, key):
         """
         Remove the value stored with the given key.
