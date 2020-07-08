@@ -1,3 +1,5 @@
+from llist import LinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -16,7 +18,6 @@ class HashTable:
     """
     A hash table that with `capacity` buckets
     that accepts string keys
-
     Implement this.
     """
 
@@ -24,6 +25,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.data = [None] * capacity
+        self.items_stored = 0
 
 
     def get_num_slots(self):
@@ -33,7 +35,6 @@ class HashTable:
         but the number of slots in the main list.)
 
         One of the tests relies on this.
-
         Implement this.
         """
         # Your code here
@@ -42,23 +43,22 @@ class HashTable:
         return a
 
 
-    # def get_load_factor(self):
-    #     """
-    #     Return the load factor for this hash table.
-
-    #     Implement this.
-    #     """
-    #     # Your code here
-    #     pass
-
+    def get_load_factor(self):
+        """
+        Return the load factor for this hash table.
+        Implement this.
+        """
+        Your code here
+        load = self.data / self.capacity
+        print(load)
+        return load
+        
 
     # def fnv1(self, key):
     #     """
     #     FNV-1 Hash, 64-bit
-
     #     Implement this, and/or DJB2.
     #     """
-
     #     # Your code here
     #     pass
 
@@ -66,13 +66,13 @@ class HashTable:
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
-
         Implement this, and/or FNV-1.
         """
         # Your code here
         hash = 5381
         for x in key:
             hash = (( hash << 5) + hash) + ord(x)
+        # print(hash)
         return hash & 0xFFFFFFFF
 
         # key_bytes = key.encode()
@@ -93,54 +93,134 @@ class HashTable:
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        self.data[i] = value
+        # i = self.hash_index(key)
+        # self.data[i] = value
 
+        # i = self.hash_index(key)
+        # if self.data[i] is None:
+        #     self.data[i] = LinkedList()
+        #     record = HashTableEntry(key, value)
+        #     self.data[i].insert_at_head(record)
+        #     # self.data[i].find(key)
+        # else:
+        #     record = HashTableEntry(key, value)
+        #     self.data[i].insert_at_head(record)
+            # self.data[i].find(key)
+            # if key:
+            #     self.data[i] = value
+            # else:
+            #     record = HashTableEntry(key, value)
+                # self.data.insert_at_head(record)
+
+        i = self.hash_index(key)
+        current_node = None
+
+        if not self.data[i]:
+            self.data[i] = HashTableEntry(key, value)
+            self.items_stored += 1
+        else:
+            current_node = self.data[i]
+
+            while current_node.key != key and current_node.next:
+                current_node = current_node.next
+
+            if current_node.key == key:
+                current_node.value = value
+            else:
+                current_node.next = HashTableEntry(key, value)
+                self.items_stored += 1
+
+            
+        # list = [i]
+        # for x in list:
+        #     if x:
+        #         # print(i)
+        #         self.data[x] = value
+        #     else:
+        #         record = HashTableEntry(x, value)
+        #         self.data.insert(0, record)
 
 
     def delete(self, key):
         """
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        self.data[i] = None
+        # i = self.hash_index(key)
+        # if i:
+        #     self.data[i] = None
+        # else:
+        #     print('key not found')
 
+        i = self.hash_index(key)
+        previous_node = None
+        current_node = self.data[i]
+
+        if not current_node:
+            return None        
+                   
+        while current_node.key != key and current_node.next:
+            previous_node = current_node
+            current_node = current_node.next
+
+        if current_node.key == key and previous_node:
+            previous_node.next = current_node.next
+            # current_node.next = None          
+            deleted_value = current_node.value
+            current_node.value = None
+            print(deleted_value, 'else')
+            # return deleted_value
+        elif current_node.key == key:
+            self.data[i] = current_node.next
+        else:
+            return 'key not found'
+        
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Implement this.
         """
         # Your code here
         i = self.hash_index(key)
-        return self.data[i]
+        current_node = self.data[i]
+
+        if not current_node:
+            return None
+
+        while current_node.key != key and current_node.next:
+            current_node = current_node.next
+
+        if current_node.key == key:
+            return current_node.value            
+        else:
+            return None
+
+        # i = self.hash_index(key)
+        # self.data[i] = LinkedList()
+        # self.data[i].find(key)
+        # if key:
+        #     return self.data[i]
+        # else:
+        #     return None            
 
         
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
         Implement this.
         """
-        # Your code here
-        # if self.data[i] > self.capacity:
-        #     self.capacity = new_capacity
-
+        Your code here
+        if len(self.data) > self.capacity:
+            self.capacity = new_capacity
 
 
 if __name__ == "__main__":
