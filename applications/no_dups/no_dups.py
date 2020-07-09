@@ -1,5 +1,28 @@
 def no_dups(s):
-    # Your code here
+    
+    # words = set()
+    # result = ''
+  
+    # for word in s.split():
+       
+    #     if word not in words:
+    #         result += word + ' '
+         
+    #         words.add(word)
+    # return result
+    
+
+
+    cache = {}
+    formated_string =[]
+
+    for word in s.split():
+        if word not in cache:
+            cache[word] = 1
+            formated_string.append(word)
+    return " ".join(formated_string)
+  
+  
 
 
 
