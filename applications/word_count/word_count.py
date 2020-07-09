@@ -15,6 +15,26 @@ def word_count(s):
                 word = ''
     return count
 
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    print(word_count(""))
+    print(word_count("Hello"))
+    print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
+    print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
+
+
+
+
+    
     # s += ' '
     # word_dict = {}
     # cur_word = ''
@@ -28,12 +48,3 @@ def word_count(s):
     #     elif c.isalnum() or c == "'":
     #         cur_word += c.lower()
     # return word_dict
-
-
-
-
-if __name__ == "__main__":
-    print(word_count(""))
-    print(word_count("Hello"))
-    print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
-    print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
