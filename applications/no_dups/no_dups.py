@@ -16,7 +16,7 @@ def no_dups(s):
             #     return the new list
     return " ".join(new_list)
 
-    # thinking hashing, use dictionary, check word in list save it in dictionary
+    # thinking hashing, use dictionary, check word in list save it in
 
     # how do I do that?
     # there must be no extra spaces at the end of your returned string
