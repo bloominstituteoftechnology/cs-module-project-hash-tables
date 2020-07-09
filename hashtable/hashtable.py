@@ -152,10 +152,8 @@ class HashTable:
         existing_node = self.bucket_array[bucket_index]
         if existing_node:
             while existing_node:
-                # if existing_node.pair.key == key:
                 if existing_node.key == key:
                     return existing_node.value
-                    # return existing_node.pair.value
                 existing_node = existing_node.next_node
 
         return None
