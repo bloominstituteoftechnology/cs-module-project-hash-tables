@@ -19,7 +19,6 @@ def all_combos(numbers):
     numbers = list(numbers)
     plus = {}
     minus = {}
-    f_answers = {}
     for num in numbers:
         answer = f(num)
         f_answers[num] = answer
@@ -42,6 +41,8 @@ def all_solutions(numbers):
     numbers = list(numbers)
     plus = {}
     minus = {}
+    minus_list = []
+    count = 0
     for i in range(len(numbers)):
         for j in range(len(numbers)):
             plus_value = f(numbers[i]) + f(numbers[j])
@@ -50,12 +51,19 @@ def all_solutions(numbers):
                 
             minus_key = f(numbers[i]) - f(numbers[j])
             minus_value = (numbers[i], numbers[j])
-            minus[minus_key] = minus_value
+            if minus_key not in minus:
+                minus[minus_key] = [minus_value]
+            else:
+                minus[minus_key].append(minus_value)
 
-    for (key, value) in plus.items(): 
-        if minus.__contains__(value):
-            minus_tuple = minus[value]
-            print(f"f({key[0]}) + f({key[1]}) = f({minus_tuple[0]}) - f({minus_tuple[1]})  ***  {f(key[0])} + {f(key[1])} = {f(minus_tuple[0])} - {f(minus_tuple[1])}")     
+    for (key, value) in plus.items():
+            if value in minus:
+                for item in minus[value]:
+                    count += 1
+                    print(f"f({key[0]}) + f({key[1]}) = f({item[0]}) - f({item[1]})  ***  {f(key[0])} + {f(key[1])} = {f(item[0])} - {f(item[1])}")
+     
+    print(f"Solution Count: {count}")
+
 # all_combos(q)
 import time
 start_time = time.time()
