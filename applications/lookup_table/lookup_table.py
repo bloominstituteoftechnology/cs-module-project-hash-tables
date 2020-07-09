@@ -16,6 +16,7 @@ def slowfun(x, y):
 #     output, but completes quickly instead of taking ages to run.
 #     """
 #     # Your code here
+    # cache = {}
     # def slowfun_inner(x, y):
     v = math.pow(x,y)
     if v not in cache:
