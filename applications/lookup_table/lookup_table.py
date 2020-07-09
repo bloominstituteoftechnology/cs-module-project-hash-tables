@@ -20,6 +20,8 @@ def slowfun(x, y):
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
+
+    #do it the same way as expensive sequence to optimize
     # Your code here
     def slowfun_inner(x, y):
         v = math.pow(x, y)
@@ -32,7 +34,7 @@ def slowfun(x, y):
 
         return v
 
-    # return slowfun_inner(x, y)
+    return slowfun_inner(x, y)
 
 
 # Do not modify below this line!

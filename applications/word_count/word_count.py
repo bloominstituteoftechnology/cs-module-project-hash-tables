@@ -33,7 +33,7 @@ def word_count(s):
     # ignored = s.replace('"', " ")
     for w in words:
         for special in ignore:
-            w = w.replace(special, "")
+            w = w.replace(special, " ")
         if w != "":
             if w in counts:
                 counts[w] = counts[w] + 1
