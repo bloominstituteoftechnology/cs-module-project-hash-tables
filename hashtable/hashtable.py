@@ -25,7 +25,8 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.data = [None] * capacity
-        self.items_stored = 0
+        self.items = 0
+        # self.size = 0
 
 
     def get_num_slots(self):
@@ -48,11 +49,11 @@ class HashTable:
         Return the load factor for this hash table.
         Implement this.
         """
-        # Your code here
-        load = self.data / self.capacity
-        print(load)
-        return load
-        
+        # Your code here            
+
+        load = self.items / self.capacity
+        # print(load)
+        return load        
 
     # def fnv1(self, key):
     #     """
@@ -108,7 +109,7 @@ class HashTable:
 
         if not self.data[i]:
             self.data[i] = HashTableEntry(key, value)
-            self.items_stored += 1
+            self.items += 1
         else:
             current_node = self.data[i]
 
@@ -119,7 +120,10 @@ class HashTable:
                 current_node.value = value
             else:
                 current_node.next = HashTableEntry(key, value)
-                self.items_stored += 1
+                self.items += 1
+        l = self.get_load_factor()
+        if l > 0.7:
+            self.resize(self.capacity * 2)
             
         
     def delete(self, key):
@@ -198,8 +202,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if len(self.data) > self.capacity:
-            self.capacity = new_capacity
+        # i = self.hash_index(key)
+        # new_hashtable = HashTable(capacity=new_capacity)
+        old_storage = self.data
+        new_storage = [None] * new_capacity
+        self.data = new_storage
+        self.capacity = new_capacity
+        self.items = 0
+
+        for node in old_storage:
+            current = node
+            # print(current.key)
+            while current is not None:
+                self.put(node.key, node.value)
+                current = current.next        
+
+        # if len(self.data) > self.capacity:
+        #     self.capacity = new_capacity
 
 
 if __name__ == "__main__":
