@@ -13,3 +13,17 @@ def f(x):
 
 # Your code here
 
+
+#scott's pseudocode
+left = {}
+
+right = {}
+
+#loop through "q" for left side(+)
+# run through f()
+# add to left dict
+
+#f(1) + f(1) = f(12) - f(7) 
+#compare let and right values
+answer = []
+print(answer)
