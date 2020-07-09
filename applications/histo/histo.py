@@ -10,7 +10,7 @@ for word in word_split: # check word and see if it is in cache.
         cache[word] = '#'
     else:
         cache[word] += '#'
-
+  
 items = list(cache.items())
 
 items.sort(key=lambda x: x[1], reverse=True) # sort frequency descending
