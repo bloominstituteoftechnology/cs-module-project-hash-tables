@@ -1,12 +1,13 @@
 def word_count(s):
     # Your code here
     count = {}
-    s.lower()
+    str = s.lower()
+    print(str)
     word = ''
-    for i in s:
+    for i in str:
         if i.isalnum():
             word += (i)
-        elif i == " ":
+        elif i == " " or i == ".":
             if word in count:
                 count[word] += 1
                 word = ''
@@ -23,11 +24,9 @@ def word_count(s):
 
 
 
-
-
 if __name__ == "__main__":
     print(word_count(""))
-    print(word_count("Hello"))
+    print(word_count("Hello    hello"))
     print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
     print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
 
