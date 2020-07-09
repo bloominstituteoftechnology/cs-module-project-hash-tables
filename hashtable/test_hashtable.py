@@ -131,7 +131,8 @@ class TestHashTable(unittest.TestCase):
         ht.delete("key-0")
 
         return_value = ht.get("key-0")
-        self.assertTrue(return_value is None)
+       
+        self.assertTrue(return_value == None)
         return_value = ht.get("key-1")
         self.assertTrue(return_value is None)
         return_value = ht.get("key-2")
