@@ -1,6 +1,14 @@
 def word_count(s):
-    # Your code here
-
+    cache = {}
+    s = s.lower()
+    for i in s:
+        if i >= 'a' and i <='z':
+            if i not in cache:
+                cache[i] = 1
+            else:
+                cache[i] += 1
+    for i in cache:
+        print(f'Letter: {i[0]}, Count: {cache[i]}')
 
 
 if __name__ == "__main__":

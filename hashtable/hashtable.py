@@ -81,7 +81,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.hash_table)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -90,6 +90,9 @@ class HashTable:
         Implement this.
         """
         global items_in_hashtable
+
+        print('items:', items_in_hashtable)
+        print('slots:', self.get_num_slots())
 
         load_factor = items_in_hashtable / self.get_num_slots()
 
@@ -150,6 +153,7 @@ class HashTable:
 
             #use list function to insert node
             hash_list.insert_at_head(entry)
+            print('did we make it here folks')
 
             #save the list to the spot in the hash
             #hashed_key_spot = hash_list
@@ -159,8 +163,10 @@ class HashTable:
 
         else:
             self.hash_table[self.hash_index(key)].insert_at_head(entry)
+            print('and here?')
             items_in_hashtable += 1
             return f'Inserted {value}'
+
 
     def delete(self, key):
         """
@@ -222,19 +228,24 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        global items_in_hashtable
         if self.get_load_factor() > 0.7:
+            self.capacity = new_capacity
 
-            new_hash = HashTable(self.capacity)
+            temp = self.hash_table
 
-            for i in self.hash_table:
+            #instead of making a whole new hash table object
+            #just make a list
+            new_hash = [None] * self.capacity
+            self.hash_table = new_hash
+            items_in_hashtable = 0
+            for i in temp:
                 current = i.head
                 while current:
-                    new_hash.put(i.head.key, i.head.value)
+                    self.put(current.key, current.value)
                     current = current.next
 
-                new_hash.put(i.head.key, i.head.value)
-            return new_hash
+            return self.hash_table
         return 'There is not yet a need to resize.'
 
 
