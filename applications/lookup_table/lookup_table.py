@@ -1,4 +1,6 @@
-# Your code here
+# QUESTIONS FOR ANDREW
+# Q: Why doesn't the cache work inside the outer function like in class?
+
 import math
 import random
 
