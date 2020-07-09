@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -21,8 +22,10 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = max(MIN_CAPACITY, capacity)
+        self.indices = [None] * self.capacity
+        self.size = 0
+        self.occupied_indices = 0
 
     def get_num_slots(self):
         """
@@ -34,8 +37,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return len(self.indices)
 
     def get_load_factor(self):
         """
@@ -43,8 +45,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return self.occupied_indices / self.capacity
 
     def fnv1(self, key):
         """
@@ -55,22 +56,23 @@ class HashTable:
 
         # Your code here
 
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash = 5381
+        for char in key:
+            hash = (hash * 33) + ord(char)
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,8 +83,34 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # Compute index of key
+        index = self.hash_index(key)
+        # Go to the node corresponding to the hash
+        node = self.indices[index]
+        # Increment size
+        self.size += 1
+        # If bucket is empty:
+        if node is None:
+            # Create node, add it, return
+            self.indices[index] = HashTableEntry(key, value)
+            # Increment count of non-null indices
+            self.occupied_indices += 1
+            # check load factor, if above 0.7, resize table to double it's current size
+            if self.get_load_factor() >= 0.7:
+                self.resize(self.capacity * 2)
+            return
+        # Iterate to the end of the linked list at provided index
+        prev = node
+        while node is not None:
+            # If key exists, update value, return
+            if key == node.key:
+                node.value = value
+                return
+            else:
+                prev = node
+                node = node.next
+        # Add a new node at the end of the list with provided key/value
+        prev.next = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -92,8 +120,29 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # Compute hash
+        index = self.hash_index(key)
+        node = self.indices[index]
+        prev = None
+        # Iterate to the requested node
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+        # Now, node is either the requested node or none
+        if node is None:
+            # Key not found
+            return None
+        else:
+            # The key was found.
+            self.size -= 1
+            result = node.value
+            # Delete this element in linked list
+            if prev is None:
+                self.indices[index] = node.next  # May be None, or the next match
+            else:
+                prev.next = prev.next.next  # LinkedList delete by skipping over
+            # Return the deleted result
+            return result
 
     def get(self, key):
         """
@@ -103,8 +152,20 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # Compute hash
+        index = self.hash_index(key)
+        # Go to first node in list at bucket
+        node = self.indices[index]
+        # Traverse the linked list at this node
+        while node is not None and node.key != key:
+            node = node.next
+        # Now, node is the requested key/value pair or None
+        if node is None:
+            # Not found
+            return None
+        else:
+            # Found - return the data value
+            return node.value
 
     def resize(self, new_capacity):
         """
@@ -113,8 +174,24 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # Store a copy of the current table
+        curr_table = self.indices
+        # Update capacity
+        self.capacity = new_capacity
+        # Create a new table at the new capacity
+        self.indices = [None] * self.capacity
+        #  Traverse the current table
+        for i, _ in enumerate(curr_table):
+            # Get the node at the current index
+            node = curr_table[i]
+            # If the node is not None
+            if node is not None:
+                # Traverse the linked list, hashing the values at each node into the new table
+                curr_node = node
+                while curr_node is not None:
+                    self.put(curr_node.key, curr_node.value)
+                    curr_node = curr_node.next
+        return
 
 
 if __name__ == "__main__":
@@ -147,6 +224,7 @@ if __name__ == "__main__":
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
+    ht.put("line_12", "I changed the last line")
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
