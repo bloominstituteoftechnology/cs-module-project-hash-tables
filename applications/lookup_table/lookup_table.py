@@ -2,6 +2,7 @@ import math
 import random
 
 
+# Initialize dictionary to cache slowfun values.
 lookup = {}
 
 
@@ -18,6 +19,8 @@ def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
+
+    Use cached output if available; otherwise calculate, cache, and return.
     """
     global lookup
     if (x, y) in lookup:

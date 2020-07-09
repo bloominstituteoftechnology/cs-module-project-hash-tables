@@ -1,7 +1,12 @@
+# Dictionary for caching previously calculated values.
 cache = {}
 
 
 def expensive_seq(x, y, z):
+    """
+    Return the cached value if available; otherwise calculate output per the
+    sequence definition and cache it, then return.
+    """
     global cache
 
     if x <= 0:
