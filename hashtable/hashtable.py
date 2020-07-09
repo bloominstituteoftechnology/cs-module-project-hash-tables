@@ -37,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity_entered
+        return len(self.capacity)
 
     def get_load_factor(self):
         """
@@ -110,7 +110,7 @@ class HashTable:
         
         self.capacity[new_key] = value
 
-        print(self.capacity)
+        # ##  print(self.capacity)
 
 
 
@@ -153,6 +153,7 @@ class HashTable:
             # print("hit", self.capacity[new_key])
             return self.capacity[new_key]
         else:
+            # print("None")
             return None
         
 
@@ -166,26 +167,26 @@ class HashTable:
         # Your code here
         replacement = []
         
-        if new_capacity >= len(self.capacity):
-          addToList = [None] * (new_capacity - len(self.capacity))
+        if new_capacity >= self.capacity_entered:
+          addToList = [None] * (new_capacity - self.capacity_entered)
         
           for i in addToList:
             self.capacity.append(i)
-# REHASHING (issue with get? entering positive if even when value is None)
-        #   for i in range(1, len(self.capacity)):
-            
-        #     value = self.get(f"line_{i}")
-          
-        #     print("value", value)
-        #     self.put(f"line_{i}", value)
+# REHASHING 
+          for i in range(1, len(self.capacity)):
+            value = self.get(f"line_{i}")
+
+           # print("value", value)
+
+            self.put(f"line_{i}", value)
           replacement = self.capacity
           return replacement
         else:
           replacement = self.capacity[:new_capacity]
           #REHASHING
-        #   for i in range(1, len(self.capacity)):
-        #     value = self.get(f"line_{i}")
-        #     self.put(f"line_{i}", value)
+          for i in range(1, len(self.capacity)):
+            value = self.get(f"line_{i}")
+            self.put(f"line_{i}", value)
         #   return replacement
 
         self.capacity = replacement
@@ -224,5 +225,6 @@ if __name__ == "__main__":
     # Test if data intact after resizing
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
+        # #  print("length of array", len(ht.capacity))
 
     print("")
