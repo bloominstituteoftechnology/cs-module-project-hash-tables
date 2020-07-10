@@ -58,7 +58,6 @@ class HashTable:
         hash = 5381
         for c in key:
             hash = (hash << 5) + hash + ord(c)
-            hash = hash & 0xFFFFFFFF
         return hash
 
     def update_load_factor(self):
@@ -72,8 +71,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index within the
         storage capacity of the hash table.
         """
-        return self.fnv1(key) % self.capacity
-        # return self.djb2(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
+        return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
