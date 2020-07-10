@@ -21,8 +21,14 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
 
+        if capacity > MIN_CAPACITY:
+            self.capacity = capacity
+        else:
+            self.capacity = MIN_CAPACITY
+
+        self.hash = [None] * capacity
+        # self.hash = [[] for i in range(capacity)]
 
     def get_num_slots(self):
         """
@@ -34,7 +40,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # print('The Capacity of this HashTable is:', self.capacity)
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +50,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        keycount = 0
+        for i in self.hash:
+            if i != None:
+                keycount += 1
+        
+        loadfactor = keycount/self.capacity
+
+        return loadfactor
 
 
     def fnv1(self, key):
@@ -62,7 +76,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381 # this is one of the magic dfb2 numbers
+        for c in key:
+            hash = ((hash << 5) + hash) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
@@ -81,7 +98,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        self.hash[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -92,7 +111,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        self.hash[index] = None
 
 
     def get(self, key):
@@ -103,8 +124,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        hashitem = self.hash[index]
 
+        return hashitem.value
+                
 
     def resize(self, new_capacity):
         """
