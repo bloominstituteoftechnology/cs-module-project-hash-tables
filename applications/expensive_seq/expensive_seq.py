@@ -1,9 +1,18 @@
 # Your code here
 
-
 def expensive_seq(x, y, z):
-    # Your code here
+    cache = {}
 
+    def exps(x, y, z):
+        if x <= 0:
+            return y + z
+        
+        if (x, y, z) not in cache:
+            cache[(x, y, z)] = exps(x-1,y+1,z) + exps(x-2,y+2,z*2) + exps(x-3,y+3,z*3)
+
+        return cache[(x, y, z)]
+
+    return exps(x, y, z)
 
 
 if __name__ == "__main__":
