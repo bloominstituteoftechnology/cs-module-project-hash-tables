@@ -118,16 +118,30 @@ class HashTable:
         index = self.hash_index(key)
         firstPosition = True 
 
+        priorPos = None
         pos = self.table[index]
         while pos != None:
             if pos.key == key:
-                pos = None
                 if firstPosition:
-                    self.table[index] = None
+                    if pos.next == None:
+                        self.table[index] = None
+                        pos = None
+                    else: 
+                        self.table[index] = pos.next
+                        pos = None
+                else: 
+                    if pos.next == None:
+                        priorPos.next = None
+                        pos = None
+                    else: 
+                        priorPos.next = pos.next
+                        pos = None
                 return
+            
             firstPosition = False
             if pos.next == None:
                 return 
+            priorPos = pos
             pos = pos.next 
 
         print(f"Warning: Value not found at key: {index}")
