@@ -1,6 +1,11 @@
-import re
 def word_count(s):
-    s = re.sub('[\"\:\;\,\.\-\+\=\/\\\|[\]\{\}\(\)\*\^\&]', '', s)
+    # print(s)
+    symlist = ['"',':',';',',','.','-','+','=','/','|',
+              '\\','[',']','{','}','(',')','*','&','^']
+    for symbol in symlist:
+        s = s.replace(symbol, '')
+    # print(s)
+
     wordlist = s.lower().split()
     worddict = {}
     for word in wordlist:
