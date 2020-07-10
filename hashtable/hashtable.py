@@ -137,7 +137,7 @@ class HashTable:
                 # Housekeeping. Monitor load factor and re-size if necessary.
                 self.num_items -= 1
                 self.update_load_factor()
-                if self.load_factor < 0.2 and self.capacity >= 16:
+                if self.load_factor < 0.2 and self.capacity >= MIN_CAPACITY:
                     self.resize(self.capacity // 2)
                 return node.value
 
