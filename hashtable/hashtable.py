@@ -172,7 +172,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        old_table = self.table
+        old_capacity = self.capacity
+
+        self.table = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for index in range(old_capacity):
+            pos = old_table[index]
+            while pos != None:
+                self.put(pos.key, pos.value)
+                pos = pos.next 
 
 
 
