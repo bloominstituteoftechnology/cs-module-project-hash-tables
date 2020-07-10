@@ -185,7 +185,6 @@ class HashTable:
                 pos = pos.next 
 
 
-
 if __name__ == "__main__":
     ht = HashTable(8)
 
