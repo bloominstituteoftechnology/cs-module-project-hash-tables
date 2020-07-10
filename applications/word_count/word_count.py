@@ -1,6 +1,19 @@
 def word_count(s):
-    # Your code here
+    # print(s)
+    symlist = ['"',':',';',',','.','-','+','=','/','|',
+              '\\','[',']','{','}','(',')','*','&','^']
+    for symbol in symlist:
+        s = s.replace(symbol, '')
+    # print(s)
 
+    wordlist = s.lower().split()
+    worddict = {}
+    for word in wordlist:
+        if word in worddict:
+            worddict[word] += 1
+        else:
+            worddict[word] = 1
+    return worddict
 
 
 if __name__ == "__main__":
