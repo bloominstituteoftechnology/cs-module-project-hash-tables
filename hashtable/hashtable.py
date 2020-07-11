@@ -10,8 +10,6 @@ class HashTableEntry:
     def __str__(self):
         return self.value
         
-        
-
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -111,7 +109,7 @@ class HashTable:
                 existing_node = existing_node.next
             # if we get this far, we didn't find an existing key
             # so just append the new node to the end of the bucket
-            last_node.next_node = new_node
+            last_node.next = new_node
         else:
             self.bucket_array[bucket_index] = new_node
 
@@ -132,7 +130,7 @@ class HashTable:
             while existing_node:
                 if existing_node.key == key:
                     if last_node:
-                        last_node.next_node = existing_node.next
+                        last_node.next = existing_node.next
                     else:
                         self.bucket_array[bucket_index] = existing_node.next
                 last_node = existing_node
@@ -154,7 +152,7 @@ class HashTable:
             while existing_node:
                 if existing_node.key == key:
                     return existing_node.value
-                existing_node = existing_node.next_node
+                existing_node = existing_node.next
 
         return None
 
