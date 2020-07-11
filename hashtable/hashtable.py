@@ -113,7 +113,8 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        self.hash[index] = None
+        if self.hash[index] != None:
+            self.hash[index] = None
 
 
     def get(self, key):
@@ -126,8 +127,12 @@ class HashTable:
         """
         index = self.hash_index(key)
         hashitem = self.hash[index]
-
-        return hashitem.value
+        
+        if hashitem != None:
+            return hashitem.value
+        
+        if hashitem == None:
+            return None
                 
 
     def resize(self, new_capacity):
@@ -147,7 +152,7 @@ if __name__ == "__main__":
     ht.put("line_1", "'Twas brillig, and the slithy toves")
     ht.put("line_2", "Did gyre and gimble in the wabe:")
     ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_4", "And the language:english$mome raths outgrabe.")
     ht.put("line_5", '"Beware the Jabberwock, my son!')
     ht.put("line_6", "The jaws that bite, the claws that catch!")
     ht.put("line_7", "Beware the Jubjub bird, and shun")
