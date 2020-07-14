@@ -26,6 +26,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.bucket = [None for i in range(capacity)]
+        self.size = size
 
 
     def get_num_slots(self):
@@ -46,8 +47,9 @@ class HashTable:
         Return the load factor for this hash table.
 
         Implement this.
+        loadFactor = # of items in array/capacity
         """
-        # Your code here
+       loadFactor = self.size/self.capacity
 
 
     def fnv1(self, key):
@@ -95,6 +97,7 @@ class HashTable:
         
         new_value = HashTableEntry(key, value)
         existing_value = self.bucket[item_index]
+        self.size += 1
         
         if existing_value:
             last_value = None
@@ -124,8 +127,8 @@ class HashTable:
         item_index = key_index % self.capacity
         
         existing_value = self.bucket[item_index]
-        
-                
+        self.size -= 1
+                        
         if existing_value:
             last_value = None
             while existing_value:
