@@ -2,14 +2,103 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-    def __init__(self, key, value):
+    def __init__(self, key, value, next=None):
         self.key = key
         self.value = value
-        self.next = None
+        self.next = next
 
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+
+class LinkedHash:
+    
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def tail_add(self, key, value):
+        new_entry = HashTableEntry(key, value, None)
+        
+        # There is a tail
+        if self.tail:
+            self.tail.next = new_entry
+
+        # There in No tail
+        else: 
+            self.head = new_entry
+        
+        # In either case
+        self.tail = new_entry
+    
+    def search(self, key):
+        if not self.head:
+            return None
+        
+        else:
+            checkingnode = self.head
+
+            while checkingnode is not None:
+                if checkingnode.key == key:
+                    return checkingnode
+
+                else:
+                    pass
+                checkingnode = checkingnode.next
+
+            return None
+    
+    def delete(self, key):
+        checkingnode = self.head
+
+        # Empty list case
+        if checkingnode is None:
+            return None
+        
+        # List with one object case
+        elif self.head == self.tail:
+            delkey = self.head.key
+            self.head = None
+            self.tail = None
+            return delkey
+        
+        # Deleting head case
+        elif self.head.key == key:
+            delkey = self.head.key
+            next_head = self.head.next
+            self.head = next_head
+            return delkey
+        
+        # Deleting tail case
+        elif self.tail.key == key:
+            delkey = self.tail.key
+
+            while checkingnode.next != self.tail:
+                checkingnode = checkingnode.next
+            
+            delkey = self.tail.key
+            self.tail = checkingnode
+            return delkey
+        
+        # Deleting anything else
+        else:
+            prev = checkingnode
+            checkingnode = checkingnode.next
+
+            while checkingnode is not None:
+                if checkingnode.key == key:
+                    prev.next = checkingnode.next_head
+                    return checkingnode
+                
+                else:
+                    prev = checkingnode
+                    checkingnode = checkingnode.next
+            
+            return None
+
+        
+            
+
 
 
 class HashTable:
@@ -27,8 +116,8 @@ class HashTable:
         else:
             self.capacity = MIN_CAPACITY
 
-        self.hash = [None] * capacity
-        # self.hash = [[] for i in range(capacity)]
+        # self.hash = LinkedHash() * capacity
+        self.hash = [LinkedHash() for i in range(capacity)]
 
     def get_num_slots(self):
         """
@@ -81,7 +170,6 @@ class HashTable:
             hash = ((hash << 5) + hash) + ord(c)
         return hash
 
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
@@ -99,22 +187,14 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
+        hashlist = self.hash[index]
+        checkobject = hashlist.search(key)
 
-        self.hash[index] = HashTableEntry(key, value)
-
-
-    def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        index = self.hash_index(key)
-
-        if self.hash[index] != None:
-            self.hash[index] = None
+        if checkobject == None:
+            self.hash[index].tail_add(key, value)
+        
+        else:
+            checkobject.value = value
 
 
     def get(self, key):
@@ -126,14 +206,30 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        hashitem = self.hash[index]
+        hashlist = self.hash[index]
         
-        if hashitem != None:
-            return hashitem.value
-        
-        if hashitem == None:
+        getobject = hashlist.search(key)
+
+        if getobject == None:
             return None
-                
+        
+        else:
+            return getobject.value
+
+
+    def delete(self, key):
+        """
+        Remove the value stored with the given key.
+
+        Print a warning if the key is not found.
+
+        Implement this.
+        """
+        index = self.hash_index(key)
+        hashlist = self.hash[index]
+
+        hashlist.delete(key)
+
 
     def resize(self, new_capacity):
         """
