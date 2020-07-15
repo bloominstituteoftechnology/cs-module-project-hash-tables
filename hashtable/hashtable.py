@@ -26,8 +26,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.bucket = [None for i in range(capacity)]
-        self.size = size
-
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -39,17 +38,19 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.bucket)
 
 
     def get_load_factor(self):
+        
         """
         Return the load factor for this hash table.
 
         Implement this.
         loadFactor = # of items in array/capacity
         """
-       loadFactor = self.size/self.capacity
+        loadFactor = self.size/self.capacity
+        return loadFactor
 
 
     def fnv1(self, key):
@@ -98,19 +99,24 @@ class HashTable:
         new_value = HashTableEntry(key, value)
         existing_value = self.bucket[item_index]
         self.size += 1
-        
+               
         if existing_value:
             last_value = None
             while existing_value:
                 if existing_value.key == key:
                     existing_value.value = value
+                    if self.get_load_factor() >= 0.7:
+                        self.resize(self.capacity * 2)
+                    if self.get_load_factor() <= 0.2:
+                        self.resize(self.capacity / 2)
                     return
                 last_value = existing_value
-                existing_value = new_value.next
-            
+                existing_value = new_value.next       
+         
             last_value.next = new_value
         else:        
             self.bucket[item_index] = new_value
+        
 
 
 
@@ -127,7 +133,7 @@ class HashTable:
         item_index = key_index % self.capacity
         
         existing_value = self.bucket[item_index]
-        self.size -= 1
+        
                         
         if existing_value:
             last_value = None
@@ -138,7 +144,8 @@ class HashTable:
                     else:
                         self.bucket[item_index] = existing_value.next
                 last_value = existing_value
-                existing_value = existing_value.next        
+                existing_value = existing_value.next   
+            self.size -= 1     
 
 
     def get(self, key):
@@ -172,6 +179,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        current_table = self.bucket
+        self.capacity = new_capacity
+        self.bucket = [None] * new_capacity        
+        
+        for node in current_table:
+            while node is not None:
+                self.put(node.key, node.value)
+                node = node.next
+            
 
 
 
