@@ -118,6 +118,7 @@ class HashTable:
 
         # self.hash = LinkedHash() * capacity
         self.hash = [LinkedHash() for i in range(capacity)]
+        self.obj_counter = 0
 
     def get_num_slots(self):
         """
@@ -127,7 +128,7 @@ class HashTable:
 
         One of the tests relies on this.
 
-        Implement this.
+        Implement this.# Your code here
         """
         # print('The Capacity of this HashTable is:', self.capacity)
         return self.capacity
@@ -139,12 +140,7 @@ class HashTable:
 
         Implement this.
         """
-        keycount = 0
-        for i in self.hash:
-            if i != None:
-                keycount += 1
-        
-        loadfactor = keycount/self.capacity
+        loadfactor = self.obj_counter/self.capacity
 
         return loadfactor
 
@@ -182,7 +178,7 @@ class HashTable:
         """
         Store the value with the given key.
 
-        Hash collisions should be handled with Linked List Chaining.
+        Hash # Your code herecollisions should be handled with Linked List Chaining.
 
         Implement this.
         """
@@ -190,10 +186,11 @@ class HashTable:
         hashlist = self.hash[index]
         checkobject = hashlist.search(key)
 
-        if checkobject == None:
+        if checkobject == None: # new key
             self.hash[index].tail_add(key, value)
+            self.obj_counter +=1
         
-        else:
+        else: # overwrite
             checkobject.value = value
 
 
@@ -207,7 +204,6 @@ class HashTable:
         """
         index = self.hash_index(key)
         hashlist = self.hash[index]
-        
         getobject = hashlist.search(key)
 
         if getobject == None:
@@ -227,7 +223,6 @@ class HashTable:
         """
         index = self.hash_index(key)
         hashlist = self.hash[index]
-
         hashlist.delete(key)
 
 
@@ -238,14 +233,23 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # if self.get_load_factor() > 0.7:
+            # newcap = self.capacity * 2
+        oldhash = self.hash.copy()
+        self.__init__(new_capacity)
 
+        for i in oldhash:
+            checkingnode = i.head
+            while checkingnode is not None:
+                self.put(checkingnode.key, checkingnode.value)
+                checkingnode = checkingnode.next
+            
 
 
 if __name__ == "__main__":
     ht = HashTable(8)
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
+    ht.put("line_1", "'Twas brillig, and the slithy toves")# Your code here
     ht.put("line_2", "Did gyre and gimble in the wabe:")
     ht.put("line_3", "All mimsy were the borogoves,")
     ht.put("line_4", "And the language:english$mome raths outgrabe.")
