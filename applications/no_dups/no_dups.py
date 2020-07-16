@@ -1,6 +1,14 @@
-def no_dups(s):
-    # Your code here
+from collections import Counter
 
+def no_dups(s):
+    words = s.split()
+    count = {}
+
+    count = Counter(words)
+    count = list(count)
+    count = ' '.join(count)
+
+    return count
 
 
 if __name__ == "__main__":
