@@ -7,7 +7,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-
+    def __str__(self):
+        return "'{}': '{}'".format(self.key, self.value)
+    
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -22,7 +24,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.bucket = [None for i in range(capacity)]
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -34,16 +38,19 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.bucket)
 
 
     def get_load_factor(self):
+        
         """
         Return the load factor for this hash table.
 
         Implement this.
+        loadFactor = # of items in array/capacity
         """
-        # Your code here
+        loadFactor = self.size/self.capacity
+        return loadFactor
 
 
     def fnv1(self, key):
@@ -63,6 +70,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
@@ -82,6 +93,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        key_index = self.djb2(key)
+        item_index = key_index % self.capacity
+        
+        new_value = HashTableEntry(key, value)
+        existing_value = self.bucket[item_index]
+        self.size += 1
+               
+        if existing_value:
+            last_value = None
+            while existing_value:
+                if existing_value.key == key:
+                    existing_value.value = value
+                    if self.get_load_factor() >= 0.7:
+                        self.resize(self.capacity * 2)
+                    if self.get_load_factor() <= 0.2:
+                        self.resize(self.capacity / 2)
+                    return
+                last_value = existing_value
+                existing_value = new_value.next       
+         
+            last_value.next = new_value
+        else:        
+            self.bucket[item_index] = new_value
+        
+
 
 
     def delete(self, key):
@@ -93,6 +129,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        key_index = self.djb2(key)
+        item_index = key_index % self.capacity
+        
+        existing_value = self.bucket[item_index]
+        
+                        
+        if existing_value:
+            last_value = None
+            while existing_value:
+                if existing_value.key == key:
+                    if last_value:
+                        last_value.next = existing_value.next
+                    else:
+                        self.bucket[item_index] = existing_value.next
+                last_value = existing_value
+                existing_value = existing_value.next   
+            self.size -= 1     
 
 
     def get(self, key):
@@ -104,7 +157,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        key_index = self.djb2(key)
+        item_index = key_index % self.capacity
+        
+        existing_value = self.bucket[item_index]
+        
+        if existing_value:
+            while existing_value:
+                if existing_value.key == key:
+                    return existing_value.value
+                existing_value = existing_value.next
+                
+        
+        return None
 
     def resize(self, new_capacity):
         """
@@ -114,6 +179,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        current_table = self.bucket
+        self.capacity = new_capacity
+        self.bucket = [None] * new_capacity        
+        
+        for node in current_table:
+            while node is not None:
+                self.put(node.key, node.value)
+                node = node.next
+            
 
 
 

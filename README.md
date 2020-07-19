@@ -10,7 +10,7 @@ Task: Implement a basic hash table without collision resolution.
 
    Recommend either of:
 
-   * DJB2
+   * DJB2 (Done 07/08/2020 JAHL)
    * FNV-1 (64-bit)
 
    You are allowed to Google for these hashing functions and implement
