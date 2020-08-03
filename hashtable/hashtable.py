@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -16,13 +17,15 @@ class HashTable:
     """
     A hash table that with `capacity` buckets
     that accepts string keys
-
-    Implement this.
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        # assign self.capacity to capacity
+        # set self.size to 0
+        # assign self.buckets to an empty array * self.capacity
+        self.capacity = capacity
+        self.size = 0
+        self.buckets = [None] * self.capacity
 
     def get_num_slots(self):
         """
@@ -35,7 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
     def get_load_factor(self):
         """
@@ -44,7 +47,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
     def fnv1(self, key):
         """
@@ -54,7 +57,7 @@ class HashTable:
         """
 
         # Your code here
-
+        pass
 
     def djb2(self, key):
         """
@@ -62,15 +65,17 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + 5) + ord(x)
+        return hash & 0xFFFFFFFF
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -82,7 +87,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
     def delete(self, key):
         """
@@ -93,7 +98,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
     def get(self, key):
         """
@@ -104,7 +109,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
     def resize(self, new_capacity):
         """
@@ -114,7 +119,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pass
 
 
 if __name__ == "__main__":
