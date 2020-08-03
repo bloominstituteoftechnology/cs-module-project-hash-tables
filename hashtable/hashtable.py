@@ -22,6 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        if capacity < MIN_CAPACITY:
+            capacity = MIN_CAPACITY
+        self.table = [None] * capacity
+        self.capacity = capacity
 
 
     def get_num_slots(self):
