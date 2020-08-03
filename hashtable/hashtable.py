@@ -69,6 +69,11 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        key_encoded = key.encode()
+        hash = 5381
+        for k in key_encoded:
+            hash = (hash * 33) + ord(k)
+        return hash
 
 
     def hash_index(self, key):
