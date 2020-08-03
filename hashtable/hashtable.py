@@ -77,7 +77,7 @@ def djb2(self, key):
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-
+        return self.fnv1(key) % self.capacity
 
     def put(self, key, value):
         """
