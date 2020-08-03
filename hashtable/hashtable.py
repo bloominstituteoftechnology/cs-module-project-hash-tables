@@ -22,7 +22,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
-        self.table = dict.fromkeys(set(range(self.capacity)), [])
+        self.table = [[HashTableEntry(x, None)] for x in range(self.capacity)]
 
     def get_num_slots(self):
         """
@@ -44,10 +44,10 @@ class HashTable:
         Implement this.
         """
 
-        return len([key
-                    for key
-                    in self.table.keys()
-                    if isinstance(key, str)]) / len(self.table)
+        return len([y
+                    for x in self.table
+                    for y in x
+                    if y.value is not None]) / len(self.table)
 
     def fnv1(self, key):
         """
@@ -91,23 +91,30 @@ class HashTable:
 
         Implement this.
         """
-        try:
-            x = next(key for key in self.table.keys()
-                     if key in set(range(self.capacity)))
 
-            self.table[x] = value
+        hash_key = self.hash_index(key)
 
-            self.table[key] = self.table.pop(x)
-            self.table[key] = value
+        is_key = False
 
-        except StopIteration:
-            self.table[key] = value
+        hsh = self.table[hash_key]
 
-        if self.get_load_factor() > .7:
-            self.resize(self.capacity * 2)
+        for x in range(len(hsh)):
+            if key == hsh[x].key:
+                is_key = True
 
-        if self.get_load_factor() < .2:
-            self.resize(self.capacity // 2)
+        self.table[hash_key] = [HashTableEntry(key, value)]
+
+        # if is_key:
+        #     hsh.append(HashTableEntry(key, value))
+        #
+        # else:
+        #     self.table[hash_key] = [HashTableEntry(key, value)]
+
+        # if self.get_load_factor() > .7:
+        #     self.resize(self.capacity * 2)
+        #
+        # if self.get_load_factor() < .2:
+        #     self.resize(self.capacity // 2)
 
     def delete(self, key):
         """
@@ -118,10 +125,19 @@ class HashTable:
         Implement this.
         """
 
-        try:
-            del self.table[key]
-        except KeyError:
-            return "WARNING"
+        hash_key = self.hash_index(key)
+        hsh = self.table[hash_key]
+
+        is_key = False
+
+        for x in range(len(hsh)):
+            if key == hsh[x].key:
+                is_key = True
+            if is_key:
+                del hsh[x]
+                f"Key {key} Deleted"
+            else:
+                return f"Key {key} Not Found"
 
     def get(self, key):
         """
@@ -131,11 +147,16 @@ class HashTable:
 
         Implement this.
         """
-        try:
-            return self.table[key]
 
-        except KeyError:
-            return None
+        hash_key = self.hash_index(key)
+
+        hsh = self.table[hash_key]
+
+        for x in range(len(hsh)):
+            if key == hsh[x].key:
+                return hsh[x].value
+
+        return None
 
     def resize(self, new_capacity):
         """
@@ -146,9 +167,15 @@ class HashTable:
         """
 
         self.capacity = new_capacity
-        self.table = {k: v for k, v in self.table.items()}
-        self.table.update(dict.fromkeys(set(range(self.capacity
-                                                  - len(self.table))), []))
+        temp = self.table.copy()
+
+        for x in range(len(temp)):
+            y = temp[x]
+            for z in y:
+                if z.key is str:
+                    self.put(z.key, z.value)
+
+        self.table.extend(temp)
 
 
 if __name__ == "__main__":
@@ -184,5 +211,3 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
-
-    print(ht.table.items())
