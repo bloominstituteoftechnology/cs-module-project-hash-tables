@@ -26,6 +26,7 @@ class HashTable:
             capacity = MIN_CAPACITY
         self.capacity = capacity
         self.hash_data = [None] * capacity
+        self.total = 0
 
 
     def get_num_slots(self):
@@ -38,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.hash_data)
 
 
     def get_load_factor(self):
@@ -48,6 +49,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.total / self.capacity
 
 
     def fnv1(self, key):
