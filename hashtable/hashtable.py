@@ -3,7 +3,7 @@ class HashTableEntry:
     Linked List hash table key/value pair
     """
     def __init__(self, key, value):
-        self.key = key
+        self.key = key 
         self.value = value
         self.next = None
 
