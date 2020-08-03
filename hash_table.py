@@ -28,9 +28,9 @@
 
 # Note: need to know the string we used!
 
-# new_list[0] = "hello world"
-# hello -> 0
-# hash(world) --> 4
+new_list[0] = "hello world"
+hello -> 0
+hash(world) --> 4
 
 
 my_list = ["hi", "how", "are", "you", "hello", "world"]
