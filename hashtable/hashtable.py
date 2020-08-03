@@ -21,7 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.storage = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +35,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -52,8 +53,15 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
-        # Your code here
+        prime = 1099511628211
+        # start at this offset
+        hash = 14695981039346656037
+        for letter in key:
+            # for each letter, multiply by the prime
+            hash *= prime
+            # then XOR with the letter unicode value
+            hash = hash ^ ord(letter)
+        return hash
 
 
     def djb2(self, key):
@@ -62,7 +70,12 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        # start at 5381
+        hash = 5381
+        for letter in key:
+            # add bitwise shift left 5 and the unicode letter
+            hash += (hash << 5) + ord(letter)
+        return hash
 
 
     def hash_index(self, key):
@@ -73,6 +86,7 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
+
     def put(self, key, value):
         """
         Store the value with the given key.
@@ -81,7 +95,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.storage[self.hash_index(key)] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -92,7 +106,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        if (self.storage[index] is not None) and (self.storage[index].key != key):
+            # Print warning if the key is not found
+            print("Warning, key not found")
+        else:
+            # Erase the item at that index
+            self.storage[index] = None
 
 
     def get(self, key):
@@ -103,7 +124,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.storage[index] is not None:
+            # return the value, if it exists
+            return self.storage[index].value
+        else:
+            return None
 
 
     def resize(self, new_capacity):
@@ -113,7 +139,15 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # reset variables
+        self.capacity = new_capacity
+        old = self.storage.copy()
+        self.storage = [None] * new_capacity
+
+        # rehash old items into the new list
+        for item in old:
+            if item is not None:
+                self.put(item.key, item.value)
 
 
 
