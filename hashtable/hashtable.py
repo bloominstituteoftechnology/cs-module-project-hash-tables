@@ -2,7 +2,6 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -11,7 +10,6 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
-
 
 class HashTable:
     """
@@ -54,6 +52,7 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+
         hash = 14695981039346656037
         bytes_representation = key.encode()
         for byte_of_data in bytes_representation:
@@ -62,9 +61,7 @@ class HashTable:
 
         return hash
 
-
-
-def djb2(self, key):
+    def djb2(self, key):
         """
         DJB2 hash, 32-bit
 
@@ -78,6 +75,7 @@ def djb2(self, key):
         between within the storage capacity of the hash table.
         """
         return self.fnv1(key) % self.capacity
+
 
     def put(self, key, value):
         """
@@ -102,8 +100,7 @@ def djb2(self, key):
                     return
                 pos = pos.next
 
-
-def delete(self, key):
+    def delete(self, key):
         """
         Remove the value stored with the given key.
 
@@ -142,7 +139,6 @@ def delete(self, key):
 
         print(f"Warning: Value not found at key: {index}")
 
-
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -168,7 +164,17 @@ def delete(self, key):
 
         Implement this.
         """
+        old_table = self.table
+        old_capacity = self.capacity
 
+        self.table = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for index in range(old_capacity):
+            pos = old_table[index]
+            while pos != None:
+                self.put(pos.key, pos.value)
+                pos = pos.next
 
 
 if __name__ == "__main__":
