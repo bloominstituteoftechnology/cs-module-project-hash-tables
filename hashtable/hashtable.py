@@ -6,6 +6,12 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+    def get_key(self):
+        return self.key
+    def get_value(self):
+        return self.value
+    def set_next(self, new_next):
+        self.next = new_next
 
 
 # Hash table can't have fewer than this many slots
@@ -21,10 +27,13 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.data = [None] * capacity
+        print(self.data)
 
 
     def get_num_slots(self):
+
         """
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
@@ -34,7 +43,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.data)
 
 
     def get_load_factor(self):
@@ -52,8 +61,22 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
-        # Your code here
+        #Returns the FNV-1a has of a string
+        fnvPrime = 16777619
+        fnvhash = 2166136261
+        for string in key:
+            charCode = ord(string)
+            #Mask to get the first octed, and add it to the has
+            firstOctet = (charCode & 0xFF)
+            fnvhash = fnvhash ^ firstOctet
+            #Btiwise OR with zero to ensure a 32bit integer
+            fnvhash = (fnvhash * fnvPrime) | 0
+            #shift to get the second byte, and add it to the hash
+            secondOctet = (charCode >> 8)
+            fnvhash = fnvhash ^ secondOctet
+            fnvhash = (fnvhash * fnvPrime) | 0
+        return fnvhash
+        
 
 
     def djb2(self, key):
@@ -70,8 +93,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % len(self.data)
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,7 +104,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        self.data[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -103,7 +127,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        #return self.data[index]
+        if self.data[index] is not None:
+            return self.data[index].value
+        return None
+        
 
 
     def resize(self, new_capacity):
