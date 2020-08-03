@@ -20,8 +20,11 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
+        self.capacity = capacity
+        self.count = 0
+        self.contents = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -35,6 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,6 +48,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # Number of keys stored / capacity
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -63,6 +69,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for elem in key:
+            hash = (hash * 33) + ord(elem)
+        return hash
 
 
     def hash_index(self, key):
@@ -82,6 +92,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        new = HashTableEntry(key, value)
+        contents = self.contents[index]
+
+        # Increase count
+        self.count += 1
+
+        # if there are contents
+        if contents:
+            # update value in key
+            self.contents[index] = new
+            # update next via Linked List Chaining as rest of contents
+            self.contents[index].next = contents
+        
+        # otherwise, there are no contents, so simply enter new value
+        else:
+            self.contents[index] = new
 
 
     def delete(self, key):
@@ -93,7 +120,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
 
+        # if nothing there, return warning
+        if not self.contents[index]:
+            return "Warning: Key Not Found!"
+
+        # otherwise, key had a value, so remove it
+        else:
+            self.contents[index] = None
+            # update counter
+            self.count -= 1
 
     def get(self, key):
         """
@@ -104,6 +141,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+
+        # if key not found, return None
+        if not index:
+            return None
+
+        # otherwise, there is an index for key, so return value
+        else:
+            return self.contents[index]
 
 
     def resize(self, new_capacity):
