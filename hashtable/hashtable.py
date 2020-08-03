@@ -97,6 +97,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        if self.hash_data[index]:
+            self.hash_data[index] = None
+        else:
+            print("Warning")
 
     def get(self, key):
         """
