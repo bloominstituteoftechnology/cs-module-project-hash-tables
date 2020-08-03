@@ -21,8 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = capacity
+        self.table = dict.fromkeys(set(range(self.capacity)), [])
 
     def get_num_slots(self):
         """
@@ -34,8 +34,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -43,8 +43,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        return len([key
+                    for key
+                    in self.table.keys()
+                    if isinstance(key, str)]) / len(self.table)
 
     def fnv1(self, key):
         """
@@ -55,22 +58,29 @@ class HashTable:
 
         # Your code here
 
-
-    def djb2(self, key):
+    @staticmethod
+    def djb2(key):
         """
         DJB2 hash, 32-bit
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
 
+        hsh = 5381
+
+        for character in key:
+            hsh = (hsh * 33) + ord(character)
+
+        return hsh
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+
+        # return self.fnv1(key) % self.capacity
+
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,8 +91,23 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        try:
+            x = next(key for key in self.table.keys()
+                     if key in set(range(self.capacity)))
 
+            self.table[x] = value
+
+            self.table[key] = self.table.pop(x)
+            self.table[key] = value
+
+        except StopIteration:
+            self.table[key] = value
+
+        if self.get_load_factor() > .7:
+            self.resize(self.capacity * 2)
+
+        if self.get_load_factor() < .2:
+            self.resize(self.capacity // 2)
 
     def delete(self, key):
         """
@@ -92,8 +117,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        try:
+            del self.table[key]
+        except KeyError:
+            return "WARNING"
 
     def get(self, key):
         """
@@ -103,8 +131,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        try:
+            return self.table[key]
 
+        except KeyError:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -113,8 +144,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        self.capacity = new_capacity
+        self.table = {k: v for k, v in self.table.items()}
+        self.table.update(dict.fromkeys(set(range(self.capacity
+                                                  - len(self.table))), []))
 
 
 if __name__ == "__main__":
@@ -134,7 +168,6 @@ if __name__ == "__main__":
     ht.put("line_12", "And stood awhile in thought.")
 
     print("")
-
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
@@ -142,12 +175,14 @@ if __name__ == "__main__":
     # Test resizing
     old_capacity = ht.get_num_slots()
     ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    new = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new}.\n")
 
     # Test if data intact after resizing
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
     print("")
+
+    print(ht.table.items())
