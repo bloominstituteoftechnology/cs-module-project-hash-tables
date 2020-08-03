@@ -87,9 +87,23 @@ def djb2(self, key):
 
         Implement this.
         """
+        index = self.hash_index(key)
+
+        if self.table[index] == None:
+            self.table[index] = HashTableEntry(key, value)
+        else:
+            pos = self.table[index]
+            while pos != None:
+                if pos.key == key:
+                    pos.value = value
+                    return
+                if pos.next == None:
+                    pos.next = HashTableEntry(key, value)
+                    return
+                pos = pos.next
 
 
-    def delete(self, key):
+def delete(self, key):
         """
         Remove the value stored with the given key.
 
