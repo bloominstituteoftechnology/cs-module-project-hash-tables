@@ -16,40 +16,49 @@ class HashTable:
     """
     A hash table that with `capacity` buckets
     that accepts string keys
-
     Implement this.
     """
 
     def __init__(self, capacity):
-        # Your code here
 
+        if capacity > MIN_CAPACITY:
+            self.capacity = capacity
+        else:
+            self.capacity = MIN_CAPACITY
+
+        self.hash = [None] * capacity
+        # self.hash = [[] for i in range(capacity)]
 
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
         but the number of slots in the main list.)
-
         One of the tests relies on this.
-
         Implement this.
         """
-        # Your code here
+        # print('The Capacity of this HashTable is:', self.capacity)
+        return self.capacity
 
 
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
-
         Implement this.
         """
-        # Your code here
+        keycount = 0
+        for i in self.hash:
+            if i != None:
+                keycount += 1
+        
+        loadfactor = keycount/self.capacity
+
+        return loadfactor
 
 
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
-
         Implement this, and/or DJB2.
         """
 
@@ -59,10 +68,12 @@ class HashTable:
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
-
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381 # this is one of the magic dfb2 numbers
+        for c in key:
+            hash = ((hash << 5) + hash) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
@@ -70,47 +81,51 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        self.hash[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
         """
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        if self.hash[index] != None:
+            self.hash[index] = None
 
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Implement this.
         """
-        # Your code here
-
+        index = self.hash_index(key)
+        hashitem = self.hash[index]
+        
+        if hashitem != None:
+            return hashitem.value
+        
+        if hashitem == None:
+            return None
+                
 
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
         Implement this.
         """
         # Your code here
