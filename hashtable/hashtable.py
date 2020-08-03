@@ -21,7 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = max(MIN_CAPACITY, capacity)
+        self.hash_map = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -34,7 +35,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return capacity
 
 
     def get_load_factor(self):
@@ -46,14 +47,27 @@ class HashTable:
         # Your code here
 
 
-    def fnv1(self, key):
+    def fnv1(self, key, seed=0):
         """
         FNV-1 Hash, 64-bit
 
         Implement this, and/or DJB2.
-        """
 
-        # Your code here
+        hash = offset_basis
+        for each octet_of_data to be hashed
+            hash = hash * FNV_prime
+            hash = hash xor octet_of_data
+            return hash
+
+        https://github.com/sup/pyhash/blob/master/pyhash/pyhash.py
+        """
+        fnv_prime = 1099511628211 # prime number with a bunch of other rules
+        offset_basis = 14695981039346656037 # based on the size of the hash, 64-bit
+        hash = offset_basis + seed
+        for char in key:
+            hash = hash * fnv_prime
+            hash = hash ^ ord(char)
+        return hash
 
 
     def djb2(self, key):
@@ -70,8 +84,9 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        
+        return self.fnv1(key) % self.capacity
+        
 
     def put(self, key, value):
         """
@@ -82,6 +97,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hash_index = self.hash_index(key)
+        self.hash_map[hash_index] = value
 
 
     def delete(self, key):
@@ -93,6 +110,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hash_index = self.hash_index(key)
+        if self.hash_map[hash_index]:
+            self.hash_map[hash_index] = None
+        else:
+            print("Error: key not found")
 
 
     def get(self, key):
@@ -104,6 +126,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hash_index = self.hash_index(key)
+        if self.hash_map[hash_index]:
+            return self.hash_map[hash_index]
+        # else:
+        #     return None
 
 
     def resize(self, new_capacity):
