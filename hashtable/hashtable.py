@@ -86,8 +86,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        # assign slot to a variable calling hash_index method and passing in key.
+        # increment self.size by 1
+        # assign each self.buckets[slot] to HashTableEntry class passing in key and value
+        slot = self.hash_index(key)
+        self.size += 1
+        self.buckets[slot] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -97,8 +101,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        # call self.put passing in key and none
+        # decrement self.size by 1
+        self.put(key, None)
+        self.size -= 1
 
     def get(self, key):
         """
@@ -108,8 +114,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        slot = self.hash_index(key)
+        hash_start = self.buckets[slot]
+        if hash_start is not None:
+            return hash_start.value
+        return None
 
     def resize(self, new_capacity):
         """
@@ -145,9 +154,9 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
