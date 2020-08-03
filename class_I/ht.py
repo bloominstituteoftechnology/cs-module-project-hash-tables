@@ -17,13 +17,16 @@ def hash_function(s):
 
     # O(n) over the key length
     # O(1) over the HASH_DATA_SIZE
-    
+
     bytes_list = s.encode()
 
     total = 0
 
     for b in bytes_list: # O(n) over the length of the key
         total += b
+        # # Optional, but correct (forcing result to certain num of bits)
+        # total &= 0xffffffff # 32 bit (8 fs)
+        # total &= 0xffffffffffffffff # 64 bit (16 fs)
     
     return total
 
