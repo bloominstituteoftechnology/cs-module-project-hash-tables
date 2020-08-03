@@ -20,9 +20,9 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
-
+    def __init__(self, capacity = MIN_CAPACITY):
+        self.capacity = capacity
+        self.bucket = [None] * capacity
 
     def get_num_slots(self):
         """
@@ -34,7 +34,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -55,15 +55,16 @@ class HashTable:
 
         # Your code here
 
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash = 5381
+        for b in key:
+            hash = (hash * 33) + ord(b)
+        return hash
 
     def hash_index(self, key):
         """
@@ -81,9 +82,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        entry = HashTableEntry(key, value)
+        index = self.hash_index(key)
+        self.bucket[index] = entry
+        
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -92,7 +94,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        self.bucket.pop(index)
 
 
     def get(self, key):
@@ -103,7 +106,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        if self.bucket[index]:
+            value = self.bucket[index].value
+            return value
+        else:
+            return None
+
 
 
     def resize(self, new_capacity):
@@ -133,21 +143,21 @@ if __name__ == "__main__":
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
 
-    print("")
+    # print("")
 
-    # Test storing beyond capacity
+    # # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
+    # # Test if data intact after resizing
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    print("")
+    # print("")
