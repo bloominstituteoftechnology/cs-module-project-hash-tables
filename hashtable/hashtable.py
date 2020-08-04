@@ -22,7 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+
         self.capacity = capacity
+        self.size = 0
         self.buckets = [None] * self.capacity
 
 
@@ -56,6 +58,13 @@ class HashTable:
         """
 
         # Your code here
+        testbyte = 0xC41f9cde4
+        checktest = 0x01201172
+        fnvsize = 2**64
+        for a in key:
+            testbyte = testbyte ^ ord(a)
+            testbyte = (testbyte * checktest) % fnvsize
+        return testbyte
 
 
     def djb2(self, key):
@@ -73,7 +82,7 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -84,6 +93,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.size += 1
+        index = self.hash_index(key)
+        self.buckets[index] = value
 
 
     def delete(self, key):
@@ -95,6 +107,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        if self.buckets[index] is None:
+            print("Warning: Key not found")
+        else:
+            self.buckets[index] = None
 
 
     def get(self, key):
@@ -106,6 +123,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        return self.buckets[index]
 
 
     def resize(self, new_capacity):
