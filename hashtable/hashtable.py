@@ -140,7 +140,16 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        prev_stor = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+        for i in range(len(prev_stor)):
+            old = prev_stor[i]
+            if old:
+                while old:
+                    if old.key:
+                        self.put(old.key, old.value)
+                        old = old.next
 
 
 
