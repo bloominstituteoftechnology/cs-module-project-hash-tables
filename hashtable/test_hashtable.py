@@ -100,6 +100,7 @@ class TestHashTable(unittest.TestCase):
         ht.put("key-9", "val-9")
 
         return_value = ht.get("key-0")
+        # print(return_value.value)
         self.assertTrue(return_value == "val-0")
         return_value = ht.get("key-1")
         self.assertTrue(return_value == "val-1")

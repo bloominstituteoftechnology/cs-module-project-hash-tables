@@ -119,6 +119,7 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         # return self.fnv1(key) % self.capacity
+        print(self.capacity)
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -158,6 +159,10 @@ class HashTable:
                     current = current.next
             self.element_count += 1
 
+            # resize if the load factor grows to above 0.7
+            if self.get_load_factor() >= 0.7:
+                self.resize(self.capacity * 2)
+
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -175,6 +180,10 @@ class HashTable:
             self.element_count -= 1
             self.hash_data[index].delete(key)
 
+        # resize if the load factory is under 0.2
+        if self.get_load_factor() < 0.2:
+            self.resize(self.capacity // 2)
+
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -185,9 +194,11 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        lookup = self.hash_data[index].get_key(key)
-        if lookup:
+        if self.hash_data[index].get_key(key):
+            lookup = self.hash_data[index].get_key(key)
+            print(lookup)
             return lookup.value
+
         else:
             return None
 
@@ -197,8 +208,25 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
-        """
-        # Your code here
+"""
+
+        # establish a new hash table
+        prev = self.hash_data
+        self.capacity = new_capacity
+        self.hash_data = [None] * self.capacity
+
+        # reset element_count
+        self.element_count = 0
+
+        # then pass in all of the data that we already had
+        for elem in prev:
+            if elem:
+                current = elem.head
+                while current:
+                    print(current.key)
+                    self.put(current.key, current.value)
+                    # then move onto the next one
+                    current = current.next
 
 
 if __name__ == "__main__":
