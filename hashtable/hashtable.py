@@ -61,10 +61,12 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        hash_var = 5381
+        hash_value = 5381
         for i in key:
-            hash = ((hash << 5) + hash) + ord(i)
-        return hash & 0xFFFFFFFF
+            # hash = ((hash << 5) + hash) + ord(i)
+            hash_value = (hash_value << 5) + ord(i)
+        return hash_value
+        # return hash & 0xFFFFFFFF
 
     def hash_index(self, key):
         """
