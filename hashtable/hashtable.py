@@ -92,15 +92,15 @@ class HashTable:
         if self.storage[index] == None:
             self.storage[index] = HashTableEntry(key, value)
         else:
-            pos = self.storage[index]
-            while pos != None:
-                if pos.key == key:
-                    pos.value = value
+            position = self.storage[index]
+            while position != None:
+                if position.key == key:
+                    position.value = value
                     return
-                if pos.next == None:
-                    pos.next = HashTableEntry(key, value)
+                if position.next == None:
+                    position.next = HashTableEntry(key, value)
                     return
-                pos = pos.next
+                position = position.next
 
     def delete(self, key):
         """
@@ -125,11 +125,11 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        pos = self.storage[index]
-        while pos != None:
-            if pos.key == key:
-                return pos.value
-            pos = pos.next
+        position = self.storage[index]
+        while position != None:
+            if position.key == key:
+                return position.value
+            position = position.next
 
         return None
 
@@ -140,17 +140,17 @@ class HashTable:
 
         Implement this.
         """
-        old_table = self.storage
+        old_storage = self.storage
         old_capacity = self.capacity
 
         self.storage = [None] * new_capacity
         self.capacity = new_capacity
 
         for index in range(old_capacity):
-            pos = old_table[index]
-            while pos != None:
-                self.put(pos.key, pos.value)
-                pos = pos.next
+            position = old_storage[index]
+            while position != None:
+                self.put(position.key, position.value)
+                position = position.next
 
 
 if __name__ == "__main__":
