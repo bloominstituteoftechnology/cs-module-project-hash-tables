@@ -25,7 +25,8 @@ class HashTable:
     """
 
     def __init__(self, capacity, entry=0):
-        self.capacity = [None] * MIN_CAPACITY
+        self.capacity = capacity
+        self.data = [None] * self.capacity
         self.entry = entry
 
     def get_num_slots(self):
@@ -38,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        return len(self.capacity)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -93,7 +94,7 @@ class HashTable:
         # find index at given key
         # save it in a variable
         index = self.hash_index(key)
-        cur = self.capacity[index]
+        cur = self.data[index]
 
         # if cur exists
         if cur:
@@ -113,15 +114,15 @@ class HashTable:
                 self.entry += 1
 
                 if self.get_load_factor() > .7:
-                    self.resize(self.capacity * 2)
+                    self.resize(self.capacity)
 
         # else, make new entry
         # increase entry count, check for load factor
         else:
-            self.capacity[index] = HashTableEntry(key, value)
+            self.data[index] = HashTableEntry(key, value)
             self.entry += 1
             if self.get_load_factor() > .7:
-                self.resize(self.capacity * 2)
+                self.resize(self.capacity)
 
     def delete(self, key):
         """
@@ -136,7 +137,7 @@ class HashTable:
         # find index at given key
         # save it in a variable
         index = self.hash_index(key)
-        cur = self.capacity[index]
+        cur = self.data[index]
 
         # if value at index is empty
         if cur is None:
@@ -148,7 +149,7 @@ class HashTable:
             # update the item with its next value
             # reduce the entry count
             if cur.key == key:
-                self.capacity[index] = cur.next
+                self.data[index] = cur.next
                 self.entry -= 1
             cur = cur.next
 
@@ -162,11 +163,11 @@ class HashTable:
 
         Implement this.
         """
-        # slot = self.hash_index(key)
-        # return self.capacity[slot]
+        # index = self.hash_index(key)
+        # return self.capacity[index]
 
-        slot = self.hash_index(key)
-        cur = self.capacity[slot]
+        index = self.hash_index(key)
+        cur = self.data[index]
 
         # if cur exists
         while cur:
@@ -190,15 +191,15 @@ class HashTable:
         Implement this.
         """
 
-        old = self.capacity
+        # old = self.capacity
         # new_capacity = len(self.capacity) * 2
         self.capacity = new_capacity
 
         # make a new table
-        new_table = [None] * len(new_capacity)
+        new_table = [None] * new_capacity
 
         # loop thru the old array
-        for ll in old:
+        for ll in self.data:
             cur = ll
 
             # if ll exists
@@ -226,7 +227,7 @@ class HashTable:
                 cur = cur.next
 
         # set self.capacity to the new table
-        self.capacity = new_table
+        self.data = new_table
 
 
 if __name__ == "__main__":

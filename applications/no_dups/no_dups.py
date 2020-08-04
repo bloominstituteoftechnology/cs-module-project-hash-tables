@@ -1,6 +1,9 @@
 def no_dups(s):
-    # Your code here
-
+    count = {'hello', 'cat', 'dogs', 'fish', 'spam', 'sausage'}
+    res = s.split()
+    for word in res:
+        if word in count:
+            print(word)
 
 
 if __name__ == "__main__":
