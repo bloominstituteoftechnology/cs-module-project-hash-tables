@@ -12,27 +12,6 @@ class HashTableEntry:
         return f"{self.key}: {self.value}"
 
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
-
-    def find(self, value):
-        cur = self.head
-        while cur is not None:
-            if cur.value == value:
-                return cur
-            cur = cur.next
-
-        # didn't find the value
-        return None
-
-    def insert(self, value):
-        pass
-
-    def delete(self, value):
-        pass
-
-
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -45,8 +24,9 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity, entry=0):
         self.capacity = [None] * capacity
+        self.entry = entry
 
     def get_num_slots(self):
         """
@@ -58,7 +38,6 @@ class HashTable:
 
         Implement this.
         """
-        # print(len(self.data))
         return len(self.capacity)
 
     def get_load_factor(self):
@@ -68,7 +47,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        return self.entry / self.get_num_slots()
 
     def fnv1(self, key):
         """
@@ -96,8 +75,6 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         # return self.fnv1(key) % self.capacity
-        # print(self.djb2(key))
-        # print(self.get_num_slots())
         return self.djb2(key) % self.get_num_slots()
 
     def put(self, key, value):
@@ -108,9 +85,43 @@ class HashTable:
 
         Implement this.
         """
-        slot = self.hash_index(key)
-        self.capacity[slot] = HashTableEntry(key, value)
+        # Day 1
+        # slot = self.hash_index(key)
+        # self.capacity[slot] = value
         # print(slot)
+
+        # find index at given key
+        # save it in a variable
+        slot = self.hash_index(key)
+        cur = self.capacity[slot]
+
+        # if cur exists
+        if cur:
+            # loop thru the list by checking cur.next
+            # and also see if cur.key is the same key
+            # we're looking for
+            while cur.next != None and cur.key != key:
+                cur = cur.next
+            # if there is already the key, overwrite the value
+            if cur.key == key:
+                cur.value = value
+            # if key doesn't exists
+            # make a new entry with cur.next
+            # increase the entry, check for load factor
+            else:
+                cur.next = HashTableEntry(key, value)
+                self.entry += 1
+
+                # if self.get_load_factor() > .7:
+                #     self.resize(self.capacity * 2)
+
+        # else, make new entry
+        # increase entry count, check for load factor
+        else:
+            self.capacity[slot] = HashTableEntry(key, value)
+            self.entry += 1
+            # if self.get_load_factor() > .7:
+            #     self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -120,7 +131,28 @@ class HashTable:
 
         Implement this.
         """
-        self.put(key, None)
+        # self.put(key, None)
+
+        # find index at given key
+        # save it in a variable
+        index = self.hash_index(key)
+        cur = self.capacity[index]
+
+        # if value at index is empty
+        if cur is None:
+            return
+
+        # else
+        while cur:
+            # if there is the same key
+            # update the item with its next value
+            # reduce the entry count
+            if cur.key == key:
+                self.capacity[index] = cur.next
+                self.entry -= 1
+            cur = cur.next
+
+        return None
 
     def get(self, key):
         """
@@ -130,8 +162,25 @@ class HashTable:
 
         Implement this.
         """
+        # slot = self.hash_index(key)
+        # return self.capacity[slot]
+
         slot = self.hash_index(key)
-        return self.capacity[slot]
+        cur = self.capacity[slot]
+
+        # if cur exists
+        while cur:
+
+            # check for cur key
+            # if exists, return value
+            if cur.key == key:
+                return cur.value
+
+            # else, keep looping
+            cur = cur.next
+
+        # didn't find the value
+        return None
 
     def resize(self, new_capacity):
         """
@@ -140,7 +189,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        pass
 
 
 if __name__ == "__main__":
