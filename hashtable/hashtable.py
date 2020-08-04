@@ -26,6 +26,7 @@ class HashTable:
 
         self.capacity = capacity
         self.HashTable = [None] * capacity
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -39,6 +40,8 @@ class HashTable:
         """
         # Your code here
 
+        return len(self.HashTable)
+
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -46,6 +49,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        return self.size / self.get_num_slots()
 
     def fnv1(self, key):
         """
@@ -99,10 +104,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        idx = self.hash_index(key)
 
-        entry = HashTableEntry(key, value)
-        index = self.hash_index(key)
-        self.HashTable[index] = entry
+        if self.HashTable[idx] is None:
+            self.HashTable[idx] = HashTableEntry(key, value)
+            self.size += 1
+            return
+
+        curr = self.HashTable[idx]
+        self.HashTable[idx] = HashTableEntry(key, value)
+        self.HashTable[idx].next = curr
+        self.size += 1
+
+        # Hash Table Without Collisions - Day # 1
+
+        # entry = HashTableEntry(key, value)
+        # index = self.hash_index(key)
+        # self.HashTable[index] = entry
+        # self.size += 1
 
     def delete(self, key):
         """
@@ -113,9 +132,21 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        idx = self.hash_index(key)
 
-        index = self.hash_index(key)
-        self.HashTable[index].value = None
+        while self.HashTable[idx] is not None:
+
+            if self.HashTable[idx].key == key:
+                self.HashTable[idx] = None
+
+            elif self.HashTable[idx] == None:
+                return None
+
+        return print(f"The key {key} you are looking for cannot be found!")
+
+      # The following code is for no Collisions - Day # 1
+      # index = self.hash_index(key)
+      # self.HashTable[index].value = None
 
     def get(self, key):
         """
@@ -127,9 +158,24 @@ class HashTable:
         """
         # Your code here
 
-        index = self.hash_index(key)
+        idx = self.hash_index(key)
+        current = self.HashTable[idx]
 
-        return self.HashTable[index].value
+        while current is not None and current.key != key:
+
+            current = current.next
+
+        if current is None:
+            return None
+
+        else:
+            return current.value
+
+        # Get method for no collisions = Day # 1
+
+        # index = self.hash_index(key)
+
+        # return self.HashTable[index].value
 
     def resize(self, new_capacity):
         """
