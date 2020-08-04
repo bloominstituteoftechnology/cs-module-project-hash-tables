@@ -23,6 +23,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
+        self.array = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -94,7 +95,9 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
 
-        
+        self.array[index] = HashTableEntry(key, value)
+
+            
 
 
     def delete(self, key):
@@ -106,7 +109,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
 
+        if self.array[index] is None:
+            return f"Key was not found"
+        else:
+            self.array[index].value = None
 
     def get(self, key):
         """
@@ -117,6 +125,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+
+        if self.array[index] is not None:
+            return self.array[index].value
+        else:
+            return f"Key was not found"
+        
+
+
         
 
 
