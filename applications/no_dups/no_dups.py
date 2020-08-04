@@ -1,6 +1,8 @@
 def no_dups(s):
-    # Your code here
-
+    words = s.split()
+    words = dict.fromkeys(words)
+    words = ' '.join(list(words))
+    return words
 
 
 if __name__ == "__main__":
