@@ -21,9 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = MIN_CAPACITY
+        self.capacity = capacity
         self.count = 0
-        self.contents = [None] * self.capacity
+        self.storage = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -101,6 +101,7 @@ class HashTable:
             self.storage[index].next = storage
         else:
             self.storage[index] = entry
+
 
 
     def delete(self, key):
