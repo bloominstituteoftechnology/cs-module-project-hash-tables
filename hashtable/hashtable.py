@@ -17,10 +17,43 @@ class LinkedList:
     def __init__(self):
         self.head = None
 
-        def insert_at_head(self, key, value):
-            new_node = HashTableEntry(key, value)
-            new_node.next = self.head
-            self.head = new_node
+    def get_val(self, val):
+        cur = self.head
+        while cur is not None:
+            if cur.value == val:
+                return cur
+            cur = cur.next
+
+        return None
+
+    def get_key(self, key):
+        cur = self.head
+        while cur is not None:
+            if cur.key == key:
+                return cur
+            cur = cur.next
+
+        return None
+
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+
+    def delete(self, key):
+        if self.head.key == key:
+            old_head = self.head
+            self.head = self.head.next
+            return old_head
+        prev = self.head
+        cur = prev.next
+
+        while cur is not None:
+            if cur.key == key:
+                prev.next = cur.next
+                return cur
+
+            prev = prev.next
+            cur = cur.next
 
 
 class HashTable:
@@ -96,10 +129,34 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+
+        # NAIVE WAY --------------------------------------
+        # index = self.hash_index(key)
+        # self.hash_data[index] = value
+        # self.element_count += 1
+
+        # Way that handles collisions ---------------------------------
+        # if the index place is empty - we can just add a new linkedList with this node as the head
         index = self.hash_index(key)
-        self.hash_data[index] = value
-        self.element_count += 1
+        if self.hash_data[index] is None:
+            new_list = LinkedList()
+            new_list.insert_at_head(HashTableEntry(key, value))
+            # then add the newly-generated LindedList to the index spot just like the naive way
+            self.hash_data[index] = new_list
+        else:  # if there is some data in the index place, we need to either overwrite or add to the head
+            # check to see if the key already exists in the linkedlist or not
+            if self.hash_data[index].get_key(key) is None:
+                # if the key doesn't exist already, add a new entry to the head of the linked list
+                new_entry = HashTableEntry(key, value)
+                self.hash_data[index].insert_at_head(new_entry)
+            # if the key already exists, we need to overwrite the value to the new value
+            else:
+                current = self.hash_data[index].head
+                while current:
+                    if current.key == key:
+                        current.value = value
+                    current = current.next
+            self.element_count += 1
 
     def delete(self, key):
         """
@@ -111,11 +168,12 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        if self.hash_data[index]:
-            self.hash_data[index] = None
-            self.element_count -= 1
+        if self.hash_data[index] is None:
+            print("Key not found")
+            return None
         else:
-            print("Warning")
+            self.element_count -= 1
+            self.hash_data[index].delete(key)
 
     def get(self, key):
         """
@@ -127,7 +185,11 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        return self.hash_data[index]
+        lookup = self.hash_data[index].get_key(key)
+        if lookup:
+            return lookup.value
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
