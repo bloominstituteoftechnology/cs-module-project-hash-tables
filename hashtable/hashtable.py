@@ -25,7 +25,7 @@ class HashTable:
     """
 
     def __init__(self, capacity, entry=0):
-        self.capacity = [None] * capacity
+        self.capacity = [None] * MIN_CAPACITY
         self.entry = entry
 
     def get_num_slots(self):
@@ -86,14 +86,14 @@ class HashTable:
         Implement this.
         """
         # Day 1
-        # slot = self.hash_index(key)
-        # self.capacity[slot] = value
-        # print(slot)
+        # index = self.hash_index(key)
+        # self.capacity[index] = value
+        # print(index)
 
         # find index at given key
         # save it in a variable
-        slot = self.hash_index(key)
-        cur = self.capacity[slot]
+        index = self.hash_index(key)
+        cur = self.capacity[index]
 
         # if cur exists
         if cur:
@@ -112,16 +112,16 @@ class HashTable:
                 cur.next = HashTableEntry(key, value)
                 self.entry += 1
 
-                # if self.get_load_factor() > .7:
-                #     self.resize(self.capacity * 2)
+                if self.get_load_factor() > .7:
+                    self.resize(self.capacity * 2)
 
         # else, make new entry
         # increase entry count, check for load factor
         else:
-            self.capacity[slot] = HashTableEntry(key, value)
+            self.capacity[index] = HashTableEntry(key, value)
             self.entry += 1
-            # if self.get_load_factor() > .7:
-            #     self.resize(self.capacity * 2)
+            if self.get_load_factor() > .7:
+                self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -189,7 +189,44 @@ class HashTable:
 
         Implement this.
         """
-        pass
+
+        old = self.capacity
+        # new_capacity = len(self.capacity) * 2
+        self.capacity = new_capacity
+
+        # make a new table
+        new_table = [None] * len(new_capacity)
+
+        # loop thru the old array
+        for ll in old:
+            cur = ll
+
+            # if ll exists
+            # get the key and hash it to get the index
+            # for the new table
+            while cur != None:
+                index = self.hash_index(cur.key)
+
+                # if position is None
+                # set the key and value there
+                if new_table[index] is None:
+                    new_table[index] = HashTableEntry(cur.key, cur.value)
+
+                # otherwise
+                # loop thru that ll
+                else:
+                    new_cur = new_table[index]
+
+                    # loop until the next node is None
+                    if new_cur.next != None:
+                        new_cur = new_cur.next
+
+                    # if so, set the next node with the new key, value
+                    new_cur.next = HashTableEntry(cur.key, cur.value)
+                cur = cur.next
+
+        # set self.capacity to the new table
+        self.capacity = new_table
 
 
 if __name__ == "__main__":
