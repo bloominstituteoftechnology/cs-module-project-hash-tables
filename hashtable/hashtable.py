@@ -119,7 +119,6 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         # return self.fnv1(key) % self.capacity
-        print(self.capacity)
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -181,7 +180,7 @@ class HashTable:
             self.hash_data[index].delete(key)
 
         # resize if the load factory is under 0.2
-        if self.get_load_factor() < 0.2:
+        if self.get_load_factor() < 0.2 and self.capacity >= 16:
             self.resize(self.capacity // 2)
 
     def get(self, key):
@@ -196,7 +195,6 @@ class HashTable:
         index = self.hash_index(key)
         if self.hash_data[index].get_key(key):
             lookup = self.hash_data[index].get_key(key)
-            print(lookup)
             return lookup.value
 
         else:
@@ -223,7 +221,6 @@ class HashTable:
             if elem:
                 current = elem.head
                 while current:
-                    print(current.key)
                     self.put(current.key, current.value)
                     # then move onto the next one
                     current = current.next
