@@ -171,6 +171,8 @@ class TestHashTable(unittest.TestCase):
 
         self.assertTrue(ht.get_num_slots() == 1024)
 
+        ht.get('key-5')
+
         return_value = ht.get("key-0")
         self.assertTrue(return_value == "val-0")
         return_value = ht.get("key-1")
