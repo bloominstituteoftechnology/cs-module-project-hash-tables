@@ -167,19 +167,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        new_arr = []
-        
-        for i in self.arr:
+        copy = self.arr
+        self.capacity = new_capacity
+        self.arr = [None for i in range(new_capacity)]
+        self.count = 0
+        for i in copy:
             current = i
             if current.key:
                 while current:
-                    new_arr.append(i)
+                    self.put(current.key, current.value)
                 current = current.next
-        self.arr = [None for i in range(new_capacity)]
-        self.capacity = new_capacity
-        self.total = 0
-        for i in new_arr:
-            self.put(i.key, i.value)
+        
 
 
 
