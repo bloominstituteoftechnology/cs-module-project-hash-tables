@@ -21,7 +21,7 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         # Your code here
         self.capacity = capacity
         self.hashTable = [None] * capacity
@@ -62,8 +62,8 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         hash = 5381
-        for x in key:
-            hash = ((hash << 5) + hash) + ord(x)
+        for k in key:
+            hash = ((hash << 5) + hash) + ord(k)
         return hash
 
         # Your code here
@@ -124,7 +124,7 @@ class HashTable:
         # Your code here
 
 
-table = HashTable(10000)
+table = HashTable(100)
 print(table.put('hello', 'world'))
 print(table.get('hello'))
 if __name__ == "__main__":
