@@ -40,6 +40,7 @@ class LinkedList:
                 else:
                     prev.next = curr.next
                     return
+            prev = curr
             curr = curr.next
 
     def get(self, key):
@@ -86,6 +87,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.hashTable)
 
     def get_load_factor(self):
         """
@@ -94,6 +96,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.entries / self.get_num_slots()
 
     def fnv1(self, key):
         """
@@ -136,10 +139,18 @@ class HashTable:
         # Your code here
         # new_entry = HashTableEntry(key, value)
         idx = self.hash_index(key)
-        if self.hashTable[idx] is None:
-            self.hashTable[idx] = LinkedList(key, value)
+        if self.get_load_factor() < 0.7:
+            if self.hashTable[idx] is None:
+                self.hashTable[idx] = LinkedList(key, value)
+            else:
+                self.hashTable[idx].insert(key, value)
         else:
-            self.hashTable[idx].insert(key, value)
+            if self.hashTable[idx] is None:
+                self.hashTable[idx] = LinkedList(key, value)
+            else:
+                self.hashTable[idx].insert(key, value)
+            self.resize(self.get_num_slots() * 2)
+
         self.entries += 1
 
     def delete(self, key):
@@ -174,16 +185,23 @@ class HashTable:
             return None
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
+        items = []
 
-        Implement this.
-        """
-        # Your code here
+        def getListNodes(node):
+            if not node:
+                return
+            items.append([node.key, node.value])
+            getListNodes(node.next)
+        for item in self.hashTable:
+            if item:
+                getListNodes(item.head)
+
+        self.hashTable = [None] * new_capacity
+        for item in items:
+            self.put(item[0], item[1])
 
 
-table = HashTable(1)
+table = HashTable(2)
 print(table.put('hello', 'world'))
 table.put('testing', 'this')
 print(table.get('hello'))
@@ -191,9 +209,10 @@ print(table.hashTable)
 table.delete('testing')
 print(table.get('testing'), 'yooooo')
 print(table.get('hello'), 'ayyyayyyooo')
+table.put('broken', 'arrows')
+table.put('woah', 'oahhh')
 table.put('i cut the tree down', 'that we grew')
 print(table.entries)
-
 # ll = LinkedList()
 # ll.insert('hello', 'world')
 if __name__ == "__main__":
