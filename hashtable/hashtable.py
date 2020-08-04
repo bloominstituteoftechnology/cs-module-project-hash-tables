@@ -16,7 +16,6 @@ class HashTable:
     """
     A hash table that with `capacity` buckets
     that accepts string keys
-
     Implement this.
     """
 
@@ -24,7 +23,7 @@ class HashTable:
         # Your code here
         self.capacity = MIN_CAPACITY
         self.count = 0
-        self.contents = [None] * self.capacity
+        self.storage = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -32,9 +31,7 @@ class HashTable:
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
         but the number of slots in the main list.)
-
         One of the tests relies on this.
-
         Implement this.
         """
         # Your code here
@@ -44,7 +41,6 @@ class HashTable:
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
-
         Implement this.
         """
         # Your code here
@@ -54,25 +50,23 @@ class HashTable:
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
-
         Implement this, and/or DJB2.
         """
 
         # Your code here
 
 
+
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
-
         Implement this, and/or FNV-1.
         """
         # Your code here
         hash = 5381
-        for item in key:
-            hash = (hash * 33) + ord(item)
+        for character in key:
+            hash = (hash * 33) + ord(character)
         return hash
-
 
 
 
@@ -87,12 +81,12 @@ class HashTable:
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Implement this.
         """
         # Your code here
+
+        
         index = self.hash_index(key)
         entry = HashTableEntry(key, value)
         storage = self.storage[index]
@@ -108,9 +102,7 @@ class HashTable:
     def delete(self, key):
         """
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Implement this.
         """
         # Your code here
@@ -121,9 +113,7 @@ class HashTable:
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Implement this.
         """
         # Your code here
@@ -140,7 +130,6 @@ class HashTable:
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
         Implement this.
         """
         # Your code here
