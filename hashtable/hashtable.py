@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -12,124 +13,181 @@ class HashTableEntry:
 MIN_CAPACITY = 8
 
 
+class LinkedList:
+    def __init__(self, key, value):
+        new_node = HashTableEntry(key, value)
+        self.head = new_node
+        self.tail = new_node
+        self.size = 0
+
+    def insert(self, key, value):
+        new_node = HashTableEntry(key, value)
+        if not self.head:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            new_node.next = self.head
+            self.head = new_node
+
+    def delete(self, key):
+        curr = self.head
+        prev = None
+        while curr:
+            if curr.key == key:
+                if curr == self.head:
+                    self.head = curr.next
+                    return
+                else:
+                    prev.next = curr.next
+                    return
+            prev = curr
+            curr = curr.next
+
+    def get(self, key):
+        print('key', key)
+        curr = self.head
+        while curr:
+            if curr.key == key:
+                print('match')
+                return curr.value
+            curr = curr.next
+        return None
+
+
 class HashTable:
     """
     A hash table that with `capacity` buckets
     that accepts string keys
+
     Implement this.
     """
 
-    def __init__(self, capacity):
-
-        if capacity > MIN_CAPACITY:
-            self.capacity = capacity
-        else:
-            self.capacity = MIN_CAPACITY
-
-        self.hash = [None] * capacity
-        # self.hash = [[] for i in range(capacity)]
+    def __init__(self, capacity=MIN_CAPACITY):
+        # Your code here
+        self.capacity = capacity
+        self.hashTable = [None] * capacity
+        self.entries = 0
 
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
         but the number of slots in the main list.)
+
         One of the tests relies on this.
+
         Implement this.
         """
-        # print('The Capacity of this HashTable is:', self.capacity)
-        return self.capacity
-
+        # Your code here
+        return len(self.hashTable)
 
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
+
         Implement this.
         """
-        keycount = 0
-        for i in self.hash:
-            if i != None:
-                keycount += 1
-        
-        loadfactor = keycount/self.capacity
-
-        return loadfactor
-
+        # Your code here
+        return self.entries / self.get_num_slots()
 
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
+
         Implement this, and/or DJB2.
         """
 
         # Your code here
 
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
+
         Implement this, and/or FNV-1.
         """
-        hash = 5381 # this is one of the magic dfb2 numbers
-        for c in key:
-            hash = ((hash << 5) + hash) + ord(c)
+        hash = 5381
+        for k in key:
+            hash = ((hash << 5) + hash) + ord(k)
         return hash
-
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
         Store the value with the given key.
+
         Hash collisions should be handled with Linked List Chaining.
+
         Implement this.
         """
-        index = self.hash_index(key)
+        # Your code here
+        idx = self.hash_index(key)
+        if self.get_load_factor() < 0.7:
+            if self.hashTable[idx] is None:
+                self.hashTable[idx] = LinkedList(key, value)
+            else:
+                self.hashTable[idx].insert(key, value)
+        else:
+            if self.hashTable[idx] is None:
+                self.hashTable[idx] = LinkedList(key, value)
+            else:
+                self.hashTable[idx].insert(key, value)
+            self.resize(self.get_num_slots() * 2)
 
-        self.hash[index] = HashTableEntry(key, value)
-
+        self.entries += 1
 
     def delete(self, key):
         """
         Remove the value stored with the given key.
+
         Print a warning if the key is not found.
+
         Implement this.
         """
-        index = self.hash_index(key)
-
-        if self.hash[index] != None:
-            self.hash[index] = None
-
+        # Your code here
+        idx = self.hash_index(key)
+        if self.hashTable[idx]:
+            self.hashTable[idx].delete(key)
+            self.entries -= 1
+        else:
+            print('key not found')
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-        Returns None if the key is not found.
-        Implement this.
-        """
-        index = self.hash_index(key)
-        hashitem = self.hash[index]
-        
-        if hashitem != None:
-            return hashitem.value
-        
-        if hashitem == None:
-            return None
-                
 
-    def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
+        Returns None if the key is not found.
+
         Implement this.
         """
         # Your code here
+        idx = self.hash_index(key)
+        if self.hashTable[idx]:
+            return self.hashTable[idx].get(key)
+        else:
+            return None
 
+    def resize(self, new_capacity):
+        items = []
+
+        def getListNodes(node):
+            if not node:
+                return
+            items.append([node.key, node.value])
+            getListNodes(node.next)
+        for item in self.hashTable:
+            if item:
+                getListNodes(item.head)
+
+        self.hashTable = [None] * new_capacity
+        for item in items:
+            self.put(item[0], item[1])
 
 
 if __name__ == "__main__":
