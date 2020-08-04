@@ -21,7 +21,11 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        if capacity > MIN_CAPACITY:
+            self.capacity = capacity
+        else:
+            self.capacity = MIN_CAPACITY
+        self.array = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +38,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -53,7 +57,15 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        #Values pulled from Wikipedia
+        prime = 1099511628211
+        offset_basis = 14695981039346656037
+
+        hash = offset_basis
+        for char in key:
+            hash = hash ^ ord(char) #XOR is defined by a carat
+            hash = hash * prime
+        return hash
 
 
     def djb2(self, key):
@@ -70,8 +82,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,7 +93,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        self.array[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -92,7 +105,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.array[index] != None:
+            self.array[index] = None
 
 
     def get(self, key):
@@ -103,7 +118,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.array[index] is None:
+            return None
+        else:
+            return self.array[index].value
 
 
     def resize(self, new_capacity):
