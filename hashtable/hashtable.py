@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -10,6 +11,7 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+
 
 class HashTable:
 
@@ -23,8 +25,8 @@ class HashTable:
         return self.capacity
 
     def get_load_factor(self):
-
-        # Your code here
+        return self.count / self.capacity
+    # Your code here
 
     def fnv1(self, key):
 
@@ -47,7 +49,6 @@ class HashTable:
 
         return self.fnv1(key) % self.capacity
 
-
     def put(self, key, value):
 
         index = self.hash_index(key)
@@ -69,8 +70,6 @@ class HashTable:
 
         self.put(key, None)
         self.count -= 1
-
-
 
     def get(self, key):
         index = self.hash_index(key)
