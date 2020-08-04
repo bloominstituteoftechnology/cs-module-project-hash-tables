@@ -20,11 +20,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        if capacity < MIN_CAPACITY:
-            capacity = MIN_CAPACITY
-
-        self.table = [None] * capacity
-        self.capacity = capacity
+        self.capacity = MIN_CAPACITY
+        self.count = 0
+        self.storage = [None] * capacity
 
     def get_num_slots(self):
         """
@@ -68,6 +66,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for element in key:
+            hash = (hash * 33) + ord(element)
+        return hash
 
     def hash_index(self, key):
         """
@@ -87,10 +89,10 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        if self.table[index] == None:
-            self.table[index] = HashTableEntry(key, value)
+        if self.storage[index] == None:
+            self.storage[index] = HashTableEntry(key, value)
         else:
-            pos = self.table[index]
+            pos = self.storage[index]
             while pos != None:
                 if pos.key == key:
                     pos.value = value
@@ -108,36 +110,10 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        firstPosition = True
+        self.put(key, None)
+        self.count -= 1
 
-        priorPos = None
-        pos = self.table[index]
-        while pos != None:
-            if pos.key == key:
-                if firstPosition:
-                    if pos.next == None:
-                        self.table[index] = None
-                        pos = None
-                    else:
-                        self.table[index] = pos.next
-                        pos = None
-                else:
-                    if pos.next == None:
-                        priorPos.next = None
-                        pos = None
-                    else:
-                        priorPos.next = pos.next
-                        pos = None
-                return
 
-            firstPosition = False
-            if pos.next == None:
-                return
-            priorPos = pos
-            pos = pos.next
-
-        print(f"Warning: Value not found at key: {index}")
 
     def get(self, key):
         """
@@ -149,7 +125,7 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        pos = self.table[index]
+        pos = self.storage[index]
         while pos != None:
             if pos.key == key:
                 return pos.value
@@ -164,10 +140,10 @@ class HashTable:
 
         Implement this.
         """
-        old_table = self.table
+        old_table = self.storage
         old_capacity = self.capacity
 
-        self.table = [None] * new_capacity
+        self.storage = [None] * new_capacity
         self.capacity = new_capacity
 
         for index in range(old_capacity):
