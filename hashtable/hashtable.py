@@ -149,7 +149,7 @@ class HashTable:
                 while old:
                     if old.key:
                         self.put(old.key, old.value)
-                        old = old.next
+                        old = old.next 
 
 
 
