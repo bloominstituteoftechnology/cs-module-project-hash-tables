@@ -56,6 +56,19 @@ class HashTable:
 
         # Your code here
 
+        FNV_offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
+
+        hashed_var = FNV_offset_basis
+
+        string_bytes = key.encode()
+
+        for b in string_bytes:
+            hashed_var = hashed_var * FNV_prime
+            hashed_var = hashed_var ^ b
+
+        return hashed_var
+
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
