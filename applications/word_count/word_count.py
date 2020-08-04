@@ -1,6 +1,12 @@
-def word_count(s):
-    # Your code here
+import string
 
+
+def word_count(s):
+    clean = s.translate(str.maketrans('', '', '\":;,.-+=/\\|[]{}()*^&'))
+    words = clean.split()
+    words = [x.lower() for x in words]
+    words = {x.lower(): words.count(x) for x in words}
+    return words
 
 
 if __name__ == "__main__":
