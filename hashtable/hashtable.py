@@ -13,6 +13,46 @@ class HashTableEntry:
 MIN_CAPACITY = 8
 
 
+class LinkedList:
+    def __init__(self, key, value):
+        new_node = HashTableEntry(key, value)
+        self.head = new_node
+        self.tail = new_node
+        self.size = 0
+
+    def insert(self, key, value):
+        new_node = HashTableEntry(key, value)
+        if not self.head:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            new_node.next = self.head
+            self.head = new_node
+
+    def delete(self, key):
+        curr = self.head
+        prev = None
+        while curr:
+            if curr.key == key:
+                if curr == self.head:
+                    self.head = curr.next
+                    return
+                else:
+                    prev.next = curr.next
+                    return
+            curr = curr.next
+
+    def get(self, key):
+        print('key', key)
+        curr = self.head
+        while curr:
+            if curr.key == key:
+                print('match')
+                return curr.value
+            curr = curr.next
+        return None
+
+
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -25,6 +65,15 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.hashTable = [None] * capacity
+        self.entries = 0
+
+    # def recurseList(self, node, key):
+    #     if not node:
+    #         return None
+    #     if node.key == key:
+    #         return node.val
+    #     else:
+    #         self.recurseList(node.next)
 
     def get_num_slots(self):
         """
@@ -85,9 +134,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        new_entry = HashTableEntry(key, value)
+        # new_entry = HashTableEntry(key, value)
         idx = self.hash_index(key)
-        self.hashTable[idx] = new_entry
+        if self.hashTable[idx] is None:
+            self.hashTable[idx] = LinkedList(key, value)
+        else:
+            self.hashTable[idx].insert(key, value)
+        self.entries += 1
 
     def delete(self, key):
         """
@@ -99,7 +152,11 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-        self.hashTable[idx].value = None
+        if self.hashTable[idx]:
+            self.hashTable[idx].delete(key)
+            self.entries -= 1
+        else:
+            print('key not found')
 
     def get(self, key):
         """
@@ -111,8 +168,10 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-        print('self', self.hashTable[idx])
-        return self.hashTable[idx].value
+        if self.hashTable[idx]:
+            return self.hashTable[idx].get(key)
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -124,9 +183,19 @@ class HashTable:
         # Your code here
 
 
-table = HashTable(100)
+table = HashTable(1)
 print(table.put('hello', 'world'))
+table.put('testing', 'this')
 print(table.get('hello'))
+print(table.hashTable)
+table.delete('testing')
+print(table.get('testing'), 'yooooo')
+print(table.get('hello'), 'ayyyayyyooo')
+table.put('i cut the tree down', 'that we grew')
+print(table.entries)
+
+# ll = LinkedList()
+# ll.insert('hello', 'world')
 if __name__ == "__main__":
     ht = HashTable(8)
 
