@@ -13,6 +13,16 @@ class HashTableEntry:
 MIN_CAPACITY = 8
 
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+        def insert_at_head(self, key, value):
+            new_node = HashTableEntry(key, value)
+            new_node.next = self.head
+            self.head = new_node
+
+
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -25,6 +35,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.hash_data = [None] * self.capacity
+        self.element_count = 0
 
     def get_num_slots(self):
         """
@@ -46,6 +57,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.element_count / self.capacity
 
     def fnv1(self, key):
         """
@@ -87,6 +99,7 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         self.hash_data[index] = value
+        self.element_count += 1
 
     def delete(self, key):
         """
@@ -100,6 +113,7 @@ class HashTable:
         index = self.hash_index(key)
         if self.hash_data[index]:
             self.hash_data[index] = None
+            self.element_count -= 1
         else:
             print("Warning")
 
