@@ -24,8 +24,14 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
 
+        # if self.capacity > MIN_CAPACITY:
+        #     self.capacity = capacity
+        # else:
+        #     self.capacity = MIN_CAPACITY
         self.capacity = capacity
+
         self.HashTable = [None] * capacity
+
         self.size = 0
 
     def get_num_slots(self):
@@ -132,17 +138,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        idx = self.hash_index(key)
 
-        while self.HashTable[idx] is not None:
+        self.put(key, None)
+        self.size -= 1
 
-            if self.HashTable[idx].key == key:
-                self.HashTable[idx] = None
+        # if self.HashTable[idx] is None:
+        #     print(f"The key {key} cannot be found!")
 
-            elif self.HashTable[idx] == None:
-                return None
-
-        return print(f"The key {key} you are looking for cannot be found!")
+        # else:
+        #     self.HashTable[idx] = None
+        #     self.size -= 1
 
       # The following code is for no Collisions - Day # 1
       # index = self.hash_index(key)
@@ -159,17 +164,17 @@ class HashTable:
         # Your code here
 
         idx = self.hash_index(key)
-        current = self.HashTable[idx]
+        node = self.HashTable[idx]
 
-        while current is not None and current.key != key:
+        while node is not None and node.key != key:
 
-            current = current.next
+            node = node.next
 
-        if current is None:
+        if node is None:
             return None
 
         else:
-            return current.value
+            return node.value
 
         # Get method for no collisions = Day # 1
 
@@ -185,6 +190,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if new_capacity < MIN_CAPACITY:
+            new_capacity = MIN_CAPACITY
+
+        prev_HashTable = self.HashTable
+        self.capacity = new_capacity
+        self.HashTable = [None] * new_capacity
+        self.size = 0
+
+        # Rehash all the values from prev_HashTable and mod them into new table
+        for item in prev_HashTable:
+            current = item
+            while current:
+                self.put(current.key, current.value)
+                current = current.next
 
 
 if __name__ == "__main__":
