@@ -44,7 +44,7 @@ class HashTable:
 
         Implement this.
         """
-        # The load factor is the number of keys stroed in the has table divided by the capacity
+        # The load factor is the number of keys stored in the hash table divided by the capacity
             # The size should be chosen so that the load factor is less than 1
         return self.count / self.capacity
 
