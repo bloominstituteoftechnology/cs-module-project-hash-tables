@@ -100,6 +100,8 @@ class HashTable:
         if self.array[index] is None:
             self.array[index] = entry
             self.entries += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.entries * 2)
             return
         else: # Colliding.
             prev = None
@@ -112,6 +114,8 @@ class HashTable:
                 current = current.next
             prev.next = entry
             self.entries += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.entries * 2)
             return
 
 
@@ -131,10 +135,14 @@ class HashTable:
                 if prev: #There is a node before this one. Works regardless if next is None or not.
                     prev.next = current.next
                     self.entries -= 1
+                    if self.get_load_factor() < 0.2:
+                        self.resize(self.entries * 2)
                     return
                 else: #Previous is None, may or may not be a node after this.
                     self.array[index] = current.next
                     self.entries -= 1
+                    if self.get_load_factor() < 0.2:
+                        self.resize(self.entries * 2)
                     return
             prev = current
             current = current.next
@@ -168,6 +176,8 @@ class HashTable:
 
         Implement this.
         """
+        if new_capacity < MIN_CAPACITY: #Minimums are minimums for a reason.
+            new_capacity = MIN_CAPACITY
         old_array = self.array
         self.capacity = new_capacity
         self.array = [None] * new_capacity
