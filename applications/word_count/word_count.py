@@ -1,5 +1,16 @@
+import re
+
+cache = {}
 def word_count(s):
-    # Your code here
+    ## replace invalid characters
+    name = s.replace('"', '').replace(':', '').replace(',', '').replace('.', '').replace('-', '').replace('+', '').replace('=', '').replace('/', '').replace("|", '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace('(', '').replace(')', '').replace('*', '').replace('^', '').replace('&', '').replace('\\', '')
+    
+    if name == "":
+        return {}
+        split = name.lower().split()
+        words = {i:split.count(i) for i in split}
+        print(words)
+        return words
 
 
 
