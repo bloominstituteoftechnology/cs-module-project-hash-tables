@@ -1,9 +1,19 @@
+
+
 def word_count(s):
-    x = s.split()
-    count = 0
-    for i in x:
-        count += 1
-        print(i)
+    ignore = '" : ; , . - + = / \ | [ ] { } ( ) * ^ &'
+    count = dict()
+    for i in s:
+        if i in ignore:
+            s = s.replace(i, ' ')
+            s = s.lower()
+    s = s.split()
+    for word in s:
+        if word not in count:
+            count[word] = 1
+        else:
+            count[word] += 1
+    return count
 
 
 if __name__ == "__main__":
