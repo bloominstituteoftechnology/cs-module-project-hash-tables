@@ -1,6 +1,10 @@
+# Import libraries, packages, modules needed:
+import sys
+
+
 class HashTableEntry:
     """
-    Linked List hash table key/value pair
+    Linked List node with hash table key/value pair
     """
     def __init__(self, key, value):
         self.key = key
@@ -14,14 +18,15 @@ MIN_CAPACITY = 8
 
 class HashTable:
     """
-    A hash table that with `capacity` buckets
-    that accepts string keys
+    A hash table with `capacity` number of buckets
+    that accepts string keys.
 
     Implement this.
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.array = [None for number in range(self.capacity)]
 
 
     def get_num_slots(self):
@@ -34,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -58,11 +63,50 @@ class HashTable:
 
     def djb2(self, key):
         """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
+        DJB2 hash function, 32-bit
         """
-        # Your code here
+        # Make sure key is a string (or can be converted to a string representation):
+        try:
+            key = str(key)
+        except TypeError:
+            sys.exit("Error: Please enter a string argument for 'key'.")
+        
+        # Get bytes representation of provided key:
+        key_as_bytes = key.encode("utf-8")
+        # Apply DJB2 hash function to bytes representations:
+        hash = 5381
+        for char in key_as_bytes:
+            # Faster C-style alt. syntax for the below: hash = ((hash << 5) + hash) + char
+            hash = hash * 33 + char
+        
+        # Modulo the result to make sure it is an index within the existing array:
+        hash %= self.capacity
+        
+        return hash
+
+
+    def djb2_xor(self, key):
+        """
+        DJB2 hash function, 32-bit
+        """
+        # Make sure key is a string (or can be converted to a string representation):
+        try:
+            key = str(key)
+        except TypeError:
+            sys.exit("Error: Please enter a string argument for 'key'.")
+        
+        # Get bytes representation of provided key:
+        key_as_bytes = key.encode("utf-8")
+        # Apply DJB2 hash function to bytes representations:
+        hash = 5381
+        for byte in key_as_bytes:
+            # The ^ operator below is the bitwise XOR operator:
+            hash = ((hash * 33) ^ byte)  # Q: Should we then % 128 (same as % 0x10000000) this to "keep it 32-bit" bc "python ints don't overflow"?
+        
+        # Modulo the result to make sure it is an index within the existing array:
+        hash %= self.capacity
+        
+        return hash
 
 
     def hash_index(self, key):
@@ -70,8 +114,9 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        #return self.fnv1(key)
+        return self.djb2(key)
+
 
     def put(self, key, value):
         """
@@ -81,7 +126,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Get index for this key from our hash function:
+        index = self.djb2(key)
+        # Put the value for this key at that index:
+        self.array[index] = value
 
 
     def delete(self, key):
@@ -92,7 +140,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Get index for this key from our hash function:
+        index = self.djb2(key)
+        # "Delete" the value at that index (for the provided key) by setting it back to None:
+        self.array[index] = None
 
 
     def get(self, key):
@@ -103,7 +154,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Get index for this key from our hash function:
+        index = self.djb2(key)
+        # Return the value at that index (the value corresponding to the provided key):
+        return self.array[index]
 
 
     def resize(self, new_capacity):
@@ -117,37 +171,37 @@ class HashTable:
 
 
 
-if __name__ == "__main__":
-    ht = HashTable(8)
+# if __name__ == "__main__":
+#     ht = HashTable(8)
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
+#     ht.put("line_1", "'Twas brillig, and the slithy toves")
+#     ht.put("line_2", "Did gyre and gimble in the wabe:")
+#     ht.put("line_3", "All mimsy were the borogoves,")
+#     ht.put("line_4", "And the mome raths outgrabe.")
+#     ht.put("line_5", '"Beware the Jabberwock, my son!')
+#     ht.put("line_6", "The jaws that bite, the claws that catch!")
+#     ht.put("line_7", "Beware the Jubjub bird, and shun")
+#     ht.put("line_8", 'The frumious Bandersnatch!"')
+#     ht.put("line_9", "He took his vorpal sword in hand;")
+#     ht.put("line_10", "Long time the manxome foe he sought--")
+#     ht.put("line_11", "So rested he by the Tumtum tree")
+#     ht.put("line_12", "And stood awhile in thought.")
 
-    print("")
+#     print("")
 
-    # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+#     # Test storing beyond capacity
+#     for i in range(1, 13):
+#         print(ht.get(f"line_{i}"))
 
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+#     # Test resizing
+#     old_capacity = ht.get_num_slots()
+#     ht.resize(ht.capacity * 2)
+#     new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+#     # Test if data intact after resizing
+#     for i in range(1, 13):
+#         print(ht.get(f"line_{i}"))
 
-    print("")
+#     print("")
