@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -26,7 +27,6 @@ class HashTable:
         self.count = 0
         self.contents = [None] * self.capacity
 
-
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
@@ -40,7 +40,6 @@ class HashTable:
         # Your code here
         return self.capacity
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -51,7 +50,6 @@ class HashTable:
         # Number of keys stored / capacity
         return self.count / self.capacity
 
-
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
@@ -60,7 +58,6 @@ class HashTable:
         """
 
         # Your code here
-
 
     def djb2(self, key):
         """
@@ -75,13 +72,12 @@ class HashTable:
             hash = (hash * 33) + ord(elem)
         return hash
 
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -93,6 +89,25 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # load factor
+        lf = self.get_load_factor()
+
+        # if load factor greater than 0.7, double in size
+        if lf > 0.7:
+            new_size = self.capacity * 2
+            self.resize(new_size)
+
+        # if lf < 0.2:
+        #     new_size = self.capacity / 2
+
+        #     # if at minimum, resize with min capacity
+        #     if new_size <= MIN_CAPACITY:
+        #         self.resize(MIN_CAPACITY)
+
+        #     # otherwise, resize like normal
+        #     else:
+        #         self.resize(new_size)
 
         index = self.hash_index(key)
         new = HashTableEntry(key, value)
@@ -121,17 +136,17 @@ class HashTable:
 
                 if contents.next is None:
                     # breakpoint()
-                    # if head node but no next, make head node's next the new node
+                    # if head node but no next, make head node's next the new
+                    # node
                     contents.next = new
                     self.count += 1
 
                 # otherwise, there is a next, so make a new next
                 else:
-                    
+
                     cur = self.contents[index].next
                     cur.next = new
                     self.count += 1
-
 
     def delete(self, key):
         """
@@ -193,7 +208,6 @@ class HashTable:
                 else:
                     return self.contents[index].next.value
 
-
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -203,66 +217,29 @@ class HashTable:
         """
         # Your code here
 
+        # reset capacity
+        self.capacity = new_capacity
+
+        # extract current state of contents
+        contents = self.contents
+
+        # redefine self.contents to scale of capacity
+        self.contents = [None] * self.capacity
+
+        # iterate through contents -> count to get actual num of nodes
+        for i in range(len(contents)):
+            cur = contents[i]
+            # account for nexts
+            # if no next, put cur
+            if cur.next:  # > AttributeError: 'NoneType' object has no attribute 'next'
+                self.put(cur.next.key, cur.next.value)
+                self.put(cur.key, cur.value)
+            # otherwise, put next, then self
+            else:
+                self.put(cur.key, cur.value)
 
 
 if __name__ == "__main__":
-    # ht = HashTable(8)
-
-    # ht.put("line_1", "'Twas brillig, and the slithy toves")
-    # ht.put("line_2", "Did gyre and gimble in the wabe:")
-    # ht.put("line_3", "All mimsy were the borogoves,")
-    # ht.put("line_4", "And the mome raths outgrabe.")
-    # ht.put("line_5", '"Beware the Jabberwock, my son!')
-    # ht.put("line_6", "The jaws that bite, the claws that catch!")
-    # ht.put("line_7", "Beware the Jubjub bird, and shun")
-    # ht.put("line_8", 'The frumious Bandersnatch!"')
-    # ht.put("line_9", "He took his vorpal sword in hand;")
-    # ht.put("line_10", "Long time the manxome foe he sought--")
-    # ht.put("line_11", "So rested he by the Tumtum tree")
-    # ht.put("line_12", "And stood awhile in thought.")
-
-    # print("")
-
-    # # Test storing beyond capacity
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
-
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
-
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-
-    # # Test if data intact after resizing
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
-
-    # print("")
-
-    # ht = HashTable(0x10000)
-
-    # ht.put("key-0", "val-0")
-    # ht.put("key-1", "val-1")
-    # ht.put("key-2", "val-2")
-
-    # return_value = ht.get("key-0")
-    # print("key-0 val:", return_value) #> "val-0"
-    # return_value = ht.get("key-1")
-    # print("key-1 val:", return_value) #> "val-1"
-    # return_value = ht.get("key-2")
-    # print("key-2 val:", return_value) #> "val-2"
-
-    # ht.delete("key-2")
-    # ht.delete("key-1")
-    # ht.delete("key-0")
-
-    # return_value = ht.get("key-0")
-    # print("key-0 val:", return_value) #> None
-    # return_value = ht.get("key-1")
-    # print("key-1 val:", return_value) #> None
-    # return_value = ht.get("key-2")
-    # print("key-2 val:", return_value) #> None
 
     # ht = HashTable(8)
 
@@ -295,25 +272,123 @@ if __name__ == "__main__":
     # print("key-7 val:", return_value) #> val-7
 
     # return_value = ht.get("key-8")
-    # print("key-8 val:", return_value) #> val-8 
+    # print("key-8 val:", return_value) #> val-8
     # return_value = ht.get("key-9")
-    # print("key-9 val:", return_value) #> val-9 
+    # print("key-9 val:", return_value) #> val-9
 
-    ht = HashTable(0x10000)
+    # ht = HashTable(0x10000)
+
+    # ht.put("key-0", "val-0")
+    # ht.put("key-1", "val-1")
+    # ht.put("key-2", "val-2")
+
+    # # breakpoint()
+
+    # ht.put("key-0", "new-val-0")
+    # ht.put("key-1", "new-val-1")
+    # ht.put("key-2", "new-val-2")
+
+    # return_value = ht.get("key-0")
+    # print("key-0 val:", return_value) #> "new-val-0"
+    # return_value = ht.get("key-1")
+    # print("key-1 val:", return_value) #> "new-val-1"
+    # return_value = ht.get("key-2")
+    # print("key-2 val:", return_value) #> "new-val-2"
+
+    # ht = HashTable(8)
+
+    # ht.put("key-0", "val-0")
+    # ht.put("key-1", "val-1")
+    # ht.put("key-2", "val-2")
+    # ht.put("key-3", "val-3")
+    # ht.put("key-4", "val-4")
+    # ht.put("key-5", "val-5")
+    # ht.put("key-6", "val-6")
+    # ht.put("key-7", "val-7")
+    # ht.put("key-8", "val-8")
+    # ht.put("key-9", "val-9")
+
+    # ht.put("key-0", "new-val-0")
+    # ht.put("key-1", "new-val-1")
+    # ht.put("key-2", "new-val-2")
+    # ht.put("key-3", "new-val-3")
+    # ht.put("key-4", "new-val-4")
+    # ht.put("key-5", "new-val-5")
+    # ht.put("key-6", "new-val-6")
+    # ht.put("key-7", "new-val-7")
+    # ht.put("key-8", "new-val-8")
+    # ht.put("key-9", "new-val-9")
+
+    # return_value = ht.get("key-0")
+    # print("key-0 val:", return_value) #> "new-val-0"
+    # return_value = ht.get("key-1")
+    # print("key-1 val:", return_value) #> "new-val-1"
+    # return_value = ht.get("key-2")
+    # print("key-2 val:", return_value) #> "new-val-2"
+    # return_value = ht.get("key-3")
+    # print("key-3 val:", return_value) #> "new-val-3"
+    # return_value = ht.get("key-4")
+    # print("key-4 val:", return_value) #> "new-val-4"
+    # return_value = ht.get("key-5")
+    # print("key-5 val:", return_value) #> "new-val-5"
+    # return_value = ht.get("key-6")
+    # print("key-6 val:", return_value) #> "new-val-6"
+    # return_value = ht.get("key-7")
+    # print("key-7 val:", return_value) #> "new-val-7"
+    # return_value = ht.get("key-8")
+    # print("key-8 val:", return_value) #> "new-val-8"
+    # return_value = ht.get("key-9")
+    # print("key-9 val:", return_value) #> "new-val-9"
+
+    # print("---" * 10)
+    # print(ht.resize(20))
+
+    # ht = HashTable(8)
+
+    # ht.put("key-0", "val-0")
+    # ht.put("key-1", "val-1")
+    # ht.put("key-2", "val-2")
+    # ht.put("key-3", "val-3")
+    # ht.put("key-4", "val-4")
+    # ht.put("key-5", "val-5")
+    # ht.put("key-6", "val-6")
+    # ht.put("key-7", "val-7")
+    # ht.put("key-8", "val-8")
+    # ht.put("key-9", "val-9")
+
+    # ht.resize(1024)
+    # print("new_capacity:", ht.get_num_slots()) #> 1024
+
+    # return_value = ht.get("key-0")
+    # print("key-0 val:", return_value) #> "new-val-0"
+    # return_value = ht.get("key-1")
+    # print("key-1 val:", return_value) #> "new-val-1"
+    # return_value = ht.get("key-2")
+    # print("key-2 val:", return_value) #> "new-val-2"
+    # return_value = ht.get("key-3")
+    # print("key-3 val:", return_value) #> "new-val-3"
+    # return_value = ht.get("key-4")
+    # print("key-4 val:", return_value) #> "new-val-4"
+    # return_value = ht.get("key-5")
+    # print("key-5 val:", return_value) #> "new-val-5"
+    # return_value = ht.get("key-6")
+    # print("key-6 val:", return_value) #> "new-val-6"
+    # return_value = ht.get("key-7")
+    # print("key-7 val:", return_value) #> "new-val-7"
+    # return_value = ht.get("key-8")
+    # print("key-8 val:", return_value) #> "new-val-8"
+    # return_value = ht.get("key-9")
+    # print("key-9 val:", return_value) #> "new-val-9"
+
+    ht = HashTable(8)
 
     ht.put("key-0", "val-0")
     ht.put("key-1", "val-1")
     ht.put("key-2", "val-2")
-
-    # breakpoint()
-
-    ht.put("key-0", "new-val-0")
-    ht.put("key-1", "new-val-1")
-    ht.put("key-2", "new-val-2")
-
-    return_value = ht.get("key-0")
-    print("key-0 val:", return_value) #> "new-val-0"
-    return_value = ht.get("key-1")
-    print("key-1 val:", return_value) #> "new-val-1"
-    return_value = ht.get("key-2")
-    print("key-2 val:", return_value) #> "new-val-2"
+    ht.put("key-3", "val-3")
+    ht.put("key-4", "val-4")
+    ht.put("key-5", "val-5")
+    ht.put("key-6", "val-6")
+    # ht.put("key-7", "val-7")
+    # ht.put("key-8", "val-8")
+    # ht.put("key-9", "val-9")
