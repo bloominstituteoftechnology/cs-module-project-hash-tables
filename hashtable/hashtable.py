@@ -21,7 +21,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = MIN_CAPACITY
+        self.capacity = capacity
         self.count = 0
         self.storage = [None] * self.capacity
 
@@ -64,8 +64,8 @@ class HashTable:
         """
         # Your code here
         hash = 5381
-        for character in key:
-            hash = (hash * 33) + ord(character)
+        for byte in key:
+            hash = ((hash << 5) + hash) + ord(byte)
         return hash
 
 
@@ -92,6 +92,7 @@ class HashTable:
         storage = self.storage[index]
         self.count += 1
 
+        # Check if something is already stored there
         if storage:
             self.storage[index] = entry
             self.storage[index].next = storage
@@ -106,8 +107,25 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.put(key, None)
-        self.count -= 1
+        index = self.hash_index(key)
+        node = self.storage[index]
+        prev = None
+
+
+        if node.key == key:
+            self.storage[index] = node.next
+            return
+
+        # Search the chain in the index
+        while node != None:
+            if node.key == key:
+                prev.next = node.next
+                self.storage[index].next == None
+                return
+            prev = node
+            node = node.next
+
+        return
 
 
     def get(self, key):
@@ -119,6 +137,8 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         storage = self.storage[index]
+
+        # Search the chain in the index
         while storage:
             if storage.key == key:
                 return storage.value
@@ -133,6 +153,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        oldArray = self.storage
+
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+
+        #write to new array
+        for keys in oldArray:
+            # Check for value in keys
+            if keys:
+                current = keys
+            while current:
+                self.put(current.key, current.value)
+                current = current.next
 
 
 
