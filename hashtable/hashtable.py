@@ -72,7 +72,7 @@ class HashTable:
         hash = 5381
 
         for c in key:
-            hash = (hash * 33) + ord(c)
+            hash = (hash * 33) + ord(c) 
         return hash
 
 
@@ -93,9 +93,28 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hash first the index,
         index = self.hash_index(key)
 
-        self.array[index] = HashTableEntry(key, value)
+        # you will need to create a current pointer that points to the current item index
+        cur = self.array[index]
+
+        if cur is not None:
+
+            cur.next = HashTableEntry(key, value)
+        else:
+
+
+        
+        # then you will want to do a next pointer that just is cur.next 
+        # check first if there is an item already in that index, check it with if it's not None
+        # if there is an item there, then call your .next from that current item and then make .next 
+
+        # equal to the new HashTableEntry 
+        # if there is no item there, or if it is None, then you will just add that new 
+        # HashTableEntry into that index
+        # self.array[index] = HashTableEntry(key, value)
+
 
             
 
