@@ -7,7 +7,7 @@ r = f.read()
 
 def histo(s):
     cache = dict()
-    words = re.findall('[A-Za-z\']+(?:\`[A-Za-z]+)?', r)
+    words = re.findall(r'[A-Za-z\']+(?:\`[A-Za-z]+)?', r)
     for word in words:
         if word.lower() not in cache:
             cache[word.lower()] = 1

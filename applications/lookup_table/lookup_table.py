@@ -17,12 +17,6 @@ def slowfun(x, y, cache=dict()):
         cache[(x, y)] = slowfun_too_slow(x, y)
     return cache[(x, y)]
 
-    """
-    Rewrite slowfun_too_slow() in here so that the program produces the same
-    output, but completes quickly instead of taking ages to run.
-    """
-    # Your code here
-
 
 # Do not modify below this line!
 for i in range(50000):

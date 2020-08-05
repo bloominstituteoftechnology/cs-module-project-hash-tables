@@ -4,7 +4,7 @@ import re
 def word_count(s):
     # Your code here
     d = dict()
-    split = re.findall('[A-Za-z\']+(?:\`[A-Za-z]+)?', s)
+    split = re.findall(r'[A-Za-z\']+(?:\`[A-Za-z]+)?', s)
 
     split = [x for x in split if x != '']
     print(split)
