@@ -23,7 +23,7 @@ def slowfun(x, y, cache = {}):
         cache[v] %= 982451653
         v = cache[v]
     else: # factorial already in cache
-        v = chache[v]
+        v = cache[v]
     return v
 
 
