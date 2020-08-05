@@ -16,16 +16,16 @@ with open(f"{os.getcwd()}/applications/markov/input.txt") as f:
         except IndexError:
             pass
     lst = list(d.items())
-    while True:
-        choice = random.choice(lst)
-        print(choice)
-        result = None
-        while not result:
-            searched = re.findall(r'[A-Z]*', choice[1])
-            if searched:
-                result = searched[1]
+    i = 0
+    start = None
+    while i < len(lst):
+        searched = re.findall(r'^"[A-Z][a-z]*|^[A-Z][a-z]*', lst[i][1])
+        print(searched, 'searched')
+        if searched:
+            start = searched[0]
             break
-        print(result)
+        i += 1
+    print(re.findall(r'^"[A-Z][a-z\"]*|^[A-Z][a-z\"]*', '"Hello"'))
 # TODO: analyze which words can follow other words
 # Your code here
 
