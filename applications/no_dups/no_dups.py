@@ -1,5 +1,13 @@
 def no_dups(s):
-    # Your code here
+    used = []
+
+    for letter in s.split():
+        if not used.__contains__(letter):
+            used.append(letter)
+
+    return " ".join(used)
+
+
 
 
 
