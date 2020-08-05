@@ -150,11 +150,20 @@ class HashTable:
         if not self.contents[index]:
             return "Warning: Key Not Found!"
 
-        # otherwise, key had a value, so remove it
+        # otherwise, check for a next
         else:
-            self.contents[index] = None
-            # update counter
-            self.count -= 1
+            # if there is no next, then delete value
+            if not self.contents[index].next:
+                self.contents[index].value = None
+                # update counter
+                self.count -= 1
+
+            # if there is a next, delete value and update node info
+            else:
+                cur = self.contents[index]
+                cur.value = None
+                self.contents[index] = cur.next
+                self.count -= 1
 
     def get(self, key):
         """
