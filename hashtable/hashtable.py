@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -45,6 +44,8 @@ class HashTable:
 
         Implement this.
         """
+        # The load factor is the number of keys stroed in the has table divided by the capacity
+            # The size should be chosen so that the load factor is less than 1
         return self.count / self.capacity
 
 
@@ -104,6 +105,8 @@ class HashTable:
 
         Implement this.
         """
+        # Use the put method from earlier, set the value to none
+            # decrement the count by 1
         self.put(key, None)
         self.count -= 1
 
@@ -122,6 +125,7 @@ class HashTable:
             if storage.key == key:
                 return storage.value
             storage = storage.next
+        # If the key isn't found, we return None
         return None
 
 
@@ -132,7 +136,18 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        old_table = self.storage
+        old_capacity = self.capacity
+
+        self.storage = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for index in range(old_capacity):
+            position = old_table[index]
+            while position != None:
+                self.put(position.key, position.value)
+                position = position.next
+        
 
 
 
