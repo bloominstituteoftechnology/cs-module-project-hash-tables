@@ -8,9 +8,72 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __str__(self):
+        return f"{self.key}: {self.value}\n"
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def __str__(self):
+        text = ""
+        current = self.head
+        while current is not None:
+            text += str(current)
+            current = current.next
+        return text
+
+    def prepend(self, node):
+        node.next = self.head
+        self.head = node
+
+    def append(self, node):
+        current = self.head
+        if current is None:
+            self.prepend(node)
+        else:
+            while current.key == node.key or current.next is not None:
+                if current.key == node.key:
+                    current.value = node.value
+                    return
+                current = current.next
+            current.next = node
+
+    def find(self, key):
+        cur = self.head
+        while cur is not None:
+            if cur.key == key:
+                break
+            cur = cur.next
+        return cur
+
+    def popleft(self):
+        val = self.head
+        if val is not None:
+            self.head = val.next
+        return val
+
+    def delete(self, key):
+        cur = self.head
+        if cur.key == key:
+            return self.popleft()
+        if cur.next is None:
+            return None
+        prev = cur
+        cur = prev.next
+        while cur is not None:
+            if cur.key == key:
+                prev.next = cur.next
+                return cur
+            else:
+                prev = cur
+                cur = prev.next
+        return None
 
 
 class HashTable:
@@ -24,7 +87,16 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
-        self.list = [None] * self.capacity
+        self.list = [LinkedList() for _ in range(self.capacity)]
+        self.count = 0
+
+    def __str__(self):
+        text = ""
+        for i in range(len(self.list)):
+            text += f"Bucket {i}:\n"
+            text += str(self.list[i])
+            text += "\n"
+        return text
 
     def get_num_slots(self):
         """
@@ -37,6 +109,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -45,6 +118,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.count / self.capacity
 
     def fnv1(self, key):
         """
@@ -88,7 +162,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.list[self.hash_index(key)] = value
+        # print(self.hash_index(key), key, value)
+        self.count += 1
+        # current = self.list[self.hash_index(key)]
+        # if self.list[self.hash_index(key)]:
+        #     while current.next is not None or current.key == key:
+        #         if current.key == key:
+        #             current.value = value
+        #             return
+        #         current = current.next
+        #     current.next = HashTableEntry(key, value)
+        # else:
+        #     self.list[self.hash_index(key)] = HashTableEntry(key, value)
+
+        bucket = self.list[self.hash_index(key)]
+        bucket.append(HashTableEntry(key, value))
+        # if self.get_load_factor() > .7:
+        #     self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -99,7 +189,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.list[self.hash_index(key)] = None
+        self.count -= 1
+        # index = self.hash_index(key)
+        # if self.list[index]:
+        #     current = self.list[index]
+        #     while current.next is not None:
+        #         if current.next.key == key:
+        #             # remove the node
+        #             break
+        #         current = current.next
+        #     return current.value
+        # else:
+        #     return None
+        bucket = self.list[self.hash_index(key)]
+        bucket.delete(key)
 
     def get(self, key):
         """
@@ -110,7 +213,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.list[self.hash_index(key)]
+        # if self.list[self.hash_index(key)]:
+        #     bucket = self.list[self.hash_index(key)]
+        #     while bucket is not None:
+        #         if bucket.key == key:
+        #             return bucket.value
+        #         bucket = bucket.next
+        bucket = self.list[self.hash_index(key)]
+        val = bucket.find(key)
+        if val is None:
+            return None
+        return bucket.find(key).value
 
     def resize(self, new_capacity):
         """
@@ -120,6 +233,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        data = self.list
+        # self.list = [LinkedList()] * new_capacity
+        # self.capacity = new_capacity
+        # self.count = 0
+        self.__init__(new_capacity)
+        for bucket in data:
+            current = bucket.head
+            while current is not None:
+                self.put(current.key, current.value)
+                current = current.next
 
 
 if __name__ == "__main__":
