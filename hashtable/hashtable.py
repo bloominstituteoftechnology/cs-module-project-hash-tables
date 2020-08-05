@@ -44,11 +44,9 @@ class LinkedList:
             curr = curr.next
 
     def get(self, key):
-        print('key', key)
         curr = self.head
         while curr:
             if curr.key == key:
-                print('match')
                 return curr.value
             curr = curr.next
         return None
@@ -192,8 +190,9 @@ class HashTable:
                 return
             items.append([node.key, node.value])
             getListNodes(node.next)
+
         for item in self.hashTable:
-            if item:
+            if item is not None:
                 getListNodes(item.head)
 
         self.hashTable = [None] * new_capacity
