@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -23,6 +22,7 @@ class HashTable:
     def __init__(self, capacity = MIN_CAPACITY):
         self.capacity = capacity
         self.bucket = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -43,7 +43,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -84,7 +84,26 @@ class HashTable:
         """
         entry = HashTableEntry(key, value)
         index = self.hash_index(key)
-        self.bucket[index] = entry
+        cur = self.bucket[index]
+
+        if cur:
+            last_entry = None
+            while cur:
+                if cur.key == key:
+                    cur.value = value
+                    return
+                else:
+                    last_entry = cur
+                    cur = cur.next
+            last_entry.next = entry
+            self.count += 1
+        else:
+            self.bucket[index] = entry
+            self.count += 1
+        
+        if self.get_load_factor() >= 0.7:
+            self.resize(self.capacity * 2)
+
         
     def delete(self, key):
         """
@@ -94,9 +113,25 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        self.bucket.pop(index)
 
+        index = self.hash_index(key)
+        cur = self.bucket[index]
+
+        if cur:
+            previous_entry = None
+            while cur:
+                if cur.key == key:
+                    if previous_entry:
+                        previous_entry.next = cur.next
+                    else:
+                        self.bucket[index] = cur.next
+
+                    self.count -= 1
+                previous_entry = cur
+                cur = cur.next
+        
+        if self.get_load_factor() <= 0.2:
+            self.resize(self.capacity * 0.5)
 
     def get(self, key):
         """
@@ -107,14 +142,14 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
+        cur = self.bucket[index]
 
-        if self.bucket[index]:
-            value = self.bucket[index].value
-            return value
-        else:
-            return None
-
-
+        while cur:
+            if cur.key == key:
+                return cur.value
+            else:
+                cur = cur.next
+        return None
 
     def resize(self, new_capacity):
         """
@@ -123,9 +158,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        old_bucket = self.bucket
+        self.bucket = [None] * new_capacity
+        self.capacity = new_capacity
 
+        for entry in old_bucket:
+            if entry:
+                self.put(entry.key, entry.value)
 
 if __name__ == "__main__":
     ht = HashTable(8)
@@ -143,21 +183,21 @@ if __name__ == "__main__":
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
 
-    # print("")
+    print("")
 
-    # # Test storing beyond capacity
+    # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # # Test if data intact after resizing
+    # Test if data intact after resizing
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    # print("")
+    print("")
