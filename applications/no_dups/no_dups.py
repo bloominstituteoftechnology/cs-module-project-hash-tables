@@ -1,12 +1,19 @@
+
 def no_dups(s):
-    used = []
+    # Your code here
+    lookup = {}
+    words = s.split()
+    result = ""
 
-    for letter in s.split():
-        if not used.__contains__(letter):
-            used.append(letter)
+    for word in words:
+        if lookup.get(word) is None:
+            lookup[word] = word
+            if result == "":
+                result = word
+            else:
+                result += f" {word}"
 
-    return " ".join(used)
-
+    return result
 
 
 
