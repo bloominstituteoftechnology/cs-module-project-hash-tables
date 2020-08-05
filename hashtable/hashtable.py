@@ -93,23 +93,46 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
         index = self.hash_index(key)
         new = HashTableEntry(key, value)
         contents = self.contents[index]
 
-        # Increase count
-        self.count += 1
+        # if nothing in table at index
+        if contents is None:
+            # enter new at index
+            self.contents[index] = new
+            # print(f"head node: {self.head}")
+
+            # Increase count
+            self.count += 1
+
+        # breakpoint()
 
         # if there is already value for key
-        if self.contents[index]:
-            # update value in key
-            self.contents[index] = new
-            # update next via Linked List Chaining as rest of contents
-            self.contents[index].next = contents
-        
-        # otherwise, there are no contents, so simply enter new value
         else:
-            self.contents[index] = new
+            # handle collisions -> check if head node has a next
+            if self.contents[index].next is None:
+                # breakpoint()
+                # if head node but no next, make head node's next the new node
+                self.contents[index].next = new
+                self.count += 1
+
+            # otherwise, there is a next, so make a new next
+            else:
+                
+                cur = self.contents[index].next
+                cur.next = new
+                self.count += 1
+
+        #     # update value in key
+        #     self.contents[index] = new
+        #     # update next via Linked List Chaining as rest of contents
+        #     self.contents[index].next = contents
+        
+        # # otherwise, there are no contents, so simply enter new value
+        # else:
+        #     self.contents[index] = new
 
 
     def delete(self, key):
@@ -150,8 +173,18 @@ class HashTable:
 
         # otherwise, there is an index for key, so return value
         else:
-            # breakpoint()
-            return self.contents[index].value
+            # need to see if key matches
+            if self.contents[index].key == key:
+                return self.contents[index].value
+
+            # if key doesn't match, check for a next
+            else:
+                if self.contents[index].next is None:
+                    return None
+
+                # if there's a next, return its value
+                else:
+                    return self.contents[index].next.value
 
 
     def resize(self, new_capacity):
@@ -235,7 +268,7 @@ if __name__ == "__main__":
     ht.put("key-6", "val-6")
     ht.put("key-7", "val-7")
     ht.put("key-8", "val-8")
-    # ht.put("key-9", "val-9")
+    ht.put("key-9", "val-9")
 
     return_value = ht.get("key-0")
     print("key-0 val:", return_value) #> val-0
@@ -255,6 +288,6 @@ if __name__ == "__main__":
     print("key-7 val:", return_value) #> val-7
 
     return_value = ht.get("key-8")
-    print("key-8 val:", return_value) #> val-8 --> Problem here is duplication collision
-    # return_value = ht.get("key-9")
-    # self.assertTrue(return_value == "val-9")
+    print("key-8 val:", return_value) #> val-8 
+    return_value = ht.get("key-9")
+    print("key-9 val:", return_value) #> val-9 
