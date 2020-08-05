@@ -191,8 +191,6 @@ class HashTable:
         Implement this.
         """
 
-        # old = self.capacity
-        # new_capacity = len(self.capacity) * 2
         self.capacity = new_capacity
 
         # make a new table
@@ -226,7 +224,7 @@ class HashTable:
                     new_cur.next = HashTableEntry(cur.key, cur.value)
                 cur = cur.next
 
-        # set self.capacity to the new table
+        # set self.data to the new table
         self.data = new_table
 
 
