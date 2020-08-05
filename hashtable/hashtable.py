@@ -139,19 +139,27 @@ class HashTable:
         """
         # Your code here
 
-        self.put(key, None)
-        self.size -= 1
+        idx = self.hash_index(key)
+        current = self.HashTable[idx]
+        prev = None
 
-        # if self.HashTable[idx] is None:
-        #     print(f"The key {key} cannot be found!")
+        while current:
 
-        # else:
-        #     self.HashTable[idx] = None
-        #     self.size -= 1
+            if current.key == key:
 
-      # The following code is for no Collisions - Day # 1
-      # index = self.hash_index(key)
-      # self.HashTable[index].value = None
+                if prev:
+                    prev.next = current.next
+                    self.size -= 1
+                    return
+
+                else:
+                    self.HashTable[idx] = current.next
+                    self.size -= 1
+
+            prev = current
+            current = current.next
+
+        return None
 
     def get(self, key):
         """
