@@ -4,7 +4,7 @@ have collisions after the 3 inserts we do.
 
 Does not collide with DJB2 or FNV-1-64. But could collide with other hashes.
 """
-
+#day one test
 import unittest
 from hashtable import HashTable
 
