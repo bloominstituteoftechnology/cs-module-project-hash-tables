@@ -77,8 +77,9 @@ class HashTable:
             while current:
                 items += 1
                 current = current.next
-        return items / self.capacity
+        load_factor = items / self.capacity
 
+        return load_factor
 
     def fnv1(self, key, seed=0):
         """
@@ -149,6 +150,8 @@ class HashTable:
                 current_node.value = value
             else:
                 current_node.next = HashTableEntry(key, value) # add at end
+        if self.get_load_factor() > 0.7:
+            self.resize(2*self.capacity)
     
 
 
@@ -212,7 +215,7 @@ class HashTable:
         old_hash_map = self.hash_map
         self.hash_map = [None] * new_capacity
         self.capacity = new_capacity
-        
+
         for element in old_hash_map:
             current = element
             while current:
