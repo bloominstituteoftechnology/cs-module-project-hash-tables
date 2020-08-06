@@ -39,7 +39,8 @@ def decode(s):
     r = ''
     for c in s:
         if c in ignore:
-            s = s.replace(c, '')
+            # s = s.replace(c, '')
+            continue
         elif c == ' ':
             r += ' '
         elif c in decode_table:
