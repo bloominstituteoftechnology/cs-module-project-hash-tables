@@ -2,6 +2,8 @@
 import math
 import random
 
+
+
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
     v = math.factorial(v)
@@ -18,7 +20,7 @@ def slowfun(x, y):
     cache = {}
     if (x, y) not in cache:
         cache[(x, y)] = slowfun_too_slow(x, y)
-    return cache[(x, y)]
+        return cache[(x, y)]
 
 
 
