@@ -1,8 +1,33 @@
+#Plan
+# 1. Read the file `input.txt` and split it into words
+## already read in split into words
+
+# 2. Analyze the text, building up the dataset of which words can follow a word
+## Which words can follow a word? Any word that actually does
+### any word at index + 1.
+## How to build dataset?
+
+## Use a hashtable
+### good way to relate one piece of info, with other info. relational
+### Frequent lookups
+## Key: word, value: list of all the words that can follow this word
+
+# 3. Choose a random 'start word' to begin.
+## What is a start word?
+### First or second character is capitalized
+
+##Make a list of start words
+
+# 4. Loop over, print, choose a random following word, if it's a stop word => stop.
+## Whats a stop word?
+### Ends with .?!
+
 import random
 
 # Read in all the words in one go
-with open("input.txt") as f:
+with open("./applications/markov/input.txt") as f:
     words = f.read()
+    # split into words
     lst = words.split()
 # TODO: analyze which words can follow other words
 def make_pairs(arr):

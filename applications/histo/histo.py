@@ -37,7 +37,7 @@ def create_histogram(input_file: str):
 start_time = time.time()
 create_histogram("./applications/histo/robin.txt")
 end_time = time.time()
-print(f"\n\nMy solutiontook: {end_time - start_time}\n\n")
+print(f"\n\nMy solution took: \n {end_time - start_time}\n\n")
     
             
           
