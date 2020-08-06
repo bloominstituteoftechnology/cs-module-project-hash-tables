@@ -24,6 +24,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.array = [None] * self.capacity
+        self.used_slots = 0
 
 
     def get_num_slots(self):
@@ -99,20 +100,37 @@ class HashTable:
         # you will need to create a current pointer that points to the current item index
         cur = self.array[index]
 
-        if cur is not None:
+        # if there is no item there, or if it is None, then you will just add that new 
+        # HashTableEntry into that index
+        # equal to the new HashTableEntry 
+        if cur is None:
 
-            cur.next = HashTableEntry(key, value)
+            self.array[index] = HashTableEntry(key, value)
+            self.used_slots += 1
         else:
-
-
-        
         # then you will want to do a next pointer that just is cur.next 
         # check first if there is an item already in that index, check it with if it's not None
         # if there is an item there, then call your .next from that current item and then make .next 
+            while cur.next is not None: #and cur.key != key:
+        # is refers to memory slot, a value is not guaranteed to be in memory slot
+        # If you want to override a key's current value handle that case
+        # if the key is equal to the current key we are on, then lets swap the current value with the 
+        # value we want to input
+                if cur.key == key:
+                    cur.value = value
+                    # print(f"You successfully overwritten the previous value")
 
-        # equal to the new HashTableEntry 
-        # if there is no item there, or if it is None, then you will just add that new 
-        # HashTableEntry into that index
+                
+                cur = cur.next
+
+            if cur.key == key:
+
+                cur.value = value
+                print(f"You have overwritten the old value")
+
+            else:
+                cur.next = HashTableEntry(key, value)
+                self.used_slots += 1
         # self.array[index] = HashTableEntry(key, value)
 
 
@@ -129,11 +147,26 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        cur = self.array[index]
 
-        if self.array[index] is None:
-            return f"Key was not found"
+        if cur is None:
+
+            return f"Key Does Not Exist"
         else:
-            self.array[index].value = None
+            
+            while cur is not None:
+
+                if cur.key == key:
+
+
+                    old_value = cur.value
+                    cur.value = None
+                    return f"You deleted {old_value}"
+                
+                cur = cur.next
+
+            return f"Key does not exist"
+                
 
     def get(self, key):
         """
@@ -145,11 +178,26 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-
-        if self.array[index] is not None:
-            return self.array[index].value
+        cur = self.array[index]
+        # print(index,'the index on get')
+        # print(cur,'object at the index')
+        
+        if cur is None:
+            # print(cur)
+            return f"Key Does Not Exist in initial search"
         else:
-            return f"Key was not found"
+
+            while cur is not None:
+                
+                if cur.key == key:
+
+                    return cur.value
+                else:
+                    cur = cur.next
+                
+            return f"Key does not exist in traversed linked list"
+
+
         
 
 
@@ -164,6 +212,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # if it is none don't add to new one 
+
 
 
 
@@ -182,19 +232,19 @@ if __name__ == "__main__":
     ht.put("line_10", "Long time the manxome foe he sought--")
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
-
     print("")
+
 
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
     for i in range(1, 13):
