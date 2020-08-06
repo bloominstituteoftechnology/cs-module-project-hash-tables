@@ -5,11 +5,15 @@ def word_count(s):
     words = s.split()
     counts = {}
 
+    # We'll loop through our words
     for word in words:
          new_word = ""
          for char in word:
+             # if the characters are not in our ignore cases
              if char not in ignore:
+                 # Then we can use string concatenation to add it to our new_word variable
                  new_word += char
+        # This will lowercase our word
          word = new_word.lower()
 
          if word in counts:
@@ -19,6 +23,7 @@ def word_count(s):
          else:
              counts[word] = 1
 
+    # If the input is empty, we return an empty dict
     if s == "":
         return {}
     else:
