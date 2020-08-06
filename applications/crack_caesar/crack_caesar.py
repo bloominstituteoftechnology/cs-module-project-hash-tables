@@ -39,10 +39,10 @@ def decode(s):
     r = ''
     for c in s:
         if c in ignore:
-            words = words.replace(c, '')
-        if c == ' ':
+            s = s.replace(c, '')
+        elif c == ' ':
             r += ' '
-        else:
+        elif c in decode_table:
             r += decode_table[c]
 
     return r
@@ -51,11 +51,4 @@ def decode(s):
 with open("ciphertext.txt") as f:
     r = ''
     words = f.read()
-    # for i in words:
-    #     if i in ignore:
-    #         words = words.replace(i, '')
-    #     if i == ' ':
-    #         r += ' '
-    #     else:
-    #         r += decode_table[i]
     print(decode(words))
