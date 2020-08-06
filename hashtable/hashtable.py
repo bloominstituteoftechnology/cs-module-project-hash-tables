@@ -151,7 +151,7 @@ class HashTable:
             self.bucket[index] = item
             self.count += 1
 
-        if self.get_load_factor() >= 0.7:
+        if self.get_load_factor() >= 0.7: # max 1 for test
             self.resize(self.capacity * 2)
 
 
