@@ -4,8 +4,8 @@ find all a, b, c, d in q such that
 f(a) + f(b) = f(c) - f(d)
 """
 
-q = set(range(1, 10))
-#q = set(range(1, 200))
+#q = set(range(1, 10))
+q = set(range(1, 200))
 # q = (1, 3, 4, 7, 12)
 
 
@@ -21,16 +21,19 @@ matches = []
 potential_lefts = {}
 for a in q:
     for b in q:
-        potential_lefts[(a, b)] = (f(a) + f(b))
+        potential_lefts[(f(a) + f(b))] = (a, b) # key is sum, value is index
 
 potential_rights = {}
 for c in q:
     for d in q:
-        potential_rights[(c, d)] = (f(c) - f(d))
+        potential_rights[(f(c) - f(d))] = (c, d)# key is diff, val is index
 
-for l_key, l_value in potential_lefts.items():
-    for r_key, r_value in potential_rights.items():
-        if l_value == r_value:
-            matches.append((l_key, r_key))
+for ab in potential_lefts:
+    if ab in potential_rights:
+        left_indexes = potential_lefts[ab]
+        right_indexes = potential_rights[ab]
+        matches.append(left_indexes)
+        matches.append(right_indexes)
 
 print(matches)
+# lesson learned: the thing you want to search quickly should be set to the keys
