@@ -25,7 +25,7 @@ with open(f"{os.getcwd()}/applications/markov/input.txt") as f:
             start = searched[0]
             break
         i += 1
-    print(re.findall(r'^"[A-Z][a-z\"]*|^[A-Z][a-z\"]*', '"Hello"'))
+    print(re.findall(r'^"[A-Z][a-z\,"]*|^[A-Z][a-z\,"]*', '"Hello"'))
 # TODO: analyze which words can follow other words
 # Your code here
 
