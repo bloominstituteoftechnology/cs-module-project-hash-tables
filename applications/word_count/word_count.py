@@ -18,8 +18,8 @@ def word_count(s):
     If the input contains no ignored characters, return an empty dictionary.
     """
 
-    stop_char = """:;",.-+=/|[]{|}()*^\&"""
-    
+    stop_char = r""":;",.-+=/|[]{|}()*^\&"""
+
     # Make sure special characters arent in string
     s_clean = "".join([x for x in s if x not in stop_char])
 
@@ -41,9 +41,9 @@ def word_count(s):
     return word_count
 
 
-
 if __name__ == "__main__":
     print(word_count(""))
     print(word_count("Hello"))
     print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
-    print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
+    print(word_count(
+        'This is a test of the emergency broadcast network. This is only a test.'))
