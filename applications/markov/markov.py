@@ -1,13 +1,15 @@
 import random
 
 # Read in all the words in one go
-with open("input.txt") as f:
+with open("applications/markov/input.txt") as f:
     words = f.read()
 
 # TODO: analyze which words can follow other words
 # Your code here
+words = words.replace("\"--", "\"")
+words = words.replace("--\"", "\"")
+words = words.replace("--", " ")
 words = words.split()
-# print(words)
 
 d = {}
 s = []
