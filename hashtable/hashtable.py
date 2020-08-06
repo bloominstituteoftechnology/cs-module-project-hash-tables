@@ -67,12 +67,16 @@ class HashTable:
           Implement this, and/or FNV-1.
           """
           # Your code here
-          salt = 5381
+               #salt = 5381
+          hash_val = 5381     
 
-          for item in key:
-               hash_val = ((salt<<5) + salt) + ord(item)
+          for ch in key:
+               hash_val = ((hash_val << 5) + hash_val) + ord(ch)
+               # hash_val = (hash_val * 33) + ord(ch)     
 
-          return hash_val     
+          # print(f' \n dbj2 with key {key} gives hash_val >> {hash_val} ')
+          # return hash_val & 0xFFFFFFFF
+          return hash_val   
 
      def hash_index(self, key):
           """
@@ -80,6 +84,7 @@ class HashTable:
           between within the storage capacity of the hash table.
           """
           #return self.fnv1(key) % self.capacity
+          # print(f' \t %%%  key {key} gives djb2 hash of {self.djb2(key)}')
           return self.djb2(key) % self.capacity
 
      def put(self, key, value):
@@ -92,6 +97,15 @@ class HashTable:
           """
           # Your code here
 
+          hashed_index = self.hash_index(key)
+
+
+          if self.slots[hashed_index] != None:
+               print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index]}')
+
+          self.slots[hashed_index] = value
+          print(f' put: using key {key } >> index {hashed_index} >>> value is    \"{self.slots[hashed_index]}\"')
+
 
      def delete(self, key):
           """
@@ -102,7 +116,14 @@ class HashTable:
           Implement this.
           """
           # Your code here
+          # if key in range(self.capacity):
+          #      self.slots[key] = None
+          # else:
+          #      print(f' Cannot delete key that does not exist ')     
 
+          hashed_index = self.hash_index(key)
+          print(f' delete:  key {key}, hashed_index{hashed_index}')
+          self.slots[hashed_index] = None
 
      def get(self, key):
           """
@@ -114,6 +135,16 @@ class HashTable:
           """
           # Your code here
 
+          # if key not in range(self.capacity):
+          #      print("KEY OUT OF range")  
+          #      return None  
+           
+          hashed_index = self.hash_index(key)
+          value = self.slots[hashed_index]
+
+          print(f' get: key {key} value at index {hashed_index} is {value}')
+
+          return self.slots[hashed_index]
 
      def resize(self, new_capacity):
           """
@@ -129,20 +160,31 @@ class HashTable:
 if __name__ == "__main__":
      ht = HashTable(8)
 
-     # ht.put("line_1", "'Twas brillig, and the slithy toves")
-     # ht.put("line_2", "Did gyre and gimble in the wabe:")
-     # ht.put("line_3", "All mimsy were the borogoves,")
-     # ht.put("line_4", "And the mome raths outgrabe.")
-     # ht.put("line_5", '"Beware the Jabberwock, my son!')
-     # ht.put("line_6", "The jaws that bite, the claws that catch!")
-     # ht.put("line_7", "Beware the Jubjub bird, and shun")
-     # ht.put("line_8", 'The frumious Bandersnatch!"')
-     # ht.put("line_9", "He took his vorpal sword in hand;")
-     # ht.put("line_10", "Long time the manxome foe he sought--")
-     # ht.put("line_11", "So rested he by the Tumtum tree")
-     # ht.put("line_12", "And stood awhile in thought.")
+     print("****** OVERLOADING TABLE ******")
 
-     # print("")
+     ht.put("line_1", "'Twas brillig, and the slithy toves")
+     ht.put("line_2", "Did gyre and gimble in the wabe:")
+     ht.put("line_3", "All mimsy were the borogoves,")
+     ht.put("line_4", "And the mome raths outgrabe.")
+     ht.put("line_5", '"Beware the Jabberwock, my son!')
+     ht.put("line_6", "The jaws that bite, the claws that catch!")
+     ht.put("line_7", "Beware the Jubjub bird, and shun")
+     ht.put("line_8", 'The frumious Bandersnatch!"')
+     ht.put("line_9", "He took his vorpal sword in hand;")
+     ht.put("line_10", "Long time the manxome foe he sought--")
+     ht.put("line_11", "So rested he by the Tumtum tree")
+     ht.put("line_12", "And stood awhile in thought.")
+
+     print(f" \t **** GET test")
+
+     ht.get("line_1")
+     ht.get("line_3")
+     ht.get("xyz")
+
+     print(f" \t **** DELETE test ")
+     ht.delete("line_1")
+     ht.get("line_1")
+
 
      # # Test storing beyond capacity
      # for i in range(1, 13):
@@ -161,6 +203,28 @@ if __name__ == "__main__":
 
      # print("")
 
+## First pass
+# print(f' ht capacity  is >> {ht.capacity} ')
+# print(ht.slots)
+# print(ht.get(1))
+# print(ht.get(100))
 
-print(f' ht capacity  is >> {ht.capacity} ')
+# print(ht.put(2, "Apple"))
+# print(ht.put(3, "Orange"))
+# print(ht.slots)
 
+# print(ht.put(200, "Apple"))
+# print(ht.slots)
+
+# print(ht.delete(2))
+# print(ht.slots)
+
+# print(ht.delete(100))
+
+# print(ht.hash_index("Value"))
+# print("")
+# print(ht.hash_index("line_1"))
+# print(ht.hash_index("LLLine_1"))
+
+# print(f'{177622 % 8}')
+# print(f'{5381 << 5}')
