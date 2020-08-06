@@ -1,5 +1,19 @@
 def word_count(s):
-    # Your code here
+
+    words = s.split()
+    dictionary = dict()
+
+    for word in words:
+
+    	word = word.lower().strip('":;,.-+=/\\|[]{}()*^&')
+
+    	if word:
+	    	if word not in dictionary:
+	    		dictionary[word] = 1
+	    	else:
+	    		dictionary[word] += 1
+
+    return dictionary 
 
 
 
