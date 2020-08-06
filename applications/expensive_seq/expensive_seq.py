@@ -8,19 +8,14 @@ def expensive_seq(x, y, z):
     # base case
     if x <= 0:
         return y + z
-    # see if value(tuple)  has been added to the cache
+    # see if value (tuple) has been added to the cache
     if x > 0:
         if (x, y, z) not in cache:
             # if not in cache add it with math
             cache[(x, y, z)] = expensive_seq(x-1, y+1, z) + expensive_seq(x-2, y+2, z*2) + expensive_seq(x-3, y+3, z*3)
             return cache[(x, y, z)]
         # return the value from cache
-        return cache[(x, y, z)] 
-
-
-
-
-
+        return cache[(x, y, z)]
 
 
 
