@@ -12,7 +12,7 @@ to produce the _ciphertext_ (the encrypted text).
 For example, we might have the following mapping (which is the _key_ for
 unlocking this cipher, not to be confused with a hash table key):
 
-```
+``` text
 A -> H   B -> Z   C -> Y   D -> W   E -> O
 F -> R   G -> J   H -> D   I -> P   J -> T
 K -> I   L -> G   M -> L   N -> C   O -> E
@@ -21,11 +21,10 @@ U -> A   V -> M   W -> B   X -> Q   Y -> V
 Z -> S
 ```
 
-So if you have plaintext like `HELLO, WORLD!`, use the above table and
-`H` becomes `D`, `E` becomes `O`, and so on to produce ciphertext
-`DOGGE, BEUGW!`
-
-To decode, just do the reverse, `D` becomes `H`, etc.
+So if you have plaintext like `HELLO, WORLD!` , use the above table and
+`H` becomes `D` , `E` becomes `O` , and so on to produce ciphertext
+ `DOGGE, BEUGW!`
+To decode, just do the reverse, `D` becomes `H` , etc.
 
 But what if you evesdrop on some ciphertext, but don't know the key (the
 mapping). How can you decode it?
@@ -71,7 +70,7 @@ decent result, but they're quite close to the real percentages.)
 In other words, ordered from most frequently used to least, the letters
 are:
 
-```
+``` text
 'E', 'T', 'A', 'O', 'H', 'N', 'R', 'I', 'S', 'D', 'L', 'W', 'U',
 'G', 'F', 'B', 'M', 'Y', 'C', 'P', 'K', 'V', 'Q', 'J', 'X', 'Z'
 ```
@@ -83,19 +82,18 @@ So if you have a large enough block of ciphertext, you can analyze the
 frequency of letters in there. And if `X` is the most frequent, then
 it's a safe bet that the key includes this mapping:
 
-```
+``` text
 E -> X
 ```
 
 ## Challenge
 
 Write a program that automatically finds the key for the ciphertext in
-the file [`ciphertext.txt`](ciphertext.txt), then decodes it and shows
+the file [ciphertext.txt](ciphertext.txt), then decodes it and shows
 the plaintext.
 
 (All non-letters should pass through the decoding as-is, i.e. spaces and
 punctuation should be preserved. The input will not contain any
 lowercase letters.)
 
-No tests are provided for this one, but the result should be readable,
-with at most a handful of incorrect letters.
+No tests are provided for this one, but the result should be readable, with at most a handful of incorrect letters.
