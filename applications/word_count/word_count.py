@@ -1,9 +1,9 @@
 
 
-def word_count(s):
+def word_count(string):
     edge_cases = [":", ";", ",", ".", "-", "+", "=", "/", "\\", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&", "\""]
     dictionary = dict()
-    lower_case_string = s.lower()
+    lower_case_string = string.lower()
 
     for item in edge_cases:
         lower_case_string = lower_case_string.replace(item, "")
@@ -21,18 +21,10 @@ def word_count(s):
 
     return dictionary
 
-word_count('Hello, my cat. And my cat doesn\'t say "hello" back.')
 
 
-
-
-
-
-
-
-
-# if __name__ == "__main__":
-#     print(word_count(""))
-#     print(word_count("Hello"))
-#     print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
-#     print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
+if __name__ == "__main__":
+    print(word_count(""))
+    print(word_count("Hello"))
+    print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
+    print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
