@@ -75,7 +75,7 @@ full-featured.)
 
 * [Lookup Table](applications/lookup_table/)✅
 * [Expensive Sequence](applications/expensive_seq/)✅
-* [Word Count](applications/word_count/)
+* [Word Count](applications/word_count/)✅
 * [No Duplicates](applications/no_dups/)
 * [Markov Chains](applications/markov/)
 * [Histogram](applications/histo/)

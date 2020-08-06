@@ -1,6 +1,18 @@
 def no_dups(s):
-    # Your code here
+    # split list
+    # save cache
+    # loop through list if string not in cache add to cache
+    #
+    newStr = s.split(' ')
 
+    newArr = []
+    for char in newStr:
+        if char in newArr:
+            pass
+        elif newStr.count(char) >= 1:
+            newArr.append(char)
+    finalStr = ' '.join([str(el) for el in newArr])
+    return finalStr
 
 
 if __name__ == "__main__":
