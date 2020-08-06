@@ -1,6 +1,18 @@
+cache = {}
+
 def word_count(s):
     # Your code here
 
+    s = s.replace(".", "")
+    s = s.replace(",", "")
+
+    words = s.split(" ")
+    print(words)
+    for c in words:
+        c
+        if c not in cache:
+            cache[c] = 0
+        cache[c] += 1   
 
 
 if __name__ == "__main__":
