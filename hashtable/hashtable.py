@@ -1,14 +1,18 @@
 class HashTableEntry:
      """
      Linked List hash table key/value pair
+     # could use Double LL but deleting/inserting from middle is rare with hash tables and managing prev, next overhead usually overkill
      """
      def __init__(self, key, value):
           # self.key = key
           # self.value = value
           # self.next = None
           self.key = key   # Day 1, index
-          self.value = value # Day1, element value
+          self.value = value # Day 1, element value
+          self.next = None # Day 2, pointer to next node in LL
 
+     # def __str__(self):
+     #      print(f' at key {self.key} >> value is: {self.value}')
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -21,11 +25,14 @@ class HashTable:
 
      Implement this.
      """
-
+ 
      def __init__(self, capacity):
-          self.capacity = MIN_CAPACITY  # Day 1, size here is same a number of slots, until wwe deal with collisions
-          self.slots = [ None for item in range(self.capacity)]
-
+          #self.capacity = MIN_CAPACITY  # Day 1, size here is same a number of slots, until we deal with collisions
+          #self.slots = [ None for item in range(self.capacity)]
+          # Day 2
+          self.capacity = capacity
+          self.slots = [None] * capacity  # this hold LL (e.g. HashTableEntry)
+          self.items_stored = 0           # inc/dec for items added/deleted
 
 
      def get_num_slots(self):
@@ -39,16 +46,19 @@ class HashTable:
           Implement this.
           """
           # Your code here
-
+          return len(self.slots)
 
      def get_load_factor(self):
           """
           Return the load factor for this hash table.
-
+               load Factor = (# of items stored) / (total # of slots)
+               Good practice is to resize when load factor > 0.7
+               CANNOT COPY OLD ITEMS into resized hashtable, new size means modulus is different, hence new hashes & new indices
+               'Amortized' complexity is O(1)
           Implement this.
           """
           # Your code here
-
+          return self.slots
 
      def fnv1(self, key):
           """
@@ -92,19 +102,25 @@ class HashTable:
           Store the value with the given key.
 
           Hash collisions should be handled with Linked List Chaining.
-
+          # we make an array of linked list nodes
           Implement this.
           """
           # Your code here
+          # Day 1
+          # hashed_index = self.hash_index(key)
+
+          # if self.slots[hashed_index] != None:
+          #      print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index]}')
+
+          # self.slots[hashed_index] = value
+          # print(f' put: using key {key } >> index {hashed_index} >>> value is    \"{self.slots[hashed_index]}\"')
 
           hashed_index = self.hash_index(key)
-
-
+          # test if slot empty
           if self.slots[hashed_index] != None:
-               print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index]}')
-
-          self.slots[hashed_index] = value
-          print(f' put: using key {key } >> index {hashed_index} >>> value is    \"{self.slots[hashed_index]}\"')
+               print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index].value}')
+          else:      
+               self.slots[hashed_index] = HashTableEntry(key, value)
 
 
      def delete(self, key):
@@ -150,7 +166,7 @@ class HashTable:
           """
           Changes the capacity of the hash table and
           rehashes all key/value pairs.
-
+               ?? Resize down when load factor <= 0.7
           Implement this.
           """
           # Your code here
@@ -160,7 +176,9 @@ class HashTable:
 if __name__ == "__main__":
      ht = HashTable(8)
 
-     print("****** OVERLOADING TABLE ******")
+     print(f' # slots func: {ht.get_num_slots()}')
+     print(ht.slots)
+     # print("****** OVERLOADING TABLE ******")
 
      ht.put("line_1", "'Twas brillig, and the slithy toves")
      ht.put("line_2", "Did gyre and gimble in the wabe:")
@@ -175,17 +193,24 @@ if __name__ == "__main__":
      ht.put("line_11", "So rested he by the Tumtum tree")
      ht.put("line_12", "And stood awhile in thought.")
 
-     print(f" \t **** GET test")
+     # print out our HT
+     for ind in range(8):
+          slot_num = ht.slots[ind]
+          print(f' slot_num: {ind} key: {slot_num.key} value: {slot_num.value}' )
 
-     ht.get("line_1")
-     ht.get("line_3")
-     ht.get("xyz")
+     # print(f" \t **** GET test")
 
-     print(f" \t **** DELETE test ")
-     ht.delete("line_1")
-     ht.get("line_1")
+     # ht.get("line_1")
+     # ht.get("line_3")
+     # ht.get("xyz")
 
+     # print(f" \t **** DELETE test ")
+     # ht.delete("line_1")
+     # ht.get("line_1")
 
+     # print(f' $$$$$    Show entire table $$$$$$$$ \n')
+     # print(f' all slots {ht.slots}')
+     # print(ht.slots)
      # # Test storing beyond capacity
      # for i in range(1, 13):
      #      print(ht.get(f"line_{i}"))
