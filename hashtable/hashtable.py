@@ -117,47 +117,45 @@ class HashTable:
           # Day 2  - add to tail method
           hashed_index = self.hash_index(key)
 
-
-          # create new node
-          new_tail = HashTableEntry(key, value)   
-          current =  self.slots[hashed_index]      
+          # # create new node
+          # new_tail = HashTableEntry(key, value)   
+          # current =  self.slots[hashed_index]      
 
           # WATCH THIS COUNT for overwrites to same key
-          self.items_stored += 1
 
           # test if slot NOT empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index].value}')
 
 
-
                # create new node
                new_tail = HashTableEntry(key, value)   
                current =  self.slots[hashed_index]      
 
-               print(f' BEFORE  Current key is {current.key}')
+               print(f' BEFORE  Current key is {current.key} with value {current.value} ')
+               if current.key == key:
+                    print(f' overwrite at HEAD, value changed to {value}')
+                    current.value = value
+                    return
 
-               # find tail  
- 
+               # iterate to find tail & check for same key overwrite 
                while current.next != None:
-                    # check if key exists already
-                    print(f' Current key is {current.key}')
-                    if current.key == key:
-                         current.value = value
-                         return None 
                     current = current.next
                     if current.key == key:
                          current.value = value
-                         print(f' current Value changed')
+                         print(f' AFTER HEAD , overwrite value changed to {value}')
+                         return
 
                # append to tail
                current.next = new_tail  
-                    
+
           # slot empty, add first HashTableEntry       
           else:  
                print(f' \n\t Create HashItem at key {key} with hashed_index {hashed_index} value: {value}')    
                self.slots[hashed_index] = HashTableEntry(key, value)
-
+          
+          # Increment ONLY for new items added
+          self.items_stored += 1
 
      def delete(self, key):
           """
@@ -168,14 +166,14 @@ class HashTable:
           Implement this.
           """
           # Your code here
+          # Day 1
           # if key in range(self.capacity):
           #      self.slots[key] = None
           # else:
           #      print(f' Cannot delete key that does not exist ')     
-
-          hashed_index = self.hash_index(key)
-          print(f' delete:  key {key}, hashed_index{hashed_index}')
-          self.slots[hashed_index] = None
+          # hashed_index = self.hash_index(key)
+          # print(f' delete:  key {key}, hashed_index{hashed_index}')
+          # self.slots[hashed_index] = None
 
      def get(self, key):
           """
@@ -206,13 +204,19 @@ class HashTable:
           if self.slots[hashed_index] == None:
                return None
           else:
-              current = self.slots[hashed_index] 
+              ## Look for key !
+               if self.slots[hashed_index].key == key:
+                   return self.slots[hashed_index].value
+               else:  # check next item
+                    current = self.slots[hashed_index].next
+                    while current != None: # Loop until end of entries     
+                         if current.key == key: # check for key
+                              return current.value
+                         else:
+                              current = current.next
 
-              while current.next != None:      
-                    if current.key == key:
-                             return current.value
-                    else:
-                         current = current.next
+               if current is None:
+                    return None          
 
      def resize(self, new_capacity):
           """
@@ -226,7 +230,7 @@ class HashTable:
 
 
 if __name__ == "__main__":
-     ht = HashTable(1)
+     ht = HashTable(10)
 
      print(f' # slots func: {ht.get_num_slots()}')
      print(ht.slots)
@@ -245,6 +249,19 @@ if __name__ == "__main__":
      ht.put("line_11", "So rested he by the Tumtum tree")
      ht.put("line_12", "And stood awhile in thought.")
 
+     print(f" \t **** GET test")
+     print(ht.get("line_1"))
+     print(ht.get("line_2"))
+     print(ht.get("line_3"))
+     print(ht.get("line_4"))
+     print(ht.get("line_5"))
+     print(ht.get("line_6"))
+     print(ht.get("line_7"))
+     print(ht.get("line_8"))
+     print(ht.get("line_9"))
+     print(ht.get("line_10"))
+     print(ht.get("line_11"))
+     print(ht.get("line_12"))
 
      # # print out our HT
      # for ind in range(8):
@@ -254,22 +271,42 @@ if __name__ == "__main__":
      print(f" total items stored {ht.items_stored}")
      print(f" \t **** GET test")
 
-     print(ht.get("line_1"))
-     print(ht.get("line_2"))
+     # print(ht.get("line_1"))
+     # print(ht.get("line_2"))
      
-   
-     ht.put("line_1", " You been rewritten ")
-     # ht.put("line_3", "AGAIN, this was rewritten,")
-     ht.put("line_2", " GOT  a rewrite ")
-     ht.put("line_12", " LAST rewrite ")
+     print(f" \t **** REWRITE TEST")
+     ht.put("line_1", "'OOOOOOO Twas brillig, and the slithy toves")
+     ht.put("line_2", "OOOOOOOO Did gyre and gimble in the wabe:")
+     ht.put("line_3", "OOOOOOOOAll mimsy were the borogoves,")
+     ht.put("line_4", "OOOOOOOOAnd the mome raths outgrabe.")
+     ht.put("line_5", '"OOOOOOOOBeware the Jabberwock, my son!')
+     ht.put("line_6", "OOOOOOOOThe jaws that bite, the claws that catch!")
+     ht.put("line_7", "OOOOOOOOBeware the Jubjub bird, and shun")
+     ht.put("line_8", 'OOOOOOOOThe frumious Bandersnatch!"')
+     ht.put("line_9", "OOOOOOOOHe took his vorpal sword in hand;")
+     ht.put("line_10", "OOOOOOOOLong time the manxome foe he sought--")
+     ht.put("line_11", "OOOOOOOOSo rested he by the Tumtum tree")
+     ht.put("line_12", "OOOOOOOOAnd stood awhile in thought.")
 
      print("")
 
+     print(f" \t **** OVERWRITE test")
      print(ht.get("line_1"))
      print(ht.get("line_2"))
+     print(ht.get("line_3"))
+     print(ht.get("line_4"))
+     print(ht.get("line_5"))
+     print(ht.get("line_6"))
+     print(ht.get("line_7"))
+     print(ht.get("line_8"))
+     print(ht.get("line_9"))
+     print(ht.get("line_10"))
+     print(ht.get("line_11"))
      print(ht.get("line_12"))
 
-     print(f" \t **** DELETE test ")
+
+     print(f" total items stored {ht.items_stored}")
+     # print(f" \t **** DELETE test ")
      # ht.delete("line_1")
      # ht.get("line_1")
 
