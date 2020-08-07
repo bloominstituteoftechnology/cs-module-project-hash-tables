@@ -12,6 +12,21 @@ class HashTableEntry:
         self.next = None
 
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+    
+    def find(self, key):
+        pass
+
+    def insert(self, key, value):
+        pass
+
+    def delete(self, key):
+        pass
+
+
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -57,8 +72,28 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
-        # Your code here
+        # Make sure key is a string (or can be converted to a string representation):
+        try:
+            key = str(key)
+        except TypeError:
+            sys.exit("Error: Please enter a string argument for 'key'.")
+        
+        # Get bytes representation of provided key:
+        key_as_bytes = key.encode("utf-8")
+        
+        # Apply FNV-1 hash function to bytes representations:
+        fnv_offset_basis = 14695981039346656037  # Same in hexadecimal: 0xcbf29ce484222325
+        fnv_prime = 1099511628211  # = 2**40 + 2**8 + 0xb3, or in hex: 0x100000001b3
+        hash_code = fnv_offset_basis
+        for byte in key_as_bytes:
+            # Faster C-style alt. syntax for the below: hash = ((hash << 5) + hash) + char
+            hash_code *= fnv_prime
+            hash_code = hash_code ^ byte
+        
+        # Modulo the result to make sure it is an index within the existing array:
+        hash_code %= self.capacity
+        
+        return hash_code
 
 
     def djb2(self, key):
@@ -75,9 +110,9 @@ class HashTable:
         key_as_bytes = key.encode("utf-8")
         # Apply DJB2 hash function to bytes representations:
         hash = 5381
-        for char in key_as_bytes:
+        for byte in key_as_bytes:
             # Faster C-style alt. syntax for the below: hash = ((hash << 5) + hash) + char
-            hash = hash * 33 + char
+            hash = hash * 33 + byte
         
         # Modulo the result to make sure it is an index within the existing array:
         hash %= self.capacity
