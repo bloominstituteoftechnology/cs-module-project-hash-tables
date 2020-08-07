@@ -1,5 +1,9 @@
+# create a list of unwanted characters
+
+
 def word_count(s):
     # Your code here
+    pass
 
 
 
