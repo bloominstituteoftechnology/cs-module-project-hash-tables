@@ -48,7 +48,6 @@ class HashTable:
         FNV-1 Hash, 64-bit
         Implement this, and/or DJB2.
         """
-
         # Your code here
         fnv_prime = 1099511628211
         offset_basis =  14695981039346656037
@@ -93,6 +92,11 @@ class HashTable:
         if self.data[index] is None:
             self.data[index] = HashTableEntry(key, value)
             self.entries += 1
+            
+            # When load factor increases above `0.7`, automatically rehash the
+             # table to double its previous size.
+             # Add the `resize()` method.
+             # as done just below
             if self.get_load_factor() > 0.7: # added day 2
                 self.resize(self.capacity * 2) # added day 2
         else:
@@ -105,6 +109,11 @@ class HashTable:
                 current = current.next # day 2
             previous.next = new_entry # day 2
             self.entries += 1 # day 2
+            
+             # When load factor increases above `0.7`, automatically rehash the
+             # table to double its previous size.
+             # Add the `resize()` method.
+             # as done just below
             if self.get_load_factor() > 0.7: # day 2
                 self.resize(self.capacity * 2) # day 2
  
@@ -192,6 +201,7 @@ if __name__ == "__main__":
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
     # print("")
+    
     z = ht.get("line_12") # day 2
     print(f"Get Line 12: {z}") # day 2
     
@@ -244,6 +254,10 @@ ht2.delete("key-11")
 ht2.delete("key-10")
 ht2.delete("key-9")
 ht2.delete("key-8")
+x = ht2.capacity // 2 # day 3
+print(f"Cap // 2: {x}") # day 3
+ht2.resize(x) # day 3
+print(f"Capacity after resize: {ht2.capacity}") # day 3
 y = ht2.get_load_factor()
 print(f"Load Factor: {y}")
 print(f"Entries: {ht2.entries}")
@@ -262,6 +276,24 @@ y = ht2.get_load_factor()
 print(f"Load Factor: {y}")
 print(f"Entries: {ht2.entries}")
 print(f"Capacity: {ht2.capacity}")  
+print(f"Capacity: {ht2.capacity}")
+
+# day 3 # def slowfun_too_slow(x, y):
+#     v = math.pow(x, y)
+#     v = math.factorial(v)
+#     v //= (x + y)
+#     v %= 982451653
+
+#     return v
+import math # day 3
+v = math.pow(3, 5) # day 3
+print(v) # day 3
+v = math.factorial(int(v)) # day 3
+print(v) # day 3
+v //= (3 + 5) # day 3
+print(v) # day 3
+v %= 982451653 # day 3
+print(v) # day 3 
 
 
 
