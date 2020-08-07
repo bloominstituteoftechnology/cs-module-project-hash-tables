@@ -117,28 +117,43 @@ class HashTable:
           # Day 2  - add to tail method
           hashed_index = self.hash_index(key)
 
+
+          # create new node
+          new_tail = HashTableEntry(key, value)   
+          current =  self.slots[hashed_index]      
+
+          # WATCH THIS COUNT for overwrites to same key
           self.items_stored += 1
 
-          # test if slot empty
+          # test if slot NOT empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index].value}')
-                              
+
+
+
                # create new node
                new_tail = HashTableEntry(key, value)   
-               current =  self.slots[hashed_index]    
+               current =  self.slots[hashed_index]      
+
+               print(f' BEFORE  Current key is {current.key}')
 
                # find tail  
+ 
                while current.next != None:
                     # check if key exists already
                     print(f' Current key is {current.key}')
                     if current.key == key:
                          current.value = value
-                         return None
+                         return None 
                     current = current.next
+                    if current.key == key:
+                         current.value = value
+                         print(f' current Value changed')
+
                # append to tail
                current.next = new_tail  
                     
-                   
+          # slot empty, add first HashTableEntry       
           else:  
                print(f' \n\t Create HashItem at key {key} with hashed_index {hashed_index} value: {value}')    
                self.slots[hashed_index] = HashTableEntry(key, value)
@@ -240,16 +255,18 @@ if __name__ == "__main__":
      print(f" \t **** GET test")
 
      print(ht.get("line_1"))
-     print(ht.get("line_3"))
+     print(ht.get("line_2"))
+     
    
      ht.put("line_1", " You been rewritten ")
-     ht.put("line_3", "AGAIN, this was rewritten,")
-     ht.put("line_12", " GOT  a rewrite ")
+     # ht.put("line_3", "AGAIN, this was rewritten,")
+     ht.put("line_2", " GOT  a rewrite ")
+     ht.put("line_12", " LAST rewrite ")
 
      print("")
 
      print(ht.get("line_1"))
-     print(ht.get("line_3"))
+     print(ht.get("line_2"))
      print(ht.get("line_12"))
 
      print(f" \t **** DELETE test ")
