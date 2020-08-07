@@ -8,6 +8,7 @@ Does not collide with DJB2 or FNV-1-64. But could collide with other hashes.
 import unittest
 from hashtable import HashTable
 
+
 class TestHashTable(unittest.TestCase):
 
     def test_hash_table_insertion_and_retrieval(self):
@@ -18,11 +19,11 @@ class TestHashTable(unittest.TestCase):
         ht.put("key-2", "val-2")
 
         return_value = ht.get("key-0")
-        self.assertTrue(return_value == "val-0")
+        self.assertEqual(return_value, "val-0")
         return_value = ht.get("key-1")
-        self.assertTrue(return_value == "val-1")
+        self.assertEqual(return_value, "val-1")
         return_value = ht.get("key-2")
-        self.assertTrue(return_value == "val-2")
+        self.assertEqual(return_value, "val-2")
 
     def test_hash_table_pution_overwrites_correctly(self):
         ht = HashTable(0x10000)
@@ -36,11 +37,11 @@ class TestHashTable(unittest.TestCase):
         ht.put("key-2", "new-val-2")
 
         return_value = ht.get("key-0")
-        self.assertTrue(return_value == "new-val-0")
+        self.assertEqual(return_value, "new-val-0")
         return_value = ht.get("key-1")
-        self.assertTrue(return_value == "new-val-1")
+        self.assertEqual(return_value, "new-val-1")
         return_value = ht.get("key-2")
-        self.assertTrue(return_value == "new-val-2")
+        self.assertEqual(return_value, "new-val-2")
 
     def test_hash_table_removes_correctly(self):
         ht = HashTable(0x10000)
@@ -50,22 +51,23 @@ class TestHashTable(unittest.TestCase):
         ht.put("key-2", "val-2")
 
         return_value = ht.get("key-0")
-        self.assertTrue(return_value == "val-0")
+        self.assertEqual(return_value, "val-0")
         return_value = ht.get("key-1")
-        self.assertTrue(return_value == "val-1")
+        self.assertEqual(return_value, "val-1")
         return_value = ht.get("key-2")
-        self.assertTrue(return_value == "val-2")
+        self.assertEqual(return_value, "val-2")
 
         ht.delete("key-2")
         ht.delete("key-1")
         ht.delete("key-0")
 
         return_value = ht.get("key-0")
-        self.assertTrue(return_value is None)
+        self.assertIsNone(return_value)
         return_value = ht.get("key-1")
-        self.assertTrue(return_value is None)
+        self.assertIsNone(return_value)
         return_value = ht.get("key-2")
-        self.assertTrue(return_value is None)
+        self.assertIsNone(return_value)
+
 
 if __name__ == '__main__':
     unittest.main()
