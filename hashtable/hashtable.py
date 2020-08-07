@@ -17,6 +17,7 @@ MIN_CAPACITY = 8
 
 
 class LinkedList:
+    # singly linked list using HashTableEntry as a node class
     def __init__(self):
         self.head = None
 
@@ -78,10 +79,9 @@ class LinkedList:
 
 class HashTable:
     """
-    A hash table that with `capacity` buckets
-    that accepts string keys
+    A hash table that with `capacity` buckets that accepts string keys
 
-    Implement this.
+    Each bucket is a singly linked list in order to handle collision
     """
 
     def __init__(self, capacity):

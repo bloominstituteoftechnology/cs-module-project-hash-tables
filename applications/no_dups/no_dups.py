@@ -1,19 +1,38 @@
 def no_dups(s):
-    # Your code here
-    if s == "":
-        return ""
-    d = {}
-    i = 0
+    # base case for error handling
+    # if s == "":
+    #     return ""
+    # dictionary that maps the unique word order (not the count)
+    # against the word, ex: {"we": 0, "are": 1, ...}
+    # d = {}
+    # # keep a counter of each unique word's order
+    # i = 0
+    # # iterate over every word
+    # for word in s.split():
+    #     if word in d:
+    #         # if we've already seen the word, DO NOTHING!
+    #         continue
+    #     else:
+    #         # store the relative order, i, into our dictionary
+    #         d[word] = i
+    #         # increment order counter
+    #         i += 1
+    # this code was written to handle situations where the list did not
+    # come out correctly sorted, but proved to be unnecessary
+    # d = {v: k for k, v in d.items()}
+    # l = [None] * i
+    # for j in range(0, i):
+    #     l[j] = d[j]
+    # l = [word for word, _ in d.items()]
+
+    # in the end, none of the above code was really necessary, except to utilize
+    # a dictionary, which I felt was the pedagogical prupose of the project
+    l = []
     for word in s.split():
-        if word in d:
+        if word in l:
             continue
         else:
-            d[word] = i
-            i += 1
-    d = {v: k for k, v in d.items()}
-    l = [None] * i
-    for j in range(0, i):
-        l[j] = d[j]
+            l.append(word)
     return " ".join(l)
 
 
