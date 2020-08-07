@@ -116,15 +116,24 @@ class HashTable:
 
           # Day 2  - add to tail method
           hashed_index = self.hash_index(key)
+
+          self.items_stored += 1
+
           # test if slot empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index].value}')
+                              
                # create new node
                new_tail = HashTableEntry(key, value)   
                current =  self.slots[hashed_index]    
 
                # find tail  
                while current.next != None:
+                    # check if key exists already
+                    print(f' Current key is {current.key}')
+                    if current.key == key:
+                         current.value = value
+                         return None
                     current = current.next
                # append to tail
                current.next = new_tail  
@@ -175,6 +184,20 @@ class HashTable:
           # return self.slots[hashed_index]
 
 
+          # Day 2
+          # Find hashed index and iterate until key located, return val OR None if not found
+          hashed_index = self.hash_index(key)
+
+          if self.slots[hashed_index] == None:
+               return None
+          else:
+              current = self.slots[hashed_index] 
+
+              while current.next != None:      
+                    if current.key == key:
+                             return current.value
+                    else:
+                         current = current.next
 
      def resize(self, new_capacity):
           """
@@ -207,18 +230,29 @@ if __name__ == "__main__":
      ht.put("line_11", "So rested he by the Tumtum tree")
      ht.put("line_12", "And stood awhile in thought.")
 
+
      # # print out our HT
      # for ind in range(8):
      #      slot_num = ht.slots[ind]
      #      print(f' slot_num: {ind} key: {slot_num.key} value: {slot_num.value}' )
 
+     print(f" total items stored {ht.items_stored}")
      print(f" \t **** GET test")
 
-     # ht.get("line_1")
-     # ht.get("line_3")
-     # ht.get("xyz")
+     print(ht.get("line_1"))
+     print(ht.get("line_3"))
+   
+     ht.put("line_1", " You been rewritten ")
+     ht.put("line_3", "AGAIN, this was rewritten,")
+     ht.put("line_12", " GOT  a rewrite ")
 
-     # print(f" \t **** DELETE test ")
+     print("")
+
+     print(ht.get("line_1"))
+     print(ht.get("line_3"))
+     print(ht.get("line_12"))
+
+     print(f" \t **** DELETE test ")
      # ht.delete("line_1")
      # ht.get("line_1")
 
