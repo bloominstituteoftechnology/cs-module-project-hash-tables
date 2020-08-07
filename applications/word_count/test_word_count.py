@@ -13,6 +13,7 @@ class TestWordCount(unittest.TestCase):
         self.assertTrue(x == {"hello": 2})
 
         x = word_count('Hello, my cat.  And my cat doesn\'t say "hello" back.')
+        print(x)
         self.assertTrue(x == {'hello': 2, 'my': 2, 'cat': 2, 'and': 1, "doesn't": 1, 'say': 1, 'back': 1})
 
         x = word_count('This is a test of the  Emergency  Broadcast  Network. This is only a test.')

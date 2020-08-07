@@ -1,4 +1,16 @@
 def no_dups(s):
+    word_dict = {}
+    for word in s.split():
+        word_dict[word] = 0
+
+    string_stuff = ""
+    for word in word_dict.keys():
+        string_stuff += word + " "
+    return string_stuff.strip()
+
+
+
+
     # Your code here
 
 
