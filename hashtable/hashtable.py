@@ -61,7 +61,10 @@ class HashTable:
           Implement this.
           """
           # Your code here
-          return self.slots
+
+          load_factor = (self.items_stored)/(self.get_num_slots())
+
+          return round( load_factor, 1)
 
      def fnv1(self, key):
           """
@@ -161,7 +164,7 @@ class HashTable:
           # Increment ONLY for new items added
           self.items_stored += 1
 
-          # Idea is to try to append to tail if I keep a pointer there
+          # Idea is to try to append to tail in O(1) if I have a tail pointer
           self.last = self.slots[hashed_index]
           print(f' current tail on index {hashed_index} is {self.last.value} ')
 
@@ -190,6 +193,7 @@ class HashTable:
           # Easy case, key not found if no insertions made
           if current == None:
                print(f'key not found')
+               return
           else:
           # key is at head with no chaining
                if current.key == key:
@@ -207,8 +211,9 @@ class HashTable:
                          # checks last item in chain
                          if current == None:
                               print(f' KEY NOT FOUND in chain ')     
-
-
+                              return
+           # Decrement items deleted
+          self.items_stored -= 1
 
      def get(self, key):
           """
@@ -254,11 +259,29 @@ class HashTable:
           Implement this.
           """
           # Your code here
+          double_size = HashTable(new_capacity)
 
+          for slot in self.slots:
+               if slot != None:
+                    slot_item = slot
+                    while slot_item != None:
+                         print(f' slot item is {slot_item}')
+                         double_size.put(slot_item.key, slot_item.value)
+                         # increment though chain
+                         slot_item = slot_item.next
+
+          self.capacity = double_size.capacity
+          self.slots = double_size.slots
+          
+
+          print(f' items_stored  {self.items_stored}')
+          print(f' # slots {len(self.slots)}')
+          if new_capacity == len(self.slots):
+               print(f' RESIZE SUCCESS !!')
 
 
 if __name__ == "__main__":
-     ht = HashTable(1)
+     ht = HashTable(8)
 
      print(f' # slots func: {ht.get_num_slots()}')
      print(ht.get_num_slots())
@@ -267,41 +290,41 @@ if __name__ == "__main__":
      print(ht.delete("line_1"))     
      print(ht.slots)
 
-     ht.put("line_1", "'Twas brillig, and the slithy toves")
-     ht.put("line_2", "Did gyre and gimble in the wabe:")
+     # ht.put("line_1", "'Twas brillig, and the slithy toves")
+     # ht.put("line_2", "Did gyre and gimble in the wabe:")
 
 
-     print(ht.delete("line_1"))
+     # print(ht.delete("line_1"))
 
 
-     print(ht.delete("WEIRD KEY"))
+     # print(ht.delete("WEIRD KEY"))
  
 
-     # ht.put("line_2", "Did gyre and gimble in the wabe:")
-     # ht.put("line_3", "All mimsy were the borogoves,")
-     # ht.put("line_4", "And the mome raths outgrabe.")
-     # ht.put("line_5", '"Beware the Jabberwock, my son!')
-     # ht.put("line_6", "The jaws that bite, the claws that catch!")
-     # ht.put("line_7", "Beware the Jubjub bird, and shun")
-     # ht.put("line_8", 'The frumious Bandersnatch!"')
-     # ht.put("line_9", "He took his vorpal sword in hand;")
-     # ht.put("line_10", "Long time the manxome foe he sought--")
-     # ht.put("line_11", "So rested he by the Tumtum tree")
-     # ht.put("line_12", "And stood awhile in thought.")
+     ht.put("line_2", "Did gyre and gimble in the wabe:")
+     ht.put("line_3", "All mimsy were the borogoves,")
+     ht.put("line_4", "And the mome raths outgrabe.")
+     ht.put("line_5", '"Beware the Jabberwock, my son!')
+     ht.put("line_6", "The jaws that bite, the claws that catch!")
+     ht.put("line_7", "Beware the Jubjub bird, and shun")
+     ht.put("line_8", 'The frumious Bandersnatch!"')
+     ht.put("line_9", "He took his vorpal sword in hand;")
+     ht.put("line_10", "Long time the manxome foe he sought--")
+     ht.put("line_11", "So rested he by the Tumtum tree")
+     ht.put("line_12", "And stood awhile in thought.")
 
-     # print(f" \t **** GET test")
-     # print(ht.get("line_1"))
-     # print(ht.get("line_2"))
-     # print(ht.get("line_3"))
-     # print(ht.get("line_4"))
-     # print(ht.get("line_5"))
-     # print(ht.get("line_6"))
-     # print(ht.get("line_7"))
-     # print(ht.get("line_8"))
-     # print(ht.get("line_9"))
-     # print(ht.get("line_10"))
-     # print(ht.get("line_11"))
-     # print(ht.get("line_12"))
+     print(f" \t **** GET test")
+     print(ht.get("line_1"))
+     print(ht.get("line_2"))
+     print(ht.get("line_3"))
+     print(ht.get("line_4"))
+     print(ht.get("line_5"))
+     print(ht.get("line_6"))
+     print(ht.get("line_7"))
+     print(ht.get("line_8"))
+     print(ht.get("line_9"))
+     print(ht.get("line_10"))
+     print(ht.get("line_11"))
+     print(ht.get("line_12"))
 
      # # # print out our HT
      # # for ind in range(8):
@@ -314,36 +337,45 @@ if __name__ == "__main__":
      # # print(ht.get("line_1"))
      # # print(ht.get("line_2"))
      
-     # print(f" \t **** REWRITE TEST")
-     # ht.put("line_1", "'OOOOOOO Twas brillig, and the slithy toves")
-     # ht.put("line_2", "OOOOOOOO Did gyre and gimble in the wabe:")
-     # ht.put("line_3", "OOOOOOOOAll mimsy were the borogoves,")
-     # ht.put("line_4", "OOOOOOOOAnd the mome raths outgrabe.")
-     # ht.put("line_5", '"OOOOOOOOBeware the Jabberwock, my son!')
-     # ht.put("line_6", "OOOOOOOOThe jaws that bite, the claws that catch!")
-     # ht.put("line_7", "OOOOOOOOBeware the Jubjub bird, and shun")
-     # ht.put("line_8", 'OOOOOOOOThe frumious Bandersnatch!"')
-     # ht.put("line_9", "OOOOOOOOHe took his vorpal sword in hand;")
-     # ht.put("line_10", "OOOOOOOOLong time the manxome foe he sought--")
-     # ht.put("line_11", "OOOOOOOOSo rested he by the Tumtum tree")
-     # ht.put("line_12", "OOOOOOOOAnd stood awhile in thought.")
+     print(f" \t **** REWRITE TEST")
+     ht.put("line_1", "'OOOOOOO Twas brillig, and the slithy toves")
+     ht.put("line_2", "OOOOOOOO Did gyre and gimble in the wabe:")
+     ht.put("line_3", "OOOOOOOOAll mimsy were the borogoves,")
+     ht.put("line_4", "OOOOOOOOAnd the mome raths outgrabe.")
+     ht.put("line_5", '"OOOOOOOOBeware the Jabberwock, my son!')
+     ht.put("line_6", "OOOOOOOOThe jaws that bite, the claws that catch!")
+     ht.put("line_7", "OOOOOOOOBeware the Jubjub bird, and shun")
+     ht.put("line_8", 'OOOOOOOOThe frumious Bandersnatch!"')
+     ht.put("line_9", "OOOOOOOOHe took his vorpal sword in hand;")
+     ht.put("line_10", "OOOOOOOOLong time the manxome foe he sought--")
+     ht.put("line_11", "OOOOOOOOSo rested he by the Tumtum tree")
+     ht.put("line_12", "OOOOOOOOAnd stood awhile in thought.")
 
-     # print("")
+     print("")
 
-     # print(f" \t **** OVERWRITE test")
-     # print(ht.get("line_1"))
-     # print(ht.get("line_2"))
-     # print(ht.get("line_3"))
-     # print(ht.get("line_4"))
-     # print(ht.get("line_5"))
-     # print(ht.get("line_6"))
-     # print(ht.get("line_7"))
-     # print(ht.get("line_8"))
-     # print(ht.get("line_9"))
-     # print(ht.get("line_10"))
-     # print(ht.get("line_11"))
-     # print(ht.get("line_12"))
+     print(f" \t **** OVERWRITE test")
+     print(ht.get("line_1"))
+     print(ht.get("line_2"))
+     print(ht.get("line_3"))
+     print(ht.get("line_4"))
+     print(ht.get("line_5"))
+     print(ht.get("line_6"))
+     print(ht.get("line_7"))
+     print(ht.get("line_8"))
+     print(ht.get("line_9"))
+     print(ht.get("line_10"))
+     print(ht.get("line_11"))
+     print(ht.get("line_12"))
+     
+     print(ht.get_num_slots())
+     
+     print(ht.get_load_factor())
 
+     ht.resize(16)
+     print(ht.get_load_factor())
+
+     ht.resize(4)
+     print(ht.get_load_factor())
 
      # print(f" total items stored {ht.items_stored}")
      # print(f" \t **** DELETE test ")
