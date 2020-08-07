@@ -34,7 +34,6 @@ class HashTable:
           self.slots = [None] * capacity  # this hold LL (e.g. HashTableEntry)
           self.items_stored = 0           # inc/dec for items added/deleted
 
-
      def get_num_slots(self):
           """
           Return the length of the list you're using to hold the hash
@@ -115,11 +114,24 @@ class HashTable:
           # self.slots[hashed_index] = value
           # print(f' put: using key {key } >> index {hashed_index} >>> value is    \"{self.slots[hashed_index]}\"')
 
+          # Day 2  - add to tail method
           hashed_index = self.hash_index(key)
           # test if slot empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index].value}')
-          else:      
+               # create new node
+               new_tail = HashTableEntry(key, value)   
+               current =  self.slots[hashed_index]    
+
+               # find tail  
+               while current.next != None:
+                    current = current.next
+               # append to tail
+               current.next = new_tail  
+                    
+                   
+          else:  
+               print(f' \n\t Create HashItem at key {key} with hashed_index {hashed_index} value: {value}')    
                self.slots[hashed_index] = HashTableEntry(key, value)
 
 
@@ -154,13 +166,15 @@ class HashTable:
           # if key not in range(self.capacity):
           #      print("KEY OUT OF range")  
           #      return None  
-           
-          hashed_index = self.hash_index(key)
-          value = self.slots[hashed_index]
+          # Day 1 
+          # hashed_index = self.hash_index(key)
+          # value = self.slots[hashed_index]
 
-          print(f' get: key {key} value at index {hashed_index} is {value}')
+          # print(f' get: key {key} value at index {hashed_index} is {value}')
 
-          return self.slots[hashed_index]
+          # return self.slots[hashed_index]
+
+
 
      def resize(self, new_capacity):
           """
@@ -174,7 +188,7 @@ class HashTable:
 
 
 if __name__ == "__main__":
-     ht = HashTable(8)
+     ht = HashTable(1)
 
      print(f' # slots func: {ht.get_num_slots()}')
      print(ht.slots)
@@ -193,12 +207,12 @@ if __name__ == "__main__":
      ht.put("line_11", "So rested he by the Tumtum tree")
      ht.put("line_12", "And stood awhile in thought.")
 
-     # print out our HT
-     for ind in range(8):
-          slot_num = ht.slots[ind]
-          print(f' slot_num: {ind} key: {slot_num.key} value: {slot_num.value}' )
+     # # print out our HT
+     # for ind in range(8):
+     #      slot_num = ht.slots[ind]
+     #      print(f' slot_num: {ind} key: {slot_num.key} value: {slot_num.value}' )
 
-     # print(f" \t **** GET test")
+     print(f" \t **** GET test")
 
      # ht.get("line_1")
      # ht.get("line_3")
