@@ -10,9 +10,13 @@ class HashTableEntry:
           self.key = key   # Day 1, index
           self.value = value # Day 1, element value
           self.next = None # Day 2, pointer to next node in LL
+          self.last = None  # pointer to tail
 
      # def __str__(self):
-     #      print(f' at key {self.key} >> value is: {self.value}')
+     #      print(f' at key {self.key} >> value is: {str(self.value)}')
+
+     # def __repr__(self):
+     #      print(f' Entry({repr(self.value)})')     
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -125,7 +129,7 @@ class HashTable:
 
           # test if slot NOT empty
           if self.slots[hashed_index] != None:
-               print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index].value}')
+               print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & value {self.slots[hashed_index].value}')
 
 
                # create new node
@@ -157,6 +161,10 @@ class HashTable:
           # Increment ONLY for new items added
           self.items_stored += 1
 
+          # Idea is to try to append to tail if I keep a pointer there
+          self.last = self.slots[hashed_index]
+          print(f' current tail on index {hashed_index} is {self.last.value} ')
+
      def delete(self, key):
           """
           Remove the value stored with the given key.
@@ -175,6 +183,33 @@ class HashTable:
           # print(f' delete:  key {key}, hashed_index{hashed_index}')
           # self.slots[hashed_index] = None
 
+          # Day 2
+          hashed_index = self.hash_index(key)
+          current = self.slots[hashed_index]
+
+          # Easy case, key not found if no insertions made
+          if current == None:
+               print(f'key not found')
+          else:
+          # key is at head with no chaining
+               if current.key == key:
+                    current.value = None
+                    print(f' key {current.key} value changed to {current.value}')      
+               else: 
+                    current = current.next
+                    # iterate and look for key, set value to None if found
+                    while current != None:
+                         if current.key == key:
+                              current.value = None
+                         # goto next entry
+                         current = current.next     
+                         
+                         # checks last item in chain
+                         if current == None:
+                              print(f' KEY NOT FOUND in chain ')     
+
+
+
      def get(self, key):
           """
           Retrieve the value stored with the given key.
@@ -184,18 +219,11 @@ class HashTable:
           Implement this.
           """
           # Your code here
-
-          # if key not in range(self.capacity):
-          #      print("KEY OUT OF range")  
-          #      return None  
           # Day 1 
           # hashed_index = self.hash_index(key)
           # value = self.slots[hashed_index]
-
           # print(f' get: key {key} value at index {hashed_index} is {value}')
-
           # return self.slots[hashed_index]
-
 
           # Day 2
           # Find hashed index and iterate until key located, return val OR None if not found
@@ -215,8 +243,8 @@ class HashTable:
                          else:
                               current = current.next
 
-               if current is None:
-                    return None          
+               # if current is None:
+               #      return None          
 
      def resize(self, new_capacity):
           """
@@ -230,82 +258,94 @@ class HashTable:
 
 
 if __name__ == "__main__":
-     ht = HashTable(10)
+     ht = HashTable(1)
 
      print(f' # slots func: {ht.get_num_slots()}')
-     print(ht.slots)
+     print(ht.get_num_slots())
      # print("****** OVERLOADING TABLE ******")
+
+     print(ht.delete("line_1"))     
+     print(ht.slots)
 
      ht.put("line_1", "'Twas brillig, and the slithy toves")
      ht.put("line_2", "Did gyre and gimble in the wabe:")
-     ht.put("line_3", "All mimsy were the borogoves,")
-     ht.put("line_4", "And the mome raths outgrabe.")
-     ht.put("line_5", '"Beware the Jabberwock, my son!')
-     ht.put("line_6", "The jaws that bite, the claws that catch!")
-     ht.put("line_7", "Beware the Jubjub bird, and shun")
-     ht.put("line_8", 'The frumious Bandersnatch!"')
-     ht.put("line_9", "He took his vorpal sword in hand;")
-     ht.put("line_10", "Long time the manxome foe he sought--")
-     ht.put("line_11", "So rested he by the Tumtum tree")
-     ht.put("line_12", "And stood awhile in thought.")
 
-     print(f" \t **** GET test")
-     print(ht.get("line_1"))
-     print(ht.get("line_2"))
-     print(ht.get("line_3"))
-     print(ht.get("line_4"))
-     print(ht.get("line_5"))
-     print(ht.get("line_6"))
-     print(ht.get("line_7"))
-     print(ht.get("line_8"))
-     print(ht.get("line_9"))
-     print(ht.get("line_10"))
-     print(ht.get("line_11"))
-     print(ht.get("line_12"))
 
-     # # print out our HT
-     # for ind in range(8):
-     #      slot_num = ht.slots[ind]
-     #      print(f' slot_num: {ind} key: {slot_num.key} value: {slot_num.value}' )
+     print(ht.delete("line_1"))
 
-     print(f" total items stored {ht.items_stored}")
-     print(f" \t **** GET test")
 
+     print(ht.delete("WEIRD KEY"))
+ 
+
+     # ht.put("line_2", "Did gyre and gimble in the wabe:")
+     # ht.put("line_3", "All mimsy were the borogoves,")
+     # ht.put("line_4", "And the mome raths outgrabe.")
+     # ht.put("line_5", '"Beware the Jabberwock, my son!')
+     # ht.put("line_6", "The jaws that bite, the claws that catch!")
+     # ht.put("line_7", "Beware the Jubjub bird, and shun")
+     # ht.put("line_8", 'The frumious Bandersnatch!"')
+     # ht.put("line_9", "He took his vorpal sword in hand;")
+     # ht.put("line_10", "Long time the manxome foe he sought--")
+     # ht.put("line_11", "So rested he by the Tumtum tree")
+     # ht.put("line_12", "And stood awhile in thought.")
+
+     # print(f" \t **** GET test")
      # print(ht.get("line_1"))
      # print(ht.get("line_2"))
+     # print(ht.get("line_3"))
+     # print(ht.get("line_4"))
+     # print(ht.get("line_5"))
+     # print(ht.get("line_6"))
+     # print(ht.get("line_7"))
+     # print(ht.get("line_8"))
+     # print(ht.get("line_9"))
+     # print(ht.get("line_10"))
+     # print(ht.get("line_11"))
+     # print(ht.get("line_12"))
+
+     # # # print out our HT
+     # # for ind in range(8):
+     # #      slot_num = ht.slots[ind]
+     # #      print(f' slot_num: {ind} key: {slot_num.key} value: {slot_num.value}' )
+
+     # print(f" total items stored {ht.items_stored}")
+     # print(f" \t **** GET test")
+
+     # # print(ht.get("line_1"))
+     # # print(ht.get("line_2"))
      
-     print(f" \t **** REWRITE TEST")
-     ht.put("line_1", "'OOOOOOO Twas brillig, and the slithy toves")
-     ht.put("line_2", "OOOOOOOO Did gyre and gimble in the wabe:")
-     ht.put("line_3", "OOOOOOOOAll mimsy were the borogoves,")
-     ht.put("line_4", "OOOOOOOOAnd the mome raths outgrabe.")
-     ht.put("line_5", '"OOOOOOOOBeware the Jabberwock, my son!')
-     ht.put("line_6", "OOOOOOOOThe jaws that bite, the claws that catch!")
-     ht.put("line_7", "OOOOOOOOBeware the Jubjub bird, and shun")
-     ht.put("line_8", 'OOOOOOOOThe frumious Bandersnatch!"')
-     ht.put("line_9", "OOOOOOOOHe took his vorpal sword in hand;")
-     ht.put("line_10", "OOOOOOOOLong time the manxome foe he sought--")
-     ht.put("line_11", "OOOOOOOOSo rested he by the Tumtum tree")
-     ht.put("line_12", "OOOOOOOOAnd stood awhile in thought.")
+     # print(f" \t **** REWRITE TEST")
+     # ht.put("line_1", "'OOOOOOO Twas brillig, and the slithy toves")
+     # ht.put("line_2", "OOOOOOOO Did gyre and gimble in the wabe:")
+     # ht.put("line_3", "OOOOOOOOAll mimsy were the borogoves,")
+     # ht.put("line_4", "OOOOOOOOAnd the mome raths outgrabe.")
+     # ht.put("line_5", '"OOOOOOOOBeware the Jabberwock, my son!')
+     # ht.put("line_6", "OOOOOOOOThe jaws that bite, the claws that catch!")
+     # ht.put("line_7", "OOOOOOOOBeware the Jubjub bird, and shun")
+     # ht.put("line_8", 'OOOOOOOOThe frumious Bandersnatch!"')
+     # ht.put("line_9", "OOOOOOOOHe took his vorpal sword in hand;")
+     # ht.put("line_10", "OOOOOOOOLong time the manxome foe he sought--")
+     # ht.put("line_11", "OOOOOOOOSo rested he by the Tumtum tree")
+     # ht.put("line_12", "OOOOOOOOAnd stood awhile in thought.")
 
-     print("")
+     # print("")
 
-     print(f" \t **** OVERWRITE test")
-     print(ht.get("line_1"))
-     print(ht.get("line_2"))
-     print(ht.get("line_3"))
-     print(ht.get("line_4"))
-     print(ht.get("line_5"))
-     print(ht.get("line_6"))
-     print(ht.get("line_7"))
-     print(ht.get("line_8"))
-     print(ht.get("line_9"))
-     print(ht.get("line_10"))
-     print(ht.get("line_11"))
-     print(ht.get("line_12"))
+     # print(f" \t **** OVERWRITE test")
+     # print(ht.get("line_1"))
+     # print(ht.get("line_2"))
+     # print(ht.get("line_3"))
+     # print(ht.get("line_4"))
+     # print(ht.get("line_5"))
+     # print(ht.get("line_6"))
+     # print(ht.get("line_7"))
+     # print(ht.get("line_8"))
+     # print(ht.get("line_9"))
+     # print(ht.get("line_10"))
+     # print(ht.get("line_11"))
+     # print(ht.get("line_12"))
 
 
-     print(f" total items stored {ht.items_stored}")
+     # print(f" total items stored {ht.items_stored}")
      # print(f" \t **** DELETE test ")
      # ht.delete("line_1")
      # ht.get("line_1")
