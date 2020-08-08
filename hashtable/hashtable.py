@@ -1,4 +1,4 @@
-from LL import SinglyLinkedList
+
 
 class HashTableEntry:
     """
@@ -8,6 +8,7 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+
 
 
 # Hash table can't have fewer than this many slots
@@ -51,14 +52,14 @@ class HashTable:
         # Your code here
         return self.weight / self.capacity
 
-    def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
+    # def fnv1(self, key):
+    #     """
+    #     FNV-1 Hash, 64-bit
 
-        Implement this, and/or DJB2.
-        """
+    #     Implement this, and/or DJB2.
+    #     """
 
-        # Your code here
+    #     # Your code here
         
 
 
@@ -91,10 +92,22 @@ class HashTable:
 
         Implement this.
         """
-        # if str(key) != key: return False
-
+        self.weight += 1
         idx = self.hash_index(key)
-        self.storage[idx] = HashTableEntry(key, value)
+        if self.storage[idx] is not None:
+            cur = self.storage[idx]
+            while cur.key != key and cur.next is not None:
+                cur = cur.next
+
+            # so either cur.key == key or cur.next is None
+            if cur.key == key:
+                cur.value = value
+                self.weight -= 1
+                return
+            elif cur.next is None:
+                cur.next = HashTableEntry(key, value)
+        else:
+            self.storage[idx] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -106,12 +119,23 @@ class HashTable:
         Implement this.
         """
         idx = self.hash_index(key)
-        value = None
-        if self.storage[idx] is not None: 
-            value = self.storage[idx].value
-        self.storage[idx] = None
 
-        return value
+        if self.storage[idx] is None: return None
+
+        cur = self.storage[idx]
+        prev = None
+        while cur is not None:
+            if cur.key == key: break
+            prev = cur
+            cur = cur.next
+
+        if cur is None: return None
+        if prev is None:
+            self.storage[idx] = self.storage[idx].next
+        else: 
+            prev.next = cur.next
+
+# for some reason it returns the value, but it's not properly deleting
 
     def get(self, key):
         """
@@ -123,7 +147,12 @@ class HashTable:
         """
         idx = self.hash_index(key)
         if self.storage[idx] is None: return None
-        return self.storage[idx].value
+
+        cur = self.storage[idx]
+        while cur is not None and cur.key != key:
+            cur = cur.next
+        if cur is None: return None
+        return cur.value
 
 
     def resize(self, new_capacity):
@@ -190,6 +219,15 @@ if __name__ == "__main__":
         ht.put("key-7", "val-7")
         ht.put("key-8", "val-8")
         ht.put("key-9", "val-9")
+
+        ht.delete("key-7")
+        ht.delete("key-6")
+        ht.delete("key-5")
+        ht.delete("key-4")
+        ht.delete("key-3")
+        ht.delete("key-2")
+        ht.delete("key-1")
+        print(ht.delete("key-0"))
 
         return_value = ht.get("key-0")
         print(return_value)
