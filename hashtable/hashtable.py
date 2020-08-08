@@ -128,12 +128,19 @@ class HashTable:
             if cur.key == key: break
             prev = cur
             cur = cur.next
-
+# if None, no removal necessary
         if cur is None: return None
         if prev is None:
             self.storage[idx] = self.storage[idx].next
         else: 
             prev.next = cur.next
+# resize logic
+        self.weight -= 1
+        if self.get_load_factor() < 0.2:
+            newCapacity = self.capacity // 2
+            if newCapacity < MIN_CAPACITY:
+                newCapacity = MIN_CAPACITY
+            self.resize(newCapacity)
 
 # for some reason it returns the value, but it's not properly deleting
 
