@@ -28,9 +28,13 @@ class HashTable:
      """
      A hash table that with `capacity` buckets
      that accepts string keys
+
+     Implement this.
      """
  
      def __init__(self, capacity):
+          #self.capacity = MIN_CAPACITY  # Day 1, size here is same a number of slots, until we deal with collisions
+          #self.slots = [ None for item in range(self.capacity)]
           # Day 2
           self.capacity = capacity
           self.slots = [None] * capacity  # this hold LL (e.g. HashTableEntry)
@@ -42,7 +46,9 @@ class HashTable:
           Return the length of the list you're using to hold the hash
           table data. (Not the number of items stored in the hash table,
           but the number of slots in the main list.)
+
           One of the tests relies on this.
+
           Implement this.
           """
           # Your code here
@@ -58,7 +64,11 @@ class HashTable:
           Implement this.
           """
           # Your code here
+
+
           load_factor = round( (( self.items_stored)/(self.get_num_slots())), 1)
+          # load_factor = round( (( self.items_stored)/(self.capacity), 1)
+          # # calc_num_slots = get_num_slots()
 
           print(f' Current load factor {load_factor}')
           
@@ -81,14 +91,17 @@ class HashTable:
      def fnv1(self, key):
           """
           FNV-1 Hash, 64-bit
+
           Implement this, and/or DJB2.
           """
+
           # Your code here
 
 
      def djb2(self, key):
           """
           DJB2 hash, 32-bit
+
           Implement this, and/or FNV-1.
           """
           # Your code here
@@ -115,10 +128,30 @@ class HashTable:
      def put(self, key, value):
           """
           Store the value with the given key.
+
           Hash collisions should be handled with Linked List Chaining.
+          # we make an array of linked list nodes
+          Implement this.
           """
+          # Your code here
+          # Day 1
+          # hashed_index = self.hash_index(key)
+
+          # if self.slots[hashed_index] != None:
+          #      print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index]}')
+
+          # self.slots[hashed_index] = value
+          # print(f' put: using key {key } >> index {hashed_index} >>> value is    \"{self.slots[hashed_index]}\"')
+
           # Day 2  - add to tail method
           hashed_index = self.hash_index(key)
+
+          # # create new node
+          # new_tail = HashTableEntry(key, value)   
+          # current =  self.slots[hashed_index]      
+
+          # WATCH THIS COUNT for overwrites to same key
+
           # test if slot NOT empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & value {self.slots[hashed_index].value}')
@@ -167,9 +200,21 @@ class HashTable:
      def delete(self, key):
           """
           Remove the value stored with the given key.
+
           Print a warning if the key is not found.
+
           Implement this.
           """
+          # Your code here
+          # Day 1
+          # if key in range(self.capacity):
+          #      self.slots[key] = None
+          # else:
+          #      print(f' Cannot delete key that does not exist ')     
+          # hashed_index = self.hash_index(key)
+          # print(f' delete:  key {key}, hashed_index{hashed_index}')
+          # self.slots[hashed_index] = None
+
           # Day 2
           hashed_index = self.hash_index(key)
           current = self.slots[hashed_index]
@@ -198,12 +243,24 @@ class HashTable:
                               return
            # Decrement items deleted
           self.items_stored -= 1
+          # self.find_scale_factor()
 
      def get(self, key):
           """
           Retrieve the value stored with the given key.
+
           Returns None if the key is not found.
+
+          Implement this.
           """
+          # Your code here
+          # Day 1 
+          # hashed_index = self.hash_index(key)
+          # value = self.slots[hashed_index]
+          # print(f' get: key {key} value at index {hashed_index} is {value}')
+          # return self.slots[hashed_index]
+
+          # Day 2
           # Find hashed index and iterate until key located, return val OR None if not found
           hashed_index = self.hash_index(key)
 
@@ -228,6 +285,8 @@ class HashTable:
           """
           Changes the capacity of the hash table and
           rehashes all key/value pairs.
+               ?? Resize down when load factor <= 0.7
+          Implement this.
           """
           # Your code here
           change_size = HashTable(new_capacity)
