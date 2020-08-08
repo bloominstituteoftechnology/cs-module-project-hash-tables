@@ -184,7 +184,7 @@ class HashTable:
                self.slots[hashed_index] = HashTableEntry(key, value)
           
           # Increment ONLY for new items added
-          self.items_stored += 1
+          # self.items_stored += 1
           # self.find_scale_factor()
 
           # Idea is to try to append to tail in O(1) if I have a tail pointer
@@ -196,6 +196,44 @@ class HashTable:
                self.find_scale_factor
           else:
                return          
+
+     def put_h(self, key, value):
+          # Append to head
+
+          hashed_index = self.hash_index(key)
+          current = self.slots[hashed_index]
+
+          print(f' index at {hashed_index}')
+          print(f' key >> {key}')
+          print(f' value >> {value}')
+          
+          if self.get(key) == None:
+               self.items_stored += 1
+
+          if self.slots[hashed_index] == None:
+               self.slots[hashed_index] = HashTableEntry(key, value)
+          else:
+               if self.slots[hashed_index] == None:
+                    print(f' Collision at index  {hashed_index}')  
+                    self.items_stored += 1  
+               orig_head = self.slots[hashed_index]
+               self.slots[hashed_index] = HashTableEntry(key,value)
+               self.slots[hashed_index].next = orig_head
+               print(f' current head : {self.slots[hashed_index].value}')
+          # Increment ONLY for new items added
+          
+
+
+          # Idea is to try to append to tail in O(1) if I have a tail pointer
+          self.last = self.slots[hashed_index]
+          print(f' current tail on index {hashed_index} is {self.last.value} ')
+          if self.get_load_factor() > 0.7:
+               self.find_scale_factor
+          elif self.get_load_factor() < 0.2:
+               self.find_scale_factor
+          else:
+               return 
+
 
      def delete(self, key):
           """
@@ -310,7 +348,7 @@ class HashTable:
 
 
 if __name__ == "__main__":
-     ht = HashTable(128)
+     ht = HashTable(1)
 
      print(f' # slots func: {ht.get_num_slots()}')
      # print(ht.get_num_slots())
@@ -318,28 +356,53 @@ if __name__ == "__main__":
 
      # print(ht.delete("line_1"))     
      # print(ht.slots)
-
-     # ht.put("line_1", "'Twas brillig, and the slithy toves")
-     # ht.put("line_2", "Did gyre and gimble in the wabe:")
-
-
      # print(ht.delete("line_1"))
 
 
      # print(ht.delete("WEIRD KEY"))
  
+     # try put_h
+     ht.put_h("line_1", "'Twas brillig, and the slithy toves")
+     ht.put_h("line_2", "Did gyre and gimble in the wabe:")
+     ht.put_h("line_3", "All mimsy were the borogoves,")
+     ht.put_h("line_4", "And the mome raths outgrabe.")
+     ht.put_h("line_5", '"Beware the Jabberwock, my son!')
+     ht.put_h("line_6", "The jaws that bite, the claws that catch!")
+     ht.put_h("line_7", "Beware the Jubjub bird, and shun")
+     ht.put_h("line_8", 'The frumious Bandersnatch!"')
+     ht.put_h("line_9", "He took his vorpal sword in hand;")
+     ht.put_h("line_10", "Long time the manxome foe he sought--")
+     ht.put_h("line_11", "So rested he by the Tumtum tree")
+     ht.put_h("line_12", "And stood awhile in thought.")
 
-     ht.put("line_2", "Did gyre and gimble in the wabe:")
-     ht.put("line_3", "All mimsy were the borogoves,")
-     # ht.put("line_4", "And the mome raths outgrabe.")
-     # ht.put("line_5", '"Beware the Jabberwock, my son!')
-     # ht.put("line_6", "The jaws that bite, the claws that catch!")
-     # ht.put("line_7", "Beware the Jubjub bird, and shun")
-     # ht.put("line_8", 'The frumious Bandersnatch!"')
-     # ht.put("line_9", "He took his vorpal sword in hand;")
-     # ht.put("line_10", "Long time the manxome foe he sought--")
-     # ht.put("line_11", "So rested he by the Tumtum tree")
-     # ht.put("line_12", "And stood awhile in thought.")
+     ht.put_h("line_1", "'ZZZZZZZ Twas brillig, and the slithy toves")
+     ht.put_h("line_2", "ZZZZZZ Did gyre and gimble in the wabe:")
+     ht.put_h("line_3", "ZZZZZZAll mimsy were the borogoves,")
+     ht.put_h("line_4", "ZZZZZZAnd the mome raths outgrabe.")
+     ht.put_h("line_5", 'ZZZZZZ"Beware the Jabberwock, my son!')
+     ht.put_h("line_6", "ZZZZZZThe jaws that bite, the claws that catch!")
+     ht.put_h("line_7", "ZZZZZZBeware the Jubjub bird, and shun")
+     ht.put_h("line_8", 'ZZZZZZThe frumious Bandersnatch!"')
+     ht.put_h("line_9", "ZZZZZZHe took his vorpal sword in hand;")
+     ht.put_h("line_10", "ZZZZZZLong time the manxome foe he sought--")
+     ht.put_h("line_11", "ZZZZZZSo rested he by the Tumtum tree")
+     ht.put_h("line_12", "ZZZZZZAnd stood awhile in thought.")
+
+     print(f" \t **** GET test")
+     # print(ht.get("line_1"))
+     # print(ht.get("line_2"))
+     # print(ht.get("line_3"))
+     # print(ht.get("line_4"))
+     # print(ht.get("line_5"))
+     # print(ht.get("line_6"))
+     # print(ht.get("line_7"))
+     # print(ht.get("line_8"))
+     # print(ht.get("line_9"))
+     # print(ht.get("line_10"))
+     # print(ht.get("line_11"))
+     # print(ht.get("line_12"))
+
+     print(ht.get_load_factor())
 
      # print(f" \t **** GET test")
      # print(ht.get("line_1"))
@@ -396,12 +459,12 @@ if __name__ == "__main__":
      # print(ht.get("line_11"))
      # print(ht.get("line_12"))
      
-     print(ht.get_num_slots())
+     # print(ht.get_num_slots())
      
-     print(ht.get_load_factor())
+     # print(ht.get_load_factor())
 
-     print(ht.find_scale_factor())
-     print(ht.capacity)
+     # print(ht.find_scale_factor())
+     # print(ht.capacity)
 
      # ht.resize(16)
      # print(ht.get_load_factor())
