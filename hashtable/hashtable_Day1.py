@@ -152,6 +152,10 @@ class HashTable:
 
           # WATCH THIS COUNT for overwrites to same key
 
+          # Increment ONLY for new keys added
+          if self.get(key) == None:
+               self.items_stored += 1
+
           # test if slot NOT empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & value {self.slots[hashed_index].value}')
@@ -161,22 +165,25 @@ class HashTable:
                new_tail = HashTableEntry(key, value)   
                current =  self.slots[hashed_index]      
 
-               print(f' BEFORE  Current key is {current.key} with value {current.value} ')
-               if current.key == key:
-                    # print(f' overwrite at HEAD, value changed to {value}')
-                    current.value = value
-                    return
+
+               # print(f' BEFORE  Current key is {current.key} with value {current.value} ')
+               # if current.key == key:
+               #      # print(f' overwrite at HEAD, value changed to {value}')
+               #      current.value = value
+               #      # return
 
                # iterate to find tail & check for same key overwrite 
                while current.next != None:
                     current = current.next
-                    if current.key == key:
-                         current.value = value
+               current.next = new_tail     
+               
+                    # if current.key == key:
+                    #      current.value = value
                          # print(f' AFTER HEAD , overwrite value changed to {value}')
-                         return
+                         # return
 
                # append to tail
-               current.next = new_tail  
+               # current.next = new_tail  
 
           # slot empty, add first HashTableEntry       
           else:  
@@ -207,6 +214,7 @@ class HashTable:
           print(f' key >> {key}')
           print(f' value >> {value}')
           
+          # Increment ONLY for new keys added
           if self.get(key) == None:
                self.items_stored += 1
 

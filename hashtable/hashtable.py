@@ -58,7 +58,7 @@ class HashTable:
           Implement this.
           """
           # Your code here
-          load_factor = round( (( self.items_stored)/(self.get_num_slots())), 1)
+          load_factor = round( (( self.items_stored)/(self.get_num_slots())), 4)
 
           print(f' Current load factor {load_factor}')
           
@@ -73,10 +73,32 @@ class HashTable:
                scale_calc = 0.5
           else:
                return
-      
+          
           self.resize(int(scale_calc * self.capacity))
           # return scale_calc
-          
+
+     # finds dynamic resize e.t. 2x, 4x, 8x, etc and returns optimized capacity
+     def find_scale_factor2(self):
+          orig_load_factor = self.get_load_factor()
+          multiple_scale = 1
+          base = 2
+          power_value = 1
+
+          if orig_load_factor > 0.7:
+               base = 2
+               while orig_load_factor > 0.7:
+                    orig_load_factor = orig_load_factor / 2
+                    power_value +=1
+                    
+          elif orig_load_factor < 0.2:
+               base = 0.5
+               while orig_load_factor < 0.2:
+                    orig_load_factor = orig_load_factor * 2
+                    power_value += 1
+          else:
+               return
+      
+          self.resize(  int( pow(base, power_value) * self.capacity  ) )
 
      def fnv1(self, key):
           """
@@ -162,7 +184,8 @@ class HashTable:
           elif self.get_load_factor() < 0.2:
                self.find_scale_factor
           else:
-               return          
+               return   
+                
 
      def delete(self, key):
           """
@@ -251,7 +274,7 @@ class HashTable:
 
 
 if __name__ == "__main__":
-     ht = HashTable(128)
+     ht = HashTable(1)
 
      print(f' # slots func: {ht.get_num_slots()}')
      # print(ht.get_num_slots())
@@ -269,32 +292,32 @@ if __name__ == "__main__":
 
      # print(ht.delete("WEIRD KEY"))
  
-
+     ht.put("line_1", "'Twas brillig, and the slithy toves")
      ht.put("line_2", "Did gyre and gimble in the wabe:")
      ht.put("line_3", "All mimsy were the borogoves,")
-     # ht.put("line_4", "And the mome raths outgrabe.")
-     # ht.put("line_5", '"Beware the Jabberwock, my son!')
-     # ht.put("line_6", "The jaws that bite, the claws that catch!")
-     # ht.put("line_7", "Beware the Jubjub bird, and shun")
-     # ht.put("line_8", 'The frumious Bandersnatch!"')
-     # ht.put("line_9", "He took his vorpal sword in hand;")
-     # ht.put("line_10", "Long time the manxome foe he sought--")
-     # ht.put("line_11", "So rested he by the Tumtum tree")
-     # ht.put("line_12", "And stood awhile in thought.")
+     ht.put("line_4", "And the mome raths outgrabe.")
+     ht.put("line_5", '"Beware the Jabberwock, my son!')
+     ht.put("line_6", "The jaws that bite, the claws that catch!")
+     ht.put("line_7", "Beware the Jubjub bird, and shun")
+     ht.put("line_8", 'The frumious Bandersnatch!"')
+     ht.put("line_9", "He took his vorpal sword in hand;")
+     ht.put("line_10", "Long time the manxome foe he sought--")
+     ht.put("line_11", "So rested he by the Tumtum tree")
+     ht.put("line_12", "And stood awhile in thought.")
 
-     # print(f" \t **** GET test")
-     # print(ht.get("line_1"))
-     # print(ht.get("line_2"))
-     # print(ht.get("line_3"))
-     # print(ht.get("line_4"))
-     # print(ht.get("line_5"))
-     # print(ht.get("line_6"))
-     # print(ht.get("line_7"))
-     # print(ht.get("line_8"))
-     # print(ht.get("line_9"))
-     # print(ht.get("line_10"))
-     # print(ht.get("line_11"))
-     # print(ht.get("line_12"))
+     print(f" \t **** GET test")
+     print(ht.get("line_1"))
+     print(ht.get("line_2"))
+     print(ht.get("line_3"))
+     print(ht.get("line_4"))
+     print(ht.get("line_5"))
+     print(ht.get("line_6"))
+     print(ht.get("line_7"))
+     print(ht.get("line_8"))
+     print(ht.get("line_9"))
+     print(ht.get("line_10"))
+     print(ht.get("line_11"))
+     print(ht.get("line_12"))
 
      # # # # print out our HT
      # # # for ind in range(8):
@@ -324,18 +347,18 @@ if __name__ == "__main__":
      # print("")
 
      # print(f" \t **** OVERWRITE test")
-     # print(ht.get("line_1"))
-     # print(ht.get("line_2"))
-     # print(ht.get("line_3"))
-     # print(ht.get("line_4"))
-     # print(ht.get("line_5"))
-     # print(ht.get("line_6"))
-     # print(ht.get("line_7"))
-     # print(ht.get("line_8"))
-     # print(ht.get("line_9"))
-     # print(ht.get("line_10"))
-     # print(ht.get("line_11"))
-     # print(ht.get("line_12"))
+     print(ht.get("line_1"))
+     print(ht.get("line_2"))
+     print(ht.get("line_3"))
+     print(ht.get("line_4"))
+     print(ht.get("line_5"))
+     print(ht.get("line_6"))
+     print(ht.get("line_7"))
+     print(ht.get("line_8"))
+     print(ht.get("line_9"))
+     print(ht.get("line_10"))
+     print(ht.get("line_11"))
+     print(ht.get("line_12"))
      
      print(ht.get_num_slots())
      
@@ -344,6 +367,8 @@ if __name__ == "__main__":
      print(ht.find_scale_factor())
      print(ht.capacity)
 
+
+     print(ht.get_load_factor())
      # ht.resize(16)
      # print(ht.get_load_factor())
 
