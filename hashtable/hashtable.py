@@ -170,12 +170,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.capacity = new_capacity if new_capacity >= 8 else 8
+        self.capacity = new_capacity if new_capacity >= MIN_CAPACITY else MIN_CAPACITY
         oldStorage = self.storage
         self.storage = [None] * self.capacity
         for i in oldStorage:
             if i is not None:
-                self.put(i.key, i.value)
+                cur = i
+                while cur is not None:
+                    self.put(cur.key, cur.value)
+                    cur = cur.next
 
 
 
