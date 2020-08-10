@@ -11,6 +11,8 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+hash_table = [None] * MIN_CAPACITY
+
 
 class HashTable:
     """
@@ -21,7 +23,11 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        hash = 5381
+        for x in capacity:
+            hash = (( hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
+
 
 
     def get_num_slots(self):
@@ -34,7 +40,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(hash_table)
 
 
     def get_load_factor(self):
@@ -81,7 +87,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        i = hash_index(key)
+
+        # find the start of the linked list using the index
+        # search through linked list
+        # IF the key already exists in the linked list
+            # Replace the value
+        # ELSE
+            # Add new HashTable Entry to the head of the linked list
 
 
     def delete(self, key):
@@ -92,7 +105,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        i = hash_index(key)
+        # Search through the linked list for the matching key
+        # Save value
+        # Delete that node
+        # Return value of deleted node
 
 
     def get(self, key):
@@ -103,7 +120,20 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        i = hash_key(key)    
+        bucket = hash_table[i]
+        for j, kv in enumerate(bucket):
+            k, v = kv
+            if key == k:
+                return v
+
+        # Get the linekd list AT the computed index
+        # Search through the linked list for the key
+            # Compare keys until you find the right one
+        # IF it exists, return the value
+        # ELSE, return None
+
+        return hash_table[i]
 
 
     def resize(self, new_capacity):
@@ -113,7 +143,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Make a new array that's DOUBLE the current size
+        # Go through each linked list in the array
+            # Go through each item and re-hash it
+            # Insert the items into their new locations
 
 
 
