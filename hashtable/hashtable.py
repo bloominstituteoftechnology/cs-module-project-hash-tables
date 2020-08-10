@@ -11,8 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-hash_table = [None] * MIN_CAPACITY
-
 
 class HashTable:
     """
@@ -23,11 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        hash = 5381
-        for x in capacity:
-            hash = (( hash << 5) + hash) + ord(x)
-        return hash & 0xFFFFFFFF
-
+        self.capacity = capacity
+        self.storage = [None] * capacity
+        self.counter = 0
 
 
     def get_num_slots(self):
@@ -68,7 +64,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -88,6 +87,7 @@ class HashTable:
         Implement this.
         """
         i = hash_index(key)
+        # increment / decrement counter
 
         # find the start of the linked list using the index
         # search through linked list
