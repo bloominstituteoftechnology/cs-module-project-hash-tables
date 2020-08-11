@@ -1,5 +1,3 @@
-
-
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -9,6 +7,39 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+
+
+class LinkedList:
+    def ___init__(self):
+        self.head = None
+        self.tail = None
+
+    def add_to_head(self, key, value):
+
+        new_node = HashTableEntry(key, value)
+
+        if self.head is None and self.tail is None:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            new_node.next = self.head
+            self.head = new_node
+
+    def remove_head(self):
+        if not self.head:
+            return None
+
+        if self.head.next is None:
+            head_value = self.head.value
+            self.head = None
+            self.tail = None
+            return head_value
+        head_value = self.head.value
+        self.head = self.head.next
+        return head_value
+
+    def get_node(self, key):
+        pass
 
 
 # Hash table can't have fewer than this many slots
@@ -26,6 +57,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.bucket = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -37,7 +69,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Day 2
         pass
 
     def get_load_factor(self):
@@ -46,7 +78,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Day 2
         pass
 
     def fnv1(self, key):
@@ -66,13 +98,18 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Day 1
+        # hash = 5381
+        # byte_array = key.encode('utf-8')
+
+        # for byte in byte_array:
+        #     # the modulus keeps it 32-bit, python ints don't overflow
+        #     hash = ((hash * 33) ^ byte) % 0x100000000
+
+        # return hash
+
         hash = 5381
-        byte_array = key.encode('utf-8')
-
-        for byte in byte_array:
-            # the modulus keeps it 32-bit, python ints don't overflow
-            hash = ((hash * 33) ^ byte) % 0x100000000
-
+        for c in key:
+            hash = (hash << 5) + hash + ord(c)
         return hash
 
     def hash_index(self, key):
@@ -92,9 +129,15 @@ class HashTable:
         Implement this.
         """
         # Day 1
-        index = self.hash_index(key)
-        self.bucket[index] = value
+        # index = self.hash_index(key)
+        # self.bucket[index] = value
         # print(index)
+
+        # Day 2
+
+        # get the key index value by hashing the key with hash_index
+        #
+        pass
 
     def delete(self, key):
         """
