@@ -20,10 +20,11 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity = MIN_CAPACITY):
         # Your code here
+        self.buckets = [LinkedList()] * capacity
         self.capacity = capacity
-        self.hash_list = [none] * capacity
+        
         
 
     def get_num_slots(self):
@@ -37,7 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -65,7 +66,13 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
 
+        for char in key:
+            hash = ((hash << 5) + hash) + ord(char)
+
+        return hash & 0xFFFFFFFF    
+            
 
     def hash_index(self, key):
         """
@@ -84,7 +91,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        h = self.djb2(key)
+        i = self.hash_index(key)
+        
+        # create a new node from the key value pair
+        new_node = Node(key, value)
 
+        #check to see if a node exists in the spot where we want to place this node
+        existing_node = self.buckets[i].head
+
+        if existing_node:
+            last_node = None
+            while existing_node:
+                if existing_node.key == key:
+                    existing_node.value = value
+                    return 
+                last_node =  existing_node
+                existing_node = existing_node.next
+
+            last_node.next = new_node
+
+        else:
+            self.buckets[i].append(new_node)
+
+        return self.buckets[i].head    
+         
 
     def delete(self, key):
         """
@@ -95,7 +126,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
 
+        if self.buckets[i] == key
+            self.buckets[i].remove()
+
+        return None    
+            
 
     def get(self, key):
         """
@@ -106,7 +143,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        i = self.hash_index(key)
 
+        if self.buckets[i] is not None:
+            return self.buckets[i]
+
+
+        
 
     def resize(self, new_capacity):
         """
