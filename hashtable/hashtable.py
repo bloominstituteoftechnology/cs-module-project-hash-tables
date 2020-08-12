@@ -126,12 +126,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        h = self.djb2(key)
         i = self.hash_index(key)
 
-        if self.buckets[i] == key
-            self.buckets[i].remove()
-
-        return None    
+        #check to see if the entry exists
+        e = self.buckets[i].head
+        #check to see if exists is not None.
+        while e:
+            #If we find a match, then remove it.
+            if e.key == key:
+                if last:
+                    last.next = e.next
+                else:
+                    self.buckets[i].remove(e.next)    
+            #swap removed item so a newer item is stored.
+            last = e
+            e = e.next        
             
 
     def get(self, key):
