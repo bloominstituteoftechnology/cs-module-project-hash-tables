@@ -1,4 +1,5 @@
 # Your code here
+
 import math
 import random
 import time
@@ -29,12 +30,14 @@ def slowfun(x, y, cache={}):
     return v
 
 # Do not modify below this line!
-# start_time = time.time()
-
+start_time = time.time()
 for i in range(50000):
     x = random.randrange(2, 14)
     y = random.randrange(3, 6)
     print(f'{i}: {x},{y}: {slowfun(x, y)}')
-    
-# end_time = time.time()
-# print(f"50k times took {end_time - start_time} seconds") 
+end_time = time.time()
+print(f"Time: {end_time - start_time} seconds")
+
+
+# Time: 169.52197647094727 seconds
+# down from 213 sec 

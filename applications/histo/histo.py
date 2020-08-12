@@ -13,7 +13,8 @@ def text_alignment(longest, value):
   return value
 
 def create_histogram(input_file: str):
-  ignore = '":;,.-+=/\|[]{}()*^&'
+  # "following backslash error does not affect code"
+  ignore = '":;,.-+=/\|[]{}()*^&' 
   histogram_dict = {}
   with open(input_file) as f:
     words = f.read()
