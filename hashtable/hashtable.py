@@ -188,7 +188,30 @@ class HashTable:
         # return self.bucket[index]
 
         # Day 2
-        pass
+        # grab the hashed version of the key and store it in a variable
+        # use variable to initialize a current_node value.
+
+        # check if value at head index is has the same key.
+        # if it does return that node's value
+        # if it doesn't have the same value enter a while loop while
+        # current node id not none.
+        # check each next node to see if it's key matches the key.
+        # if so return that value.
+        # if not move the current node to the next node.
+        # if while loop break then the item was not found so return None
+
+        hashed_index = self.hash_index(key)
+        current_node = self.bucket[hashed_index]
+
+        if current_node is not None and current_node.key == key:
+            return self.bucket[hashed_index].value
+
+        else:
+            while current_node is not None:
+                if current_node.key == key:
+                    return current_node.value
+                current_node = current_node.next
+        return None
 
     def resize(self, new_capacity):
         """
