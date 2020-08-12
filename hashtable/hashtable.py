@@ -153,13 +153,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        h = self.djb2(key)
         i = self.hash_index(key)
-
-        if self.buckets[i] is not None:
-            return self.buckets[i]
-
-
         
+        # check the head node 
+        look_up = self.buckets[i].head
+        # if the head exists
+        if look_up is not None:
+            # while there is still something in the array
+            while look_up is not None:
+            #found 
+            if look_up.key == key:
+                return look_up.value  
+
+            look_up = look_up.next      
+            
+        return None
 
     def resize(self, new_capacity):
         """
