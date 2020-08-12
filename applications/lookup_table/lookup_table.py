@@ -66,7 +66,7 @@ for i in range(50000):
     y = random.randrange(3, 6)
     print(f'{i}: {x},{y}: {slowfun(x, y)}')
 
-print(f' time is run test was {round(time.time() - t1, 3)}')
+print(f' time to run test was {round(time.time() - t1, 3)}')
 #49999: 12,5: 840852698
  # time is run test was 5.113    🔥🔥🔥🔥🔥🔥🔥
 
