@@ -141,6 +141,40 @@ class HashTable:
         # index = self.hash_index(key)
         # self.bucket[index] = None
 
+        # Day 2
+
+        # check item at hashed index keys are identical
+        # if the item is found:
+        # if it is at the head value then create a reference to that item
+        # take the next item and insert it to the bucket at the same index
+        # as the found index.
+        # Use the reference to remove that indexes next node --- will be cleaned up in memory
+        # if the item at the index of the bucket isn't the item enter a while loop
+        # keep checking the next nodes to see if the next node is the value
+        # we are looking for.
+        # when the item is found in the next node:
+        # make a reference to the next node
+        # make the current nodes next reference refer to to the next node's, next node.
+        # return the node reference
+
+        hashed_index = self.hash_index(key)
+        current_node = self.bucket[hashed_index]
+
+        if self.bucket[hashed_index] is None:
+            return None
+        if self.bucket[hashed_index].key == key:
+            node_to_delete = self.bucket[hashed_index]
+            self.bucket[hashed_index] = node_to_delete.next
+            node_to_delete.next = None
+        else:
+            while current_node is not None:
+                if current_node.next.key == key and current_node.next.next is not None:
+                    next_node = current_node.next
+                    current_node.next = current_node.next.next
+                    return next_node
+
+                current_node = current_node.next
+
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -149,9 +183,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        index = self.hash_index(key)
-        return self.bucket[index]
+        # Day 1
+        # index = self.hash_index(key)
+        # return self.bucket[index]
+
+        # Day 2
+        pass
 
     def resize(self, new_capacity):
         """
