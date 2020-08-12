@@ -37,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Day 2
-        pass
+        return len(self.bucket)
 
     def get_load_factor(self):
         """
@@ -46,7 +46,8 @@ class HashTable:
         Implement this.
         """
         # Day 2
-        pass
+        load_factor = self.count / self.get_num_slots()
+        return load_factor
 
     def fnv1(self, key):
         """
@@ -223,8 +224,27 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        # Make a new array thats DOUBLE the current size
+        # Go through each linked list in the array
+        # GO through each item and re-hash it
+        # Insert the items into their new locations
+
+        new_bucket = [None] * new_capacity
+        old_bucket = self.bucket
+        self.bucket = new_bucket
+        self.count = 0
+        self.capacity = new_capacity
+        # print(new_capacity)
+        current_index = 0
+        while current_index < len(old_bucket):
+            current_node = old_bucket[current_index]
+            if current_node is not None:
+                next_node = current_node.next
+                current_node.next = None
+                self.put(current_node.key, current_node.value)
+                old_bucket[current_index] = next_node
+            elif current_node is None:
+                current_index += 1
 
 
 if __name__ == "__main__":
@@ -249,18 +269,24 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
+    # for i in ht.bucket:
+    #     print(i)
+    # print('LOAD FACTOR: ', ht.get_load_factor())
     # Test resizing
     old_capacity = ht.get_num_slots()
     ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
-
+    # print('LOAD FACTOR: ', ht.get_load_factor())
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
     # for i in ht.bucket:
-    #     print('Storage Array: ', i.value, i.next, ht.count)
+    #     if i is not None:
+    #         print(i.value)
+    #     else:
+    #         print(None)
 
     print("")
