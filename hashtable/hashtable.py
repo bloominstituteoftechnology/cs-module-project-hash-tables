@@ -9,39 +9,6 @@ class HashTableEntry:
         self.next = None
 
 
-class LinkedList:
-    def ___init__(self):
-        self.head = None
-        self.tail = None
-
-    def add_to_head(self, key, value):
-
-        new_node = HashTableEntry(key, value)
-
-        if self.head is None and self.tail is None:
-            self.head = new_node
-            self.tail = new_node
-        else:
-            new_node.next = self.head
-            self.head = new_node
-
-    def remove_head(self):
-        if not self.head:
-            return None
-
-        if self.head.next is None:
-            head_value = self.head.value
-            self.head = None
-            self.tail = None
-            return head_value
-        head_value = self.head.value
-        self.head = self.head.next
-        return head_value
-
-    def get_node(self, key):
-        pass
-
-
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -130,14 +97,37 @@ class HashTable:
         """
         # Day 1
         # index = self.hash_index(key)
+        # print('INDEXES:', index)
         # self.bucket[index] = value
         # print(index)
 
         # Day 2
 
         # get the key index value by hashing the key with hash_index
-        #
-        pass
+        index = self.hash_index(key)
+        # initialize an table entry using the key and the value
+        new_node = HashTableEntry(key, value)
+        # assign a current node to the node at the hash key position
+        current_node = self.bucket[index]
+        # check if the value at the hashed key/index in bucket is None
+        # if it is place the node at this position
+        if self.bucket[index] == None:
+            print('in func index was None:', new_node.value)
+            self.bucket[index] = new_node
+            self.count += 1
+
+        # else enter while loop to find the next none position then place
+        # the node there.
+        else:
+            while current_node is not None:
+                print("entered Loop")
+                if current_node.next is None:
+                    print('In Func While Loop:', new_node.value)
+                    current_node.next = new_node
+                    self.count += 1
+                    return current_node
+                else:
+                    current_node = current_node.next
 
     def delete(self, key):
         """
@@ -148,8 +138,8 @@ class HashTable:
         Implement this.
         """
         # Day 1
-        index = self.hash_index(key)
-        self.bucket[index] = None
+        # index = self.hash_index(key)
+        # self.bucket[index] = None
 
     def get(self, key):
         """
@@ -207,6 +197,7 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    print('Storage Array: ', ht.bucket)
+    # for i in ht.bucket:
+    #     print('Storage Array: ', i.value, i.next, ht.count)
 
     print("")
