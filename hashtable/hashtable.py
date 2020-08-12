@@ -112,20 +112,23 @@ class HashTable:
         # check if the value at the hashed key/index in bucket is None
         # if it is place the node at this position
         if self.bucket[index] == None:
-            print('in func index was None:', new_node.value)
             self.bucket[index] = new_node
             self.count += 1
 
+        elif self.bucket[index] is not None and self.bucket[index].key == key:
+            self.bucket[index].value = value
+
         # else enter while loop to find the next none position then place
         # the node there.
-        else:
+        elif self.bucket[index] is not None:
             while current_node is not None:
-                print("entered Loop")
                 if current_node.next is None:
-                    print('In Func While Loop:', new_node.value)
                     current_node.next = new_node
                     self.count += 1
                     return current_node
+                elif current_node.next is not None and current_node.next.key == key:
+                    current_node.next.value = value
+                    return current_node.next
                 else:
                     current_node = current_node.next
 
