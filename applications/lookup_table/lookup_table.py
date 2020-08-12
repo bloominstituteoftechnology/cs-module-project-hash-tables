@@ -25,7 +25,7 @@ def slowfun(x, y):
      # Your code here
 
      global v
-     test_key = str(f'{x},{y}')
+     test_key = str(f'{x}{y}')
 
 
      if test_key in cache_pow:
