@@ -20,7 +20,7 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity = MIN_CAPACITY):
+    def __init__(self, capacity):
         # Your code here
         self.buckets = [LinkedList()] * capacity
         self.capacity = capacity
@@ -163,10 +163,10 @@ class HashTable:
             # while there is still something in the array
             while look_up is not None:
             #found 
-            if look_up.key == key:
-                return look_up.value  
+                if look_up.key == key:
+                    return look_up.value  
 
-            look_up = look_up.next      
+                look_up = look_up.next      
             
         return None
 
@@ -178,8 +178,63 @@ class HashTable:
         Implement this.
         """
         # Your code here
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
+    def find(self, value):
+        cur = self.head
+        while cur is not None:
+            if cur.value == value:
+                return cur
+
+            cur = cur.next                
+
+        return None
+     #add to tail
+    def append(self, value): 
+        n = Node(value, value)  
+
+        #no head
+        if self.head is None:
+            self.head = n  
+
+        else:
+            cur = self.head
+
+            while cur.next is not None:
+                cur = cur.next
+
+            cur.next = n       
+
+    def remove(self, value):
+        cur = self.head
+
+        # empty list 
+        if cur is None:
+            return None
+
+        # remove head
+        if cur.value == value:
+            self.head = cur.next
+            return cur
+
+        else:
+            prev = cur
+            cur = cur.next
+            while cur is not None:
+                if cur.value == value:
+                    prev.next = cur.next
+                    return cur
+                else:
+                    prev = cur
+                    cur = cur.next                     
 
 if __name__ == "__main__":
     ht = HashTable(8)
