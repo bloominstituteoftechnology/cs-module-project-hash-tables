@@ -1,13 +1,32 @@
 import random
 
 # Read in all the words in one go
-with open("input.txt") as f:
-    words = f.read()
+# with open("input.txt") as f:
+with open("applications/markov/input.txt") as f:
+    words = f.read().split()
 
 # TODO: analyze which words can follow other words
 # Your code here
+# print(words)
 
+end_punc = ".?!"
+start_w = []
+stop_w = []
+
+for word in words:
+    # find  start words, must have first char capitalized
+    if word[0].isupper():
+        start_w.append(word)
+
+    # end words have either .?! at end, check last char
+    if word[-1] in end_punc:
+        stop_w.append(word[:-1])
+
+
+
+# print(f' >>>>>>>>>> start_w :  {start_w}')
+for item in stop_w:
+    print(item)  # slice off that punc
 
 # TODO: construct 5 random sentences
 # Your code here
-
