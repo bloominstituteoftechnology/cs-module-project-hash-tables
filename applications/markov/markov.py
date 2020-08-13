@@ -1,4 +1,6 @@
 import random
+from collections import defaultdict
+
 
 # Read in all the words in one go
 # with open("input.txt") as f:
@@ -12,21 +14,27 @@ with open("applications/markov/input.txt") as f:
 end_punc = ".?!"
 start_w = []
 stop_w = []
+freq_dict = defaultdict(list)
 
-for word in words:
+for index, word in enumerate(words):
     # find  start words, must have first char capitalized
     if word[0].isupper():
         start_w.append(word)
 
     # end words have either .?! at end, check last char
     if word[-1] in end_punc:
-        stop_w.append(word[:-1])
+        stop_w.append(word[:-1])  # slice off that punc
 
-
+    # use enumerate to track index
+    if index < len(words) - 1:
+        freq_dict[word].append(words[index + 1])
 
 # print(f' >>>>>>>>>> start_w :  {start_w}')
-for item in stop_w:
-    print(item)  # slice off that punc
+for k,v in freq_dict.items():
+    print(f' key {k}: {v} \n')
 
+
+#  print(freq_dict)
 # TODO: construct 5 random sentences
 # Your code here
+
