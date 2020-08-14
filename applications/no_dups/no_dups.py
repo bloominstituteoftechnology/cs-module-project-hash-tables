@@ -7,7 +7,8 @@ def no_dups(s):
         if word not in no_dupe_dict:
             no_dupe_dict[word] = word
 
-    string_list = ''.join(list(no_dupe_dict.values()))      
+    string_list = ' '.join(list(no_dupe_dict.keys()))      
+    print (string_list)
 
     return string_list  
 
