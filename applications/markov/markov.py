@@ -30,8 +30,8 @@ for index, word in enumerate(words):
         freq_dict[word].append(words[index + 1])
 
 # print(f' >>>>>>>>>> start_w :  {start_w}')
-# for k,v in freq_dict.items():
-#     print(f' key {k}: {v} \n')
+for k,v in freq_dict.items():
+    print(f' key {k}: {v} \n')
 
 
 #  print(freq_dict)
@@ -50,6 +50,7 @@ for line in range(10):
             s += " " + next_w
             # try another word
             next_w = random.choice(freq_dict[next_w])
+    
         s += " " + next_w
-    s += s + random.choice(end_punc)
+    s += random.choice(end_punc)
     print(f' Sentence: {s}')    

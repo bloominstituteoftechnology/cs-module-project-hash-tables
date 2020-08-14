@@ -29,7 +29,7 @@ def crack_c(filename):
     cipher_f = [item[0] for item in sorted(counts.items(), key = lambda x : x[1], reverse = True )]
     print(cipher_f)   # ['W', 'J', 'M', 'X',....
 
-
+    # values are mapped to decode
     val_map = {cipher: val for cipher, val in zip(cipher_f, freq_list)}
     print(val_map)   # {'W': 'E', 'J': 'T', 'M': 'A', 'X': 'O',..... 
 
