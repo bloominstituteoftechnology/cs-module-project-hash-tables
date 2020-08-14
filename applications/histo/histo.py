@@ -8,7 +8,7 @@ def histo(filename):
     
 
 
-    with open("applications/markov/input.txt") as f:
+    with open(filename) as f:
         word_file = f.read() 
 
 
