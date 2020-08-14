@@ -28,9 +28,13 @@ class HashTable:
      """
      A hash table that with `capacity` buckets
      that accepts string keys
+
+     Implement this.
      """
  
      def __init__(self, capacity):
+          #self.capacity = MIN_CAPACITY  # Day 1, size here is same a number of slots, until we deal with collisions
+          #self.slots = [ None for item in range(self.capacity)]
           # Day 2
           self.capacity = capacity
           self.slots = [None] * capacity  # this hold LL (e.g. HashTableEntry)
@@ -42,7 +46,9 @@ class HashTable:
           Return the length of the list you're using to hold the hash
           table data. (Not the number of items stored in the hash table,
           but the number of slots in the main list.)
+
           One of the tests relies on this.
+
           Implement this.
           """
           # Your code here
@@ -58,7 +64,11 @@ class HashTable:
           Implement this.
           """
           # Your code here
-          load_factor = round( (( self.items_stored)/(self.get_num_slots())), 4)
+
+
+          load_factor = round( (( self.items_stored)/(self.get_num_slots())), 1)
+          # load_factor = round( (( self.items_stored)/(self.capacity), 1)
+          # # calc_num_slots = get_num_slots()
 
           print(f' Current load factor {load_factor}')
           
@@ -73,44 +83,25 @@ class HashTable:
                scale_calc = 0.5
           else:
                return
-          
+      
           self.resize(int(scale_calc * self.capacity))
           # return scale_calc
-
-     # finds dynamic resize e.t. 2x, 4x, 8x, etc and returns optimized capacity
-     def find_scale_factor2(self):
-          orig_load_factor = self.get_load_factor()
-          multiple_scale = 1
-          base = 2
-          power_value = 1
-
-          if orig_load_factor > 0.7:
-               base = 2
-               while orig_load_factor > 0.7:
-                    orig_load_factor = orig_load_factor / 2
-                    power_value +=1
-                    
-          elif orig_load_factor < 0.2:
-               base = 0.5
-               while orig_load_factor < 0.2:
-                    orig_load_factor = orig_load_factor * 2
-                    power_value += 1
-          else:
-               return
-      
-          self.resize(  int( pow(base, power_value) * self.capacity  ) )
+          
 
      def fnv1(self, key):
           """
           FNV-1 Hash, 64-bit
+
           Implement this, and/or DJB2.
           """
+
           # Your code here
 
 
      def djb2(self, key):
           """
           DJB2 hash, 32-bit
+
           Implement this, and/or FNV-1.
           """
           # Your code here
@@ -137,10 +128,34 @@ class HashTable:
      def put(self, key, value):
           """
           Store the value with the given key.
+
           Hash collisions should be handled with Linked List Chaining.
+          # we make an array of linked list nodes
+          Implement this.
           """
+          # Your code here
+          # Day 1
+          # hashed_index = self.hash_index(key)
+
+          # if self.slots[hashed_index] != None:
+          #      print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & overwrite of {self.slots[hashed_index]}')
+
+          # self.slots[hashed_index] = value
+          # print(f' put: using key {key } >> index {hashed_index} >>> value is    \"{self.slots[hashed_index]}\"')
+
           # Day 2  - add to tail method
           hashed_index = self.hash_index(key)
+
+          # # create new node
+          # new_tail = HashTableEntry(key, value)   
+          # current =  self.slots[hashed_index]      
+
+          # WATCH THIS COUNT for overwrites to same key
+
+          # Increment ONLY for new keys added
+          if self.get(key) == None:
+               self.items_stored += 1
+
           # test if slot NOT empty
           if self.slots[hashed_index] != None:
                print(f' \n\t Collision at key {key} with hashed_index {hashed_index} & value {self.slots[hashed_index].value}')
@@ -150,22 +165,25 @@ class HashTable:
                new_tail = HashTableEntry(key, value)   
                current =  self.slots[hashed_index]      
 
-               print(f' BEFORE  Current key is {current.key} with value {current.value} ')
-               if current.key == key:
-                    # print(f' overwrite at HEAD, value changed to {value}')
-                    current.value = value
-                    return
+
+               # print(f' BEFORE  Current key is {current.key} with value {current.value} ')
+               # if current.key == key:
+               #      # print(f' overwrite at HEAD, value changed to {value}')
+               #      current.value = value
+               #      # return
 
                # iterate to find tail & check for same key overwrite 
                while current.next != None:
                     current = current.next
-                    if current.key == key:
-                         current.value = value
+               current.next = new_tail     
+               
+                    # if current.key == key:
+                    #      current.value = value
                          # print(f' AFTER HEAD , overwrite value changed to {value}')
-                         return
+                         # return
 
                # append to tail
-               current.next = new_tail  
+               # current.next = new_tail  
 
           # slot empty, add first HashTableEntry       
           else:  
@@ -173,7 +191,7 @@ class HashTable:
                self.slots[hashed_index] = HashTableEntry(key, value)
           
           # Increment ONLY for new items added
-          self.items_stored += 1
+          # self.items_stored += 1
           # self.find_scale_factor()
 
           # Idea is to try to append to tail in O(1) if I have a tail pointer
@@ -184,15 +202,65 @@ class HashTable:
           elif self.get_load_factor() < 0.2:
                self.find_scale_factor
           else:
-               return   
-                
+               return          
+
+     def put_h(self, key, value):
+          # Append to head
+
+          hashed_index = self.hash_index(key)
+          current = self.slots[hashed_index]
+
+          print(f' index at {hashed_index}')
+          print(f' key >> {key}')
+          print(f' value >> {value}')
+          
+          # Increment ONLY for new keys added
+          if self.get(key) == None:
+               self.items_stored += 1
+
+          if self.slots[hashed_index] == None:
+               self.slots[hashed_index] = HashTableEntry(key, value)
+          else:
+               if self.slots[hashed_index] == None:
+                    print(f' Collision at index  {hashed_index}')  
+                    self.items_stored += 1  
+               orig_head = self.slots[hashed_index]
+               self.slots[hashed_index] = HashTableEntry(key,value)
+               self.slots[hashed_index].next = orig_head
+               print(f' current head : {self.slots[hashed_index].value}')
+          # Increment ONLY for new items added
+          
+
+
+          # Idea is to try to append to tail in O(1) if I have a tail pointer
+          self.last = self.slots[hashed_index]
+          print(f' current tail on index {hashed_index} is {self.last.value} ')
+          if self.get_load_factor() > 0.7:
+               self.find_scale_factor
+          elif self.get_load_factor() < 0.2:
+               self.find_scale_factor
+          else:
+               return 
+
 
      def delete(self, key):
           """
           Remove the value stored with the given key.
+
           Print a warning if the key is not found.
+
           Implement this.
           """
+          # Your code here
+          # Day 1
+          # if key in range(self.capacity):
+          #      self.slots[key] = None
+          # else:
+          #      print(f' Cannot delete key that does not exist ')     
+          # hashed_index = self.hash_index(key)
+          # print(f' delete:  key {key}, hashed_index{hashed_index}')
+          # self.slots[hashed_index] = None
+
           # Day 2
           hashed_index = self.hash_index(key)
           current = self.slots[hashed_index]
@@ -221,12 +289,24 @@ class HashTable:
                               return
            # Decrement items deleted
           self.items_stored -= 1
+          # self.find_scale_factor()
 
      def get(self, key):
           """
           Retrieve the value stored with the given key.
+
           Returns None if the key is not found.
+
+          Implement this.
           """
+          # Your code here
+          # Day 1 
+          # hashed_index = self.hash_index(key)
+          # value = self.slots[hashed_index]
+          # print(f' get: key {key} value at index {hashed_index} is {value}')
+          # return self.slots[hashed_index]
+
+          # Day 2
           # Find hashed index and iterate until key located, return val OR None if not found
           hashed_index = self.hash_index(key)
 
@@ -251,6 +331,8 @@ class HashTable:
           """
           Changes the capacity of the hash table and
           rehashes all key/value pairs.
+               ?? Resize down when load factor <= 0.7
+          Implement this.
           """
           # Your code here
           change_size = HashTable(new_capacity)
@@ -282,42 +364,67 @@ if __name__ == "__main__":
 
      # print(ht.delete("line_1"))     
      # print(ht.slots)
-
-     # ht.put("line_1", "'Twas brillig, and the slithy toves")
-     # ht.put("line_2", "Did gyre and gimble in the wabe:")
-
-
      # print(ht.delete("line_1"))
 
 
      # print(ht.delete("WEIRD KEY"))
  
-     ht.put("line_1", "'Twas brillig, and the slithy toves")
-     ht.put("line_2", "Did gyre and gimble in the wabe:")
-     ht.put("line_3", "All mimsy were the borogoves,")
-     ht.put("line_4", "And the mome raths outgrabe.")
-     ht.put("line_5", '"Beware the Jabberwock, my son!')
-     ht.put("line_6", "The jaws that bite, the claws that catch!")
-     ht.put("line_7", "Beware the Jubjub bird, and shun")
-     ht.put("line_8", 'The frumious Bandersnatch!"')
-     ht.put("line_9", "He took his vorpal sword in hand;")
-     ht.put("line_10", "Long time the manxome foe he sought--")
-     ht.put("line_11", "So rested he by the Tumtum tree")
-     ht.put("line_12", "And stood awhile in thought.")
+     # try put_h
+     ht.put_h("line_1", "'Twas brillig, and the slithy toves")
+     ht.put_h("line_2", "Did gyre and gimble in the wabe:")
+     ht.put_h("line_3", "All mimsy were the borogoves,")
+     ht.put_h("line_4", "And the mome raths outgrabe.")
+     ht.put_h("line_5", '"Beware the Jabberwock, my son!')
+     ht.put_h("line_6", "The jaws that bite, the claws that catch!")
+     ht.put_h("line_7", "Beware the Jubjub bird, and shun")
+     ht.put_h("line_8", 'The frumious Bandersnatch!"')
+     ht.put_h("line_9", "He took his vorpal sword in hand;")
+     ht.put_h("line_10", "Long time the manxome foe he sought--")
+     ht.put_h("line_11", "So rested he by the Tumtum tree")
+     ht.put_h("line_12", "And stood awhile in thought.")
+
+     ht.put_h("line_1", "'ZZZZZZZ Twas brillig, and the slithy toves")
+     ht.put_h("line_2", "ZZZZZZ Did gyre and gimble in the wabe:")
+     ht.put_h("line_3", "ZZZZZZAll mimsy were the borogoves,")
+     ht.put_h("line_4", "ZZZZZZAnd the mome raths outgrabe.")
+     ht.put_h("line_5", 'ZZZZZZ"Beware the Jabberwock, my son!')
+     ht.put_h("line_6", "ZZZZZZThe jaws that bite, the claws that catch!")
+     ht.put_h("line_7", "ZZZZZZBeware the Jubjub bird, and shun")
+     ht.put_h("line_8", 'ZZZZZZThe frumious Bandersnatch!"')
+     ht.put_h("line_9", "ZZZZZZHe took his vorpal sword in hand;")
+     ht.put_h("line_10", "ZZZZZZLong time the manxome foe he sought--")
+     ht.put_h("line_11", "ZZZZZZSo rested he by the Tumtum tree")
+     ht.put_h("line_12", "ZZZZZZAnd stood awhile in thought.")
 
      print(f" \t **** GET test")
-     print(ht.get("line_1"))
-     print(ht.get("line_2"))
-     print(ht.get("line_3"))
-     print(ht.get("line_4"))
-     print(ht.get("line_5"))
-     print(ht.get("line_6"))
-     print(ht.get("line_7"))
-     print(ht.get("line_8"))
-     print(ht.get("line_9"))
-     print(ht.get("line_10"))
-     print(ht.get("line_11"))
-     print(ht.get("line_12"))
+     # print(ht.get("line_1"))
+     # print(ht.get("line_2"))
+     # print(ht.get("line_3"))
+     # print(ht.get("line_4"))
+     # print(ht.get("line_5"))
+     # print(ht.get("line_6"))
+     # print(ht.get("line_7"))
+     # print(ht.get("line_8"))
+     # print(ht.get("line_9"))
+     # print(ht.get("line_10"))
+     # print(ht.get("line_11"))
+     # print(ht.get("line_12"))
+
+     print(ht.get_load_factor())
+
+     # print(f" \t **** GET test")
+     # print(ht.get("line_1"))
+     # print(ht.get("line_2"))
+     # print(ht.get("line_3"))
+     # print(ht.get("line_4"))
+     # print(ht.get("line_5"))
+     # print(ht.get("line_6"))
+     # print(ht.get("line_7"))
+     # print(ht.get("line_8"))
+     # print(ht.get("line_9"))
+     # print(ht.get("line_10"))
+     # print(ht.get("line_11"))
+     # print(ht.get("line_12"))
 
      # # # # print out our HT
      # # # for ind in range(8):
@@ -347,28 +454,26 @@ if __name__ == "__main__":
      # print("")
 
      # print(f" \t **** OVERWRITE test")
-     print(ht.get("line_1"))
-     print(ht.get("line_2"))
-     print(ht.get("line_3"))
-     print(ht.get("line_4"))
-     print(ht.get("line_5"))
-     print(ht.get("line_6"))
-     print(ht.get("line_7"))
-     print(ht.get("line_8"))
-     print(ht.get("line_9"))
-     print(ht.get("line_10"))
-     print(ht.get("line_11"))
-     print(ht.get("line_12"))
+     # print(ht.get("line_1"))
+     # print(ht.get("line_2"))
+     # print(ht.get("line_3"))
+     # print(ht.get("line_4"))
+     # print(ht.get("line_5"))
+     # print(ht.get("line_6"))
+     # print(ht.get("line_7"))
+     # print(ht.get("line_8"))
+     # print(ht.get("line_9"))
+     # print(ht.get("line_10"))
+     # print(ht.get("line_11"))
+     # print(ht.get("line_12"))
      
-     print(ht.get_num_slots())
+     # print(ht.get_num_slots())
      
-     print(ht.get_load_factor())
+     # print(ht.get_load_factor())
 
-     print(ht.find_scale_factor())
-     print(ht.capacity)
+     # print(ht.find_scale_factor())
+     # print(ht.capacity)
 
-
-     print(ht.get_load_factor())
      # ht.resize(16)
      # print(ht.get_load_factor())
 
