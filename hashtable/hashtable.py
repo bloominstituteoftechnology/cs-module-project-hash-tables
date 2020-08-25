@@ -88,6 +88,8 @@ class HashTable:
         """
         if self.get_load_factor() >= .7:
             self._double()
+        # if self.get_load_factor() <= .2 and self.capacity > (MIN_CAPACITY * 2):
+            # self._half()
         entry_exist, prev = self._get(key)
         if entry_exist:
             prev.next.value = value
@@ -150,6 +152,9 @@ class HashTable:
 
     def _double(self):
         self.resize(self.capacity * 2)
+
+    def _half(self):
+        self.resize(int(self.capacity / 2))
 
 
 if __name__ == "__main__":
