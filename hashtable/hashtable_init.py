@@ -22,13 +22,11 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
-        self.buckets = []
 
         if self.capacity < MIN_CAPACITY:
             self.capacity = MIN_CAPACITY
 
-        for i in range(self.capacity):
-            self.buckets.append(HashTableEntry(None, None))
+        self.buckets = [[] for i in range(self.capacity)]
         self.size = 0
 
     def get_num_slots(self):
@@ -86,14 +84,14 @@ class HashTable:
 
         Implement this.
         """
-        if self.get_load_factor() >= .7:
-            self._double()
-        entry_exist, prev = self._get(key)
-        if entry_exist:
-            prev.next.value = value
-        else:
-            prev.next = HashTableEntry(key, value)
-            self.size += 1
+        index = self.hash_index(key)
+        kvp = HashTableEntry(key, value)
+        for kvp in self.buckets[index]:
+            if kvp.key == key:
+                kvp.value = value
+                return
+        self.buckets[index].append(kvp)
+        self.size += 1
 
     def delete(self, key):
         """
@@ -103,10 +101,13 @@ class HashTable:
 
         Implement this.
         """
-        entry_exist, prev = self._get(key)
-        if entry_exist:
-            prev.next = prev.next.next
-            self.size -= 1
+        index = self.hash_index(key)
+        for kvp in self.buckets[index]:
+            if kvp.key == key:
+                self.buckets[index].remove(kvp)
+                self.size -= 1
+            else:
+                print('Warning - key not found')
 
     def get(self, key):
         """
@@ -116,10 +117,12 @@ class HashTable:
 
         Implement this.
         """
-        entry_exist, prev = self._get(key)
-        if entry_exist:
-            return prev.next.value
-        return None
+        index = self.hash_index(key)
+        for kvp in self.buckets[index]:
+            if kvp.key == key:
+                return kvp.value
+            else:
+                return None
 
     def resize(self, new_capacity):
         """
@@ -128,30 +131,10 @@ class HashTable:
 
         Implement this.
         """
-        ht2 = HashTable(new_capacity)
-        for i in range(self.capacity):
-            prev = self.buckets[i]
-            node = prev.next
-            while node is not None:
-                ht2.put(node.key, node.value)
-                node = node.next
-        self.__dict__.update(ht2.__dict__)
-
-    def _get(self, key):
-        index = self.hash_index(key)
-        prev = self.buckets[index]
-        node = prev.next
-        while node:
-            if node.key == key:
-                return True, prev
-            node = node.next
-            prev = prev.next
-        return False, prev
-
-    def _double(self):
-        self.resize(self.capacity * 2)
+        # Your code here
 
 
+"""
 if __name__ == "__main__":
     ht = HashTable(8)
 
@@ -186,3 +169,4 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+"""
