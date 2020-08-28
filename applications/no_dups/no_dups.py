@@ -1,6 +1,20 @@
 def no_dups(s):
-    # Your code here
+    counts = dict()
 
+    words = s.lower().split()
+
+    for word in words:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    results = {k: v for k, v in counts.items()}
+    if results:
+        keys = " ".join(list(results.keys()))
+    else:
+        keys = ''
+    return keys
 
 
 if __name__ == "__main__":

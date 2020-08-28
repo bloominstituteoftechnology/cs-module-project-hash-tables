@@ -1,6 +1,3 @@
-import string
-
-
 def word_count(s):
     counts = dict()
 
@@ -10,7 +7,6 @@ def word_count(s):
             s = s.replace(ele, " ")
 
     words = s.lower().split()
-    words
 
     for word in words:
         if word in counts:
