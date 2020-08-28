@@ -1,6 +1,9 @@
 class HashTableEntry:
     """
     Linked List hash table key/value pair
+    Node class to store key value pair of the link list
+    each node has string as key value pair and pointer 
+    to the the next node in case there is collision
     """
     def __init__(self, key, value):
         self.key = key
@@ -22,7 +25,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        #assiging list for the hash table
+        self.list_hashtable= [None for i in range(self.capacity)]
 
     def get_num_slots(self):
         """
@@ -34,7 +39,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+       
+        return len(self.list_hashtable)
 
 
     def get_load_factor(self):
@@ -43,7 +49,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        #
 
 
     def fnv1(self, key):
@@ -59,11 +65,15 @@ class HashTable:
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
+        It uses bit manipulation and prime numbers 
+        to create a hash index from a string
         """
-        # Your code here
-
+        hash = 5381
+        byte_array = key.encode('utf-8')
+        for byte in byte_array:
+            # the modulus keeps it 32-bit, python ints don't overflow
+             hash = ((hash * 33) ^ byte) % 0x100000000
+        return hash
 
     def hash_index(self, key):
         """
@@ -81,7 +91,31 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        #calculate index to store  string(key)in the list
+        list_index = self.hash_index(key)
+        #create a link list at that index to store bucket of key value pair
+        #create a node with given key value pair
+        new_node = HashTableEntry(key, value)
+        # check if there is a node at that index of the list
+        existing_node = self.list_hashtable[list_index]
+        if existing_node:
+            while existing_node:
+                #compare key and value at that index with the new_node 
+                if existing_node.key == new_node.key:
+                    #replace the value if it is already exist
+                    existing_node.value = value
+                    return
+                last_node = existing_node
+                existing_node = existing_node.next
+            #if we didn't find the value in the bucket
+            #put the value at the end of bucket
+            last_node.next = new_node
+        else:
+            #store new_node at  that index of the list
+            self.list_hashtable[list_index] = new_node
+
+
+
 
 
     def delete(self, key):
@@ -102,8 +136,20 @@ class HashTable:
         Returns None if the key is not found.
 
         Implement this.
-        """
-        # Your code here
+        """  
+        #calculate index to find string(key)in the list
+        list_index = self.hash_index(key)
+        # check if there is a node at that index of the list
+        existing_node = self.list_hashtable[list_index]
+        if existing_node:
+            while existing_node:
+                #compare key and value at that index with the new_node 
+                if existing_node.key == key:
+                    return existing_node.value
+                existing_node = existing_node.next
+        else:
+            return None
+
 
 
     def resize(self, new_capacity):
