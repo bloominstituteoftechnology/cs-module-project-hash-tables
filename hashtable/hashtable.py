@@ -126,7 +126,25 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        #calculate index to find  string(key)in the list
+        list_index = self.hash_index(key)
+        # check if there is a node at that index of the list
+        existing_node = self.list_hashtable[list_index]
+        if existing_node:
+            #keep looking for the key in the bucket till the end
+            prev_node = None
+            while existing_node:
+              
+                if existing_node.key == key:
+                    if prev_node:
+                        prev_node.next = existing_node.next
+                    else:
+                        self.list_hashtable[list_index] = existing_node.next 
+                prev_node = existing_node
+                existing_node=existing_node.next
+        else:
+            print(f'waring: {key} not found')
+        
 
 
     def get(self, key):
