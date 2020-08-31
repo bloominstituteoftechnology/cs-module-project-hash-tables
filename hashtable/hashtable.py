@@ -21,7 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.storage = [None] * capacity
+        self.item_count = 0
 
 
     def get_num_slots(self):
@@ -34,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -43,7 +45,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.item_count/self.capacity
+        
 
 
     def fnv1(self, key):
@@ -57,12 +60,11 @@ class HashTable:
 
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        hash = 5381
+        byte_array = key.encode('utf-8')
+        for byte in byte_array:
+            hash = ((hash * 33) ^ byte) % 0x100000000
+        return hash 
 
 
     def hash_index(self, key):
@@ -74,47 +76,71 @@ class HashTable:
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+        key_hash = self.djb2(key)
+        bucket_index = key_hash % self.capacity
 
-        Hash collisions should be handled with Linked List Chaining.
+        new_node = HashTableEntry(key, value)
+        existing_node = self.storage[bucket_index]
 
-        Implement this.
-        """
-        # Your code here
-
+        if existing_node:
+            last_node = None
+            while existing_node:
+                if existing_node.key == key:
+                    # if an exsiting key is found, replace the value 
+                    existing_node.value = value
+                    return 
+                last_node = existing_node
+                existing_node = existing_node.next
+                #if we get this far, we didnt find any exisiting key, so just append the new node to the end of the bucket
+            last_node.next = new_node
+        else:
+            self.storage[bucket_index] = new_node
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
+        key_hash = self.djb2(key)
+        bucket_index = key_hash % self.capacity
 
-        Print a warning if the key is not found.
+        existing_node = self.storage[bucket_index]
+        if existing_node:
+            last_node = None
+            while existing_node:
+                if existing_node.key == key:
+                    if last_node:
+                        last_node.next = existing_node.next
+                    else:
+                        self.storage[bucket_index] = existing_node.next
+                last_node = existing_node
+                existing_node = existing_node.next
+        else:
+            print("Not found!")
 
-        Implement this.
-        """
-        # Your code here
+
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
+        key_hash = self.djb2(key)
+        bucket_index = key_hash % self.capacity
 
-        Returns None if the key is not found.
+        existing_node = self.storage[bucket_index]
+        if existing_node:
+            while existing_node:
+                if existing_node.key == key:
+                    return existing_node.value
+                existing_node = existing_node.next
 
-        Implement this.
-        """
-        # Your code here
+        return None
 
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
-        # Your code here
-
+        if new_capacity >= self.capacity:
+            self.capacity = new_capacity
+            difference = new_capacity - len(self.storage) 
+            self.storage.append()
+            for x in self.storage:
+                self.djb2(x.key)
+            return self.storage
+        else:
+            return ("I dont know how to make it smaller!")
 
 
 if __name__ == "__main__":
