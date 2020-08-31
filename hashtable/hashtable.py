@@ -13,98 +13,69 @@ MIN_CAPACITY = 8
 
 
 class HashTable:
-    """
-    A hash table that with `capacity` buckets
-    that accepts string keys
-
-    Implement this.
-    """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity;
+        self.size = 0;
+        self.slots = [None]*self.capacity;
 
-
-    def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-
-        One of the tests relies on this.
-
-        Implement this.
-        """
-        # Your code here
-
-
-    def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
-        # Your code here
-
+    def get_num_slots(self): return len(self.slots)
+    def get_load_factor(self): return self.size / self.len(self.slots)
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
+        # FNV-1 Hash, 64-bit
+        hsh = 14695981039346656037; # 64bit ( &= 0xcbf29ce484222325 ) or ( 14695981039346656037 )
+        fnv_prime = 1099511628211; # 64bit (240 + 28 + 0xb3) or ( 1099511628211 )
 
-        Implement this, and/or DJB2.
-        """
+        for char in key:
+            hsh = hsh * fnv_prime 
+            hsh = hsh ^ ord(char)
 
-        # Your code here
-
+        return hsh
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
+        # DJB2 hash, 32-bit
+        hsh = 5381
 
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        for char in key:
+            hsh = (( hsh << 5) + hsh) + ord(char)
+
+        print(f' hashing key: {key} to {hsh & 0xFFFFFFFF % self.capacity}')
+        return hsh & 0xFFFFFFFF
 
 
     def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
+        # Take an arbitrary key and return a valid integer index
+        # between within the storage capacity of the hash table.
+
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
-        Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
         """
         # Your code here
+        self.size += 1 # increment size
+        self.slots[self.hash_index(key)] = value; # Store the value with the given key.
+        print(f'value = {value} and key = {key}')
+        print(self.hash_index(key)) 
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
+        if self.slots[self.hash_index(key)] is None: # Checking if the variable is None
+            print("Invalid key input.");
+        else:
+            self.size -= 1; # decrement size
+            self.slots[self.hash_index(key)] = None; # Remove the value stored with the given key.
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
+        if self.slots[self.hash_index(key)] is None: # Checking if the variable is None
+            print("Invalid key input.");
+            return None # Returns None if the key is not found.
+        else:
+            print(f'returning key: {key} as {self.slots[self.hash_index(key)]}')
+            return self.slots[self.hash_index(key)] # Return the value stored with the given key.
 
     def resize(self, new_capacity):
         """
