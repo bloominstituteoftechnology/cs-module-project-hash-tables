@@ -23,11 +23,12 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=8):
         # Your code here
         self.capacity = capacity
         #assiging list for the hash table
         self.list_hashtable= [None for i in range(self.capacity)]
+        self.count =0
 
     def get_num_slots(self):
         """
@@ -40,7 +41,7 @@ class HashTable:
         Implement this.
         """
        
-        return len(self.list_hashtable)
+        return  self.capacity #len(self.list_hashtable)
 
 
     def get_load_factor(self):
@@ -49,7 +50,18 @@ class HashTable:
 
         Implement this.
         """
-        #
+        #load factor = (No. of item in the hash table)/total no of slots
+        # items=0
+        # for i in range(self.capacity):
+        #     existing_node = self.list_hashtable[i]
+        #     if existing_node:
+        #         while existing_node:
+        #               items +=1
+        #               existing_node=existing_node.next
+
+
+        load_factor = self.count/self.capacity 
+        return load_factor
 
 
     def fnv1(self, key):
@@ -110,10 +122,14 @@ class HashTable:
             #if we didn't find the value in the bucket
             #put the value at the end of bucket
             last_node.next = new_node
+            self.count +=1
         else:
             #store new_node at  that index of the list
             self.list_hashtable[list_index] = new_node
-
+            self.count +=1
+        load_factor = self.get_load_factor()
+        if load_factor >0.7:
+            self.resize(int(self.capacity *2))
 
 
 
@@ -176,8 +192,20 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
-        """
-        # Your code here
+        """   
+        new_list = [None for i in range(new_capacity)]
+        old_capacity = self.capacity
+        self.capacity = new_capacity
+        old_list = self.list_hashtable
+        self.list_hashtable = new_list
+        for node in old_list:
+            if node:
+                self.put(node.key, node.value)
+
+               
+
+
+            
 
 
 
@@ -203,13 +231,16 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
+    load_factor = ht.get_load_factor() 
+    print(load_factor)
     # Test resizing
     old_capacity = ht.get_num_slots()
     ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
-
+     
+    load_factor = ht.get_load_factor() 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-
+    print(load_factor)
     # Test if data intact after resizing
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
