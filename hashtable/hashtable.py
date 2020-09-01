@@ -11,6 +11,11 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+def djb2(self, key):
+    hash = 5381
+    for c in key:
+        hash = (hash * 33) + ord(c)
+  return hash
 
 class HashTable:
     """
@@ -21,48 +26,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
-
-    def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-
-        One of the tests relies on this.
-
-        Implement this.
-        """
-        # Your code here
-
-
-    def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
-        # Your code here
-
-
-    def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
-
-
-    def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        self.capacity = capacity
+        self.data = [None] * capacity
 
 
     def hash_index(self, key):
@@ -70,7 +35,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -80,9 +45,10 @@ class HashTable:
         Hash collisions should be handled with Linked List Chaining.
 
         Implement this.
-        """
-        # Your code here
 
+        For a given key, store a value in the hash table"""
+        index = self.hash_index(key)
+        self.data[index] = value
 
     def delete(self, key):
         """
@@ -92,7 +58,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        value = self.data[index] = None
+        return value
 
 
     def get(self, key):
@@ -103,18 +71,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
-    def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
-        # Your code here
-
+        index = self.hash_index(key)
+        value = self.data[index]
+        return value
 
 
 if __name__ == "__main__":
