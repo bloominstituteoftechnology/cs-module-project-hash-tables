@@ -98,7 +98,7 @@ class HashTable:
         #print(f'value = {value} and key = {key}')    
         self.size += 1
 
-        if(self.get_load_factor() >= .7): 
+        if (self.get_load_factor() >= .7): 
             self.resize(self.get_num_slots()*2)
 
     def delete(self, key):

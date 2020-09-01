@@ -1,4 +1,4 @@
-class HashTableEntry:
+class Node:
     """
     Linked List hash table key/value pair
     """
@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
 
     def __init__(self, capacity):
@@ -20,7 +19,15 @@ class HashTable:
         self.slots = [None]*self.capacity;
 
     def get_num_slots(self): return len(self.slots)
-    def get_load_factor(self): return self.size / self.len(self.slots)
+    def get_load_factor(self): return self.size / len(self.slots)
+
+    def checkCapacity(self):
+        self.size += 1 #size ++ 
+        if self.size/self.capacity > .7:
+            print(f'CAPACITY OVERLOAD +++++++++++++++++++++++ {self.size}/{self.capacity}') 
+            self.resize(self.capacity*2)
+        else:
+            return
 
     def fnv1(self, key):
         # FNV-1 Hash, 64-bit
@@ -40,7 +47,6 @@ class HashTable:
         for char in key:
             hsh = (( hsh << 5) + hsh) + ord(char)
 
-        print(f' hashing key: {key} to {hsh & 0xFFFFFFFF % self.capacity}')
         return hsh & 0xFFFFFFFF
 
 
@@ -52,41 +58,120 @@ class HashTable:
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Hash collisions should be handled with Linked List Chaining.
-        """
-        # Your code here
-        self.size += 1 # increment size
-        self.slots[self.hash_index(key)] = value; # Store the value with the given key.
-        print(f'value = {value} and key = {key}')
-        print(self.hash_index(key)) 
+        idx = self.hash_index(key)  # hash index
+        node = self.slots[idx]      # ref slot @ index
+        precursor = node            # 2nd ref in case prexisting node
+        # Empty Slot? ->
+        # Insert node!
+        if node is None:
+            self.slots[idx] = Node(key,value)
+            print(f'({key[4:]}) has been indexed at slot {idx}.')
+            self.checkCapacity()
+            return
+        # Occupied? ->
+        # Loop through occupants looking for key or back of the list
+        while node != None:
+            # Key match?
+            if key == node.key:
+                # replace value!
+                print(f'({key[4:]}) has been found at {idx}. [VALUE OVERWRITE]')    
+                node.value = value
+                return
+            precursor = node
+            node = node.next
 
-
-    def delete(self, key):
-        if self.slots[self.hash_index(key)] is None: # Checking if the variable is None
-            print("Invalid key input.");
-        else:
-            self.size -= 1; # decrement size
-            self.slots[self.hash_index(key)] = None; # Remove the value stored with the given key.
+        precursor.next = Node(key,value)
+        self.checkCapacity()
+        print(f'({key[4:]}) has been indexed at slot {idx} [LISTED!].')
 
     def get(self, key):
-        if self.slots[self.hash_index(key)] is None: # Checking if the variable is None
-            print("Invalid key input.");
-            return None # Returns None if the key is not found.
+        idx = self.hash_index(key)
+        node = self.slots[idx]
+        
+        # Node has next and node key doesn't match?
+        # Loop until we are at the back of the list!
+        while node is not None and node.key != key:
+            print(f'(loop)')
+            node = node.next
+		# Noting here? Return None. :( 
+        if node is None:
+            print(f'({key[4:]}) GET [NULL]')
+            print(f'({key[4:]}) RETURN: NULL!')
+            return None
+        # Found it? Great! Return vale!
         else:
-            print(f'returning key: {key} as {self.slots[self.hash_index(key)]}')
-            return self.slots[self.hash_index(key)] # Return the value stored with the given key.
+            print(f'({key[4:]}) GET [idx = {idx}, node = ({self.slots[idx].key[4:]}).]')
+            print(f'({key[4:]}) RETURN: ({node.value[4:]}).')
+            return node.value 
+
+    def delete(self, key):
+        idx = self.hash_index(key)    # hash index
+        node = self.slots[idx]  # ref slot @ index
+        prev = None               # previous node ( might need to itterate a list @ slot )
+		# Find something? No key match?
+        # Ref current as previous and next as current! Loop until end of list!
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+		# Find something?
+        # Cool, kill, death, fire.
+        if node is not None:
+            self.size -= 1
+            # If we are at the head of the list just set the new head as the next node
+            if prev is None: self.slots[idx] = node.next
+            # If we aren't at the head set the previous nodes new next to current next
+            else: prev.next = prev.next.next
+            return node.value
+        # Nothing to delete? Return None. :(
+        else: return None
+
+    def printAll(self):
+        numSlots = self.get_num_slots()-1
+        last = self.slots[numSlots]
+        while (last == None):
+            if numSlots < 0: return False
+            else:
+                print(f'Key:{last.id} , Value: {last.value}')
+                self.delete(last.id)
+                return True
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
+        print(f'{new_capacity} +++++++++++++++++++++++')
+        newTable = HashTable(new_capacity)
+        print(f'{new_capacity} +++++++++++++++++++++++')
+        num = (self.capacity  - 1)
+        print(f'{new_capacity} +++++++++++++++++++++++')
+        clone = self.clone( num , newTable )
+        self.capacity = clone.capacity
+        self.size = clone.size
+        self.slots = clone.slots
         # Your code here
 
+    def clone(self, num, table):
+        print(f'num = {num}')
+        print(f'newtable capacity = {table.capacity}')
+        print(f'oldtable capacity = {self.capacity}')
+        print(f'newtable size = {table.size}')
+        print(f'oldtable size = {self.size}')
+        while self.size > 0:
+            print(f'size = {self.size}')
+            item = self.slots[num]
 
+            if item != None:
+                table.put(item.key, item.value)
+                self.delete(item.key)
+                return self.clone(num, table)
+            else:
+                return self.clone(num - 1, table)
+
+        return table
+
+
+"""
+print(f"capacity = {ht.capacity} ===========================================================")
+print(f"size = {ht.size} =================================================================")
+print(f"len = {len(ht.slots)} ===========================================================")
+"""
 
 if __name__ == "__main__":
     ht = HashTable(8)
@@ -106,6 +191,7 @@ if __name__ == "__main__":
 
     print("")
 
+    
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
@@ -122,3 +208,4 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
