@@ -1,5 +1,6 @@
 # Your code here
-
+import random
+import math
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -8,13 +9,22 @@ def slowfun_too_slow(x, y):
     v %= 982451653
 
     return v
-
+lookup_table = {}
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
-    # Your code here
+    #create a dictionary(hash tale) for caching   
+    if (x,y) in lookup_table:
+        return lookup_table[(x,y)]
+    else:
+         lookup_table[(x,y)]=slowfun_too_slow(x, y)
+         return lookup_table[(x,y)]
+    
+        
+ 
+        
 
 
 
