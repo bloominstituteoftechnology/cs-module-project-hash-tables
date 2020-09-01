@@ -12,7 +12,84 @@ class HashTableEntry:
 MIN_CAPACITY = 8
 
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def __str__(self):
+        """Print entire linked list."""
+
+        if self.head is None:
+            return "[Empty List]"
+
+        cur = self.head
+        s = ""
+
+        while cur != None:
+            s += f'({cur.value})'
+
+            if cur.next is not None:
+                s += '-->'
+
+            cur = cur.next
+
+        return s
+
+    def find(self, value):
+        cur = self.head
+
+        while cur is not None:
+            if cur.value == value:
+                return cur
+
+            cur = cur.next
+
+        return None
+
+    def delete(self, value):
+        cur = self.head
+
+        # Special case of deleting head
+
+        if cur.value == value:
+            self.head = cur.next
+            return cur
+
+        # General case of deleting internal node
+
+        prev = cur
+        cur = cur.next
+
+        while cur is not None:
+            if cur.value == value:  # Found it!
+                prev.next = cur.next   # Cut it out
+                return cur  # Return deleted node
+            else:
+                prev = cur
+                cur = cur.next
+
+        return None  # If we got here, nothing found
+
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+
+    def insert_or_overwrite_value(self, key, value):
+        node = self.find(value)
+
+        if node is None:
+            # Make a new node
+            self.insert_at_head(HashTableEntry(key, value))
+
+        else:
+            # Overwrite old value
+            node.value = value
+
+
 class HashTable:
+    # insert linked list functionality directly in here 
+    # keep track of number of entries in hash table - update as it changes - increment when we make one, decrement when you delete on 
+
     """
     A hash table that with `capacity` buckets
     that accepts string keys
@@ -22,8 +99,13 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = [None] * capacity
-
+        self.capacity = capacity 
+        self.arr = [LinkedList()] * capacity
+        # track number of entries - starts at 0 
+        self.entryCount = 0 
+       
+    def __repr__(self):
+        return f'{self.arr}'
 
     def get_num_slots(self):
         """
@@ -36,8 +118,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.capacity)
-
+        return len(self.arr)
 
 
     def get_load_factor(self):
@@ -47,7 +128,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.entryCount/self.capacity
 
 
     def fnv1(self, key):
@@ -81,6 +162,7 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.get_num_slots()
 
+
     def put(self, key, value):
         """
         Store the value with the given key.
@@ -91,7 +173,20 @@ class HashTable:
         """
         # Your code here
 
-        self.capacity[self.hash_index(key)] = value 
+    # Algorithm PUT:
+        # Get the index for the key
+        index = self.hash_index(key)
+        ll = self.arr[index]
+        # Search the list for the key
+        if ll.find(value):
+        # If it exists, overwrite the value
+            ll.insert_or_overwrite_value(key, value)
+        # Else, insert the [key,value] at the head of the linked list at that slot
+        else:
+            ll.insert_at_head(HashTableEntry(key, value)) 
+            self.entryCount += 1
+            # if self.get_load_factor() >= .7:
+            #     self.resize(len(self.arr)*2) 
 
 
     def delete(self, key):
@@ -103,7 +198,34 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.capacity[self.hash_index(key)] = None 
+
+        index = self.hash_index(key)
+        ll = self.arr[index]
+
+        cur = ll.head
+
+        # Special case of deleting head
+
+        if cur.key == key:
+            ll.head = cur.next
+            self.entryCount -= 1
+            return cur
+
+        # General case of deleting internal node
+
+        prev = cur
+        cur = cur.next
+
+        while cur is not None:
+            if cur.key == key:  # Found it!
+                prev.next = cur.next   # Cut it out
+                self.entryCount -= 1
+                return cur  # Return deleted node
+            else:
+                prev = cur
+                cur = cur.next
+
+        print('You cannot delete what does not exist')  # If we got here, nothing found
 
 
     def get(self, key):
@@ -114,8 +236,24 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        return self.capacity[self.hash_index(key)]
+    # Your code here
+    # Algorithm GET:
+        # Get the index for the key
+        index = self.hash_index(key)
+        ll = self.arr[index]
+        # Search the linked list at that index for the entry for that key
+        # Return the value (or None if not found)
+        cur = ll.head
+
+        while cur is not None:
+            if cur.key == key:
+                return cur.value 
+
+            cur = cur.next
+
+        return None
+
+        # return self.arr[index]
 
 
     def resize(self, new_capacity):
@@ -127,6 +265,18 @@ class HashTable:
         """
         # Your code here
 
+        old_arr = self.arr 
+        new_arr = [LinkedList()] * new_capacity
+        self.arr = new_arr 
+        
+        for ll in old_arr:
+            cur = ll.head
+
+            while cur is not None:
+                self.put(cur.key, cur.value)
+                cur = cur.next
+        
+        
 
 
 if __name__ == "__main__":
@@ -153,7 +303,7 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
+    ht.resize(ht.get_num_slots() * 2)
     new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
