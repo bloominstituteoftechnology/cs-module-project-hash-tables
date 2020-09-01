@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -22,7 +21,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.storage = [None] * capacity
+        self.item_count = 0
 
     def get_num_slots(self):
         """
@@ -35,7 +36,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return len(self.storage)
 
     def get_load_factor(self):
         """
@@ -44,7 +45,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.item_count / self.capacity
 
     def fnv1(self, key):
         """
@@ -54,7 +55,7 @@ class HashTable:
         """
 
         # Your code here
-
+        
 
     def djb2(self, key):
         """
@@ -63,7 +64,14 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        str_key = str(key).encode()
+        hash_value = 5381
 
+        for b in str_key:
+          hash_value = ((hash_value << 5) + hash_value) + b
+          hash_value &= 0xffffffff
+        
+        return hash_value
 
     def hash_index(self, key):
         """
