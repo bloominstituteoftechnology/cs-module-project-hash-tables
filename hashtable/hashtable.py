@@ -67,9 +67,9 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         hash = 5381
-         for element in key:
-             hash = (hash * 33) + ord(element)
-         return hash
+        for element in key:
+            hash = (hash * 33) + ord(element)
+        return hash
 
 
     def hash_index(self, key):
@@ -136,8 +136,7 @@ class HashTable:
             storage = storage.next
         # Returns None if the key is not found.
         return None
-
-
+    
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -145,10 +144,39 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
-
+        load = self.get_load_factor()
+        # When load factor increases above 0.7, 
+        if load > 0.7:
+            # automatically rehash the table to double its previous size.
+            new_table = [None] * (new_capacity)
+            old_table = self.storage
+            self.storage = new_table
+            # Update capacity to new balue
+            self.capacity = new_capacity
+            # for each slot in table:
+            for entry in old_table:
+		    # for each element in the linked list in that slot:
+                cur = entry
+                # 	PUT that element in new_table
+                while cur is not None:
+                    self.put(cur.key, cur.value)
+                    cur = cur.next
+        # When load factor decreases below 0.2
+        # down to a minimum of 8 slots.
+        if load < 0.2 and new_capacity > 8:      
+            # automatically rehash the table to half its previous size, 
+            new_table = [None] * (new_capacity)
+            old_table = self.storage
+            self.storage = new_table
+            # Update capacity to new balue
+            self.capacity = new_capacity
+            # for each slot in table:
+            for entry in old_table:
+		    # for each element in the linked list in that slot:
+                for element in entry:
+		        # 	PUT that element in new_table
+                    self.put(element.key, element.value)
+        
 if __name__ == "__main__":
     ht = HashTable(8)
 
