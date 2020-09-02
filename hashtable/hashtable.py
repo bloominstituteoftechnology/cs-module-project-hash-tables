@@ -157,7 +157,7 @@ class HashTable:
             for entry in old_table:
 		    # for each element in the linked list in that slot:
                 cur = entry
-                # 	PUT that element in new_table
+                # PUT that element in new_table
                 while cur is not None:
                     self.put(cur.key, cur.value)
                     cur = cur.next
@@ -168,7 +168,7 @@ class HashTable:
             new_table = [None] * (new_capacity)
             old_table = self.storage
             self.storage = new_table
-            # Update capacity to new balue
+            # Update capacity to new value
             self.capacity = new_capacity
             # for each slot in table:
             for entry in old_table:
