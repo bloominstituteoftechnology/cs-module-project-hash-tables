@@ -24,7 +24,6 @@ class HashTable:
     def checkCapacity(self):
         self.size += 1 #size ++ 
         if self.size/self.capacity > .7:
-            print(f'CAPACITY OVERLOAD +++++++++++++++++++++++ {self.size}/{self.capacity}') 
             self.resize(self.capacity*2)
         else:
             return
@@ -65,7 +64,6 @@ class HashTable:
         # Insert node!
         if node is None:
             self.slots[idx] = Node(key,value)
-            print(f'({key[4:]}) has been indexed at slot {idx}.')
             self.checkCapacity()
             return
         # Occupied? ->
@@ -74,7 +72,6 @@ class HashTable:
             # Key match?
             if key == node.key:
                 # replace value!
-                print(f'({key[4:]}) has been found at {idx}. [VALUE OVERWRITE]')    
                 node.value = value
                 return
             precursor = node
@@ -82,7 +79,6 @@ class HashTable:
 
         precursor.next = Node(key,value)
         self.checkCapacity()
-        print(f'({key[4:]}) has been indexed at slot {idx} [LISTED!].')
 
     def get(self, key):
         idx = self.hash_index(key)
@@ -91,17 +87,12 @@ class HashTable:
         # Node has next and node key doesn't match?
         # Loop until we are at the back of the list!
         while node is not None and node.key != key:
-            print(f'(loop)')
             node = node.next
 		# Noting here? Return None. :( 
         if node is None:
-            print(f'({key[4:]}) GET [NULL]')
-            print(f'({key[4:]}) RETURN: NULL!')
             return None
         # Found it? Great! Return vale!
         else:
-            print(f'({key[4:]}) GET [idx = {idx}, node = ({self.slots[idx].key[4:]}).]')
-            print(f'({key[4:]}) RETURN: ({node.value[4:]}).')
             return node.value 
 
     def delete(self, key):
@@ -131,16 +122,12 @@ class HashTable:
         while (last == None):
             if numSlots < 0: return False
             else:
-                print(f'Key:{last.id} , Value: {last.value}')
                 self.delete(last.id)
                 return True
 
     def resize(self, new_capacity):
-        print(f'{new_capacity} +++++++++++++++++++++++')
         newTable = HashTable(new_capacity)
-        print(f'{new_capacity} +++++++++++++++++++++++')
         num = (self.capacity  - 1)
-        print(f'{new_capacity} +++++++++++++++++++++++')
         clone = self.clone( num , newTable )
         self.capacity = clone.capacity
         self.size = clone.size
@@ -148,13 +135,7 @@ class HashTable:
         # Your code here
 
     def clone(self, num, table):
-        print(f'num = {num}')
-        print(f'newtable capacity = {table.capacity}')
-        print(f'oldtable capacity = {self.capacity}')
-        print(f'newtable size = {table.size}')
-        print(f'oldtable size = {self.size}')
         while self.size > 0:
-            print(f'size = {self.size}')
             item = self.slots[num]
 
             if item != None:
