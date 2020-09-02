@@ -66,6 +66,8 @@ the table to half its previous size, down to a minimum of 8 slots.
 
 ## Day 3 and Day 4
 
+HINT - Dictionary key can also be a tuple 
+
 Work on the hashtable applications directory (in any order you
 wish--generally arranged from easier to harder, below).
 

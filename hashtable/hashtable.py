@@ -185,7 +185,7 @@ class HashTable:
         else:
             ll.insert_at_head(HashTableEntry(key, value)) 
             self.entryCount += 1
-            # if self.get_load_factor() >= .7:
+            # if self.get_load_factor() > .7:
             #     self.resize(len(self.arr)*2) 
 
 
@@ -264,18 +264,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        self.entryCount = 0 
         old_arr = self.arr 
         new_arr = [LinkedList()] * new_capacity
         self.arr = new_arr 
-        
+
         for ll in old_arr:
             cur = ll.head
 
             while cur is not None:
                 self.put(cur.key, cur.value)
                 cur = cur.next
-        
         
 
 
