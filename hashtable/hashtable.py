@@ -50,7 +50,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.num_vals_entered // self.capacity
+        return self.num_vals_entered / self.capacity
 
 
     def fnv1(self, key):
@@ -105,12 +105,15 @@ class HashTable:
 
         Implement this.
         """
+        # will check to see if we want to resize
+        if self.get_load_factor() > .7:
+            self.resize(self.capacity*2)
         # want to first get the index first
         theIndex = self.hash_index(key)
         # Go to the index and see if there is anything in the 
         # index
         if self.myList[theIndex] == None:
-            breakpoint()
+
             self.myList[theIndex] = HashTableEntry(key, value)
 
             self.num_vals_entered += 1 # doing the incrementing here if there is nothing
@@ -164,12 +167,17 @@ class HashTable:
                 self.myList[self.hash_index(key)] = val[1].next
                 val[1].next = None # this is to allow the garbage collection to happen to the value
             elif val[1].next == None:  # this would mean it is at the end
-                val[0].next == None
+                val[0].next = None
             else:
                 # the key, value pair is between other nodes
                 val[0].next = val[1].next
                 val[1].next = None
         self.num_vals_entered -= 1 # decrementing the amount
+
+        # this is to resize the hash table when it is too empty
+        # will only decrement to around 8 and then stop
+        if (self.get_load_factor() <.2 and self.capacity < 8):
+            self.resize(new_capacity=(self.capacity//2))
 
 
 
@@ -205,13 +213,13 @@ class HashTable:
             
             if node.key == key:
                 return node
-        if toDelete == True:
+        elif toDelete == True:
             if node == None:
                 return (None, None)
             if node.key == key:
                 return (pevNode, node)
-        else:
-            return self.__getNode_recurs(node=node.next, key=key, toDelete=toDelete, pevNode=node)
+       
+        return self.__getNode_recurs(node=node.next, key=key, toDelete=toDelete, pevNode=node)
 
     
 
@@ -228,11 +236,11 @@ class HashTable:
         if toDelete == True:
             if bucket == None:
                 return (None, None)
-        if toDelete == False:
+        elif toDelete == False:
             if bucket == None:
                 return None
-        else:
-            return self.__getNode_recurs(bucket, key, toDelete) # the head of the bucket will be the first node
+        
+        return self.__getNode_recurs(bucket, key, toDelete) # the head of the bucket will be the first node
 
         
 
@@ -247,8 +255,10 @@ class HashTable:
         # make a list to hold the old values
         theOldlist = self.myList
         # making the new list
-        self.mylist = [None] * new_capacity
+        self.myList = [None] * new_capacity
         self.capacity = new_capacity
+        # setting the numbers used in the hash table
+        self.num_vals_entered = 0
 
         # will now go through the old list
         for i in range(len(theOldlist)):
@@ -261,6 +271,8 @@ class HashTable:
                 self.put(headNode.key, headNode.value)
                 # now putting the headNode to the next node
                 headNode = headNode.next
+
+   
 
 
 
@@ -283,6 +295,7 @@ if __name__ == "__main__":
 
     print("")
 
+    
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
