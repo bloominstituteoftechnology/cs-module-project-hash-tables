@@ -21,7 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = MIN_CAPACITY
+        self.count = 0
+        self.storage = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +45,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -53,7 +55,7 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        
 
 
     def djb2(self, key):
@@ -62,7 +64,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for element in key:
+            hash = (hash * 33) + ord(element)
+        return hash
 
 
     def hash_index(self, key):
@@ -74,36 +79,50 @@ class HashTable:
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+     
+        # Store the value with the given key.
+        index = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        storage = self.storage[index]
+        self.count += 1
+        
 
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
-
+        # Hash collisions should be handled with Linked List Chaining.
+        if storage:
+            self.storage[index] = entry
+            self.storage[index].next = storage
+        else:
+            self.storage[index] = entry        
+    
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
+     
+         # Remove the value stored with given key
+        if self.get(key):
+            self.put(key, None)
+            self.count -= 1
+        # Print a warning if the key is not found.
+        else:
+            print("Key not found")
 
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
+    
+        # Retrieve the value stored with the given key.
+        index = self.hash_index(key)
+        storage = self.storage[index]
+        while storage:
+            if storage.key == key:
+                return storage.value
+            storage = storage.next
 
-        Returns None if the key is not found.
+        # Returns None if the key is not found.
+        return None
 
-        Implement this.
-        """
-        # Your code here
+        # Implement this.
+        
+        
 
 
     def resize(self, new_capacity):
