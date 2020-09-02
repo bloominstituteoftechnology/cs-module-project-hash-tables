@@ -7,6 +7,8 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __repr__(self):
+        return f"{self.key}, {self.value}"
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -47,7 +49,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.load_factor = self.capacity * 2/3
+        self.load_factor = self.size / self.capacity
+        return self.load_factor
+
+    def check_table_size(self):
+        self.get_load_factor()
+        if self.load_factor >= 0.7:
+            return True
+        else:
+            return False
+
 
     def fnv1(self, key):
         """
@@ -91,12 +102,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.check_table_size()
         self.size += 1
         index = self.hash_index(key)
-        print(index)
         node = self.buckets[index]
-        self.buckets[index] = HashTableEntry(key, value)
-
+        if node is None:
+            self.buckets[index] = HashTableEntry(key, value)
+            return
+        prev = node
+        while node is not None:
+            if node is not None and node.key == key:
+                node.value = value
+            prev = node
+            node = node.next
+        prev.next = HashTableEntry(key, value)
 
 
 
@@ -111,7 +130,26 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         node = self.buckets[index]
-        self.buckets[index] = None
+
+        cur = node
+        if cur.key == key:
+            self.buckets[index] = cur.next
+            self.size -= 1
+            return cur
+        
+        prev = cur
+        cur = cur.next
+
+        while cur is not None:
+            if cur.key == key:
+                prev.next = cur.next
+                self.size -= 1
+                return cur
+            else:
+                prev = cur
+                cur = cur.next
+
+        return None
 
 
     def get(self, key):
@@ -125,6 +163,8 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         node = self.buckets[index]
+        while node is not None and node.key != key:
+            node = node.next
         if node is None:
             return None
         else:
@@ -141,12 +181,20 @@ class HashTable:
         # Your code here
 
         # resize ht
-        self.capacity = new_capacity
-        self.buckets = [None] * self.capacity
 
         # copy ht
+        ht_copy = []
+        for item in self.buckets:
+            if item is not None:
+                ht_copy.append(item)
 
-        # create hash for each key in ht
+        self.size = 0
+        self.capacity = new_capacity
+        self.buckets = [None] * new_capacity
+        for item in ht_copy:
+            self.put(item.key, item.value)
+
+        return self.buckets
 
 
 
@@ -172,12 +220,12 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # # Test resizing
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
     for i in range(1, 13):
