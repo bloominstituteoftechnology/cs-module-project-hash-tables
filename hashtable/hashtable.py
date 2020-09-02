@@ -2,10 +2,12 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-    def __init__(self, key, value):
+    def __init__(self, key, value, Next=None):
         self.key = key
         self.value = value
-        self.next = None
+        self.next = Next
+    def __str__(self):
+        return f'Key: {self.key} - Value: {self.value} - Next: {self.next}'
 
 
 # Hash table can't have fewer than this many slots
@@ -21,8 +23,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.store = [None] * capacity
-        self.capacity = capacity
+        self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
+        self.store = [None] * self.capacity
 
 
 
@@ -91,7 +93,9 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        index = self.djb2(key) % self.capacity
+        # print(index)
+        return index
 
     def put(self, key, value):
         """
@@ -102,8 +106,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        index = hash_index(key)
-        self.store[index] = key
+        index = self.hash_index(key)
+        collision = self.store[index] != None
+        if collision:
+            current = self.store[index]
+            self.store[index] = HashTableEntry(key, value, current)
+        else:
+            self.store[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -115,10 +124,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        index = hash_index(key)
-	    self.store[index] = None
-
-
+        index = self.hash_index(key)
+        current = self.store[index]
+        last = current
+        if current == None:
+            pass
+        elif current.key == key:
+            self.store[index] = current.next
+        else:
+            while current.key != key or current == None:
+                last = current
+                current = current.next
+            if current == None:
+                pass
+            else:
+                last.next = current.next
+            
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -128,9 +149,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        index = get_index(key)
-
-	    return self.store[index]
+        index = self.hash_index(key)
+        current = self.store[index]
+        multiple = current.next != None if current else False
+        if current == None:
+            return None
+        elif current.key == key:
+            return current.value
+        elif multiple:
+            while current.key != key and current != None:
+                current = current.next
+            if current == None:
+                return None
+            else:
+                return current.value
 
 
     def resize(self, new_capacity):
