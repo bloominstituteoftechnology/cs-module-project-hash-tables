@@ -20,8 +20,9 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
+    def __init__(self, capacity=MIN_CAPACITY):
+        self.capacity = capacity
+        self.array = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +35,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -81,7 +82,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Ignores Collisions (will overwrite any existing values at the calculated index)
+        index = self.hash_index(key)
+        if self.array[index] is not None:
+            print(f"Collision Warning: overwriting value: '{self.array[index]}', with value: '{value}'")
+        self.array[index] = value
 
 
     def delete(self, key):
@@ -92,7 +97,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        self.array[index] = None
 
 
     def get(self, key):
@@ -103,7 +109,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        return self.array[index]
 
 
     def resize(self, new_capacity):
