@@ -1,5 +1,18 @@
 def no_dups(s):
-    # Your code here
+    '''
+    str -> str
+
+    '''
+    cache = ''
+    words = s.split()
+    for word in words:
+        if word not in cache:
+           cache = cache + ' ' +word
+    return cache.strip()
+
+     
+
+            
 
 
 
