@@ -96,5 +96,21 @@ print(val)
 ## Python: dictionary
 ## JS: object
 ## Hash map
+## Map
+
+## Pseudocode for put
+### 1. Hash the key
+### 2. Take the hash and mod it with len of array
+### 3. Go to index and put in value
+
+## Pseudocode for get
+### 1. Hash the key
+### 2. Take the has and mod it with len of array
+### 3. Go to index and get out the value
+
+## Time complexity?
+### Same for get and put
+### Linear in length of string/key
+### Constant time in length of array O(1)
 
 
