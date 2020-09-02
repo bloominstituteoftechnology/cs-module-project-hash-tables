@@ -52,14 +52,6 @@ class HashTable:
         self.load_factor = self.size / self.capacity
         return self.load_factor
 
-    def check_table_size(self):
-        self.get_load_factor()
-        if self.load_factor >= 0.7:
-            return True
-        else:
-            return False
-
-
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
@@ -102,7 +94,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.check_table_size()
+        if self.get_load_factor() >= 0.7:
+            self.resize(self.capacity * 2)
         self.size += 1
         index = self.hash_index(key)
         node = self.buckets[index]
