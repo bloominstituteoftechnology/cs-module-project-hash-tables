@@ -1,5 +1,21 @@
+
 def word_count(s):
-    # Your code here
+    cache = {}
+    for word in s.split():
+        word = word.lower()
+
+        punctuation = '":;,.-+=/\\|[]{}()*^&'
+        for character in word:
+            if character in punctuation:
+                word = word.replace(character, "")
+        
+        if word in cache:
+            cache[word] += 1
+        elif word != '':
+            cache.update({ word: 1 })
+
+    print(f'Cache: {cache}')
+    return cache
 
 
 
