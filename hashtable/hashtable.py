@@ -26,6 +26,7 @@ class HashTable:
         if capacity < MIN_CAPACITY:
             self.capacity = MIN_CAPACITY
         self.storage = [None]*self.capacity
+        
 
     def get_num_slots(self):
         """
