@@ -123,7 +123,7 @@ print(hash_table)
 ## insert data into table
 def insert(hash_table, key, value):
     hash_key = hash(key) % len(hash_table)
-    key_exists = Falsebucket = hash_table[hash_key]
+    key_exists = False
     bucket = hash_table[hash_key]
     for i, kv in enumerate(bucket):
         k, v = kv
