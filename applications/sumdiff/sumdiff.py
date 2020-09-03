@@ -13,3 +13,28 @@ def f(x):
 
 # Your code here
 
+def printCombs(q):
+    cache = {}
+    sums = []
+    diff = []
+    for i in q:
+        for x in q:
+            if i not in cache:
+                fi = f(i)
+                cache[i] = fi
+            else:
+                fi = cache[i]
+            
+            if x not in cache:
+                fx = f(x)
+                cache[x] = fx
+            else:
+                fx = cache[x]
+            sums.append((fi,fx,fi+fx))
+            diff.append((fi,fx,fi-fx))
+    for i in sums:
+        for x in diff:
+            if i[-1] == x[-1]:
+                print(f'f{i[0]} + f{i[1]} = f{x[0]} - f{x[0]} = {i[-1]}')
+
+printCombs(q)
