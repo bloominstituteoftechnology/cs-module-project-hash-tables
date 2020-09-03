@@ -38,5 +38,22 @@ for x in array:
 freq_list = []
 for x in count_list:
     freq_list.append(x/n * 100)
-freq_list = sorted(freq_list, reverse=True)
-print(freq_list)
+
+original_dict = dict(zip(alphabet, freq_list))
+decoder_dict = dict(zip(sorted(freq_list, reverse=True), frequency))
+
+translator = {}
+for k, v in original_dict.items():
+    translator[k] = decoder_dict[v]
+
+for k, v in translator.items():
+    print(k, v)
+
+results = ''
+for ele in message:
+    if ele in alphabet:
+        results += translator[ele]
+    else:
+        results += ele
+
+print(results)
