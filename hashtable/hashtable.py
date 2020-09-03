@@ -1,8 +1,262 @@
 import random
 
 # Define a lookup table for the Pearson hash method
-lookup = list(range(0, 256))
-lookup = random.sample(lookup, 255)
+lookup = [44,
+    152,
+    117,
+    52,
+    116,
+    140,
+    151,
+    225,
+    29,
+    170,
+    204,
+    22,
+    122,
+    88,
+    121,
+    83,
+    183,
+    158,
+    230,
+    9,
+    203,
+    77,
+    124,
+    172,
+    238,
+    213,
+    63,
+    35,
+    169,
+    62,
+    23,
+    164,
+    19,
+    235,
+    236,
+    248,
+    149,
+    174,
+    24,
+    92,
+    249,
+    98,
+    68,
+    41,
+    176,
+    212,
+    81,
+    135,
+    49,
+    194,
+    177,
+    254,
+    224,
+    167,
+    53,
+    202,
+    96,
+    244,
+    10,
+    69,
+    188,
+    133,
+    21,
+    118,
+    65,
+    93,
+    40,
+    250,
+    85,
+    157,
+    46,
+    20,
+    205,
+    218,
+    55,
+    73,
+    246,
+    94,
+    8,
+    137,
+    72,
+    99,
+    102,
+    255,
+    144,
+    142,
+    106,
+    108,
+    187,
+    226,
+    12,
+    42,
+    89,
+    75,
+    105,
+    129,
+    112,
+    146,
+    231,
+    56,
+    59,
+    54,
+    165,
+    190,
+    191,
+    50,
+    222,
+    39,
+    200,
+    5,
+    182,
+    27,
+    67,
+    17,
+    57,
+    247,
+    150,
+    228,
+    210,
+    195,
+    66,
+    239,
+    163,
+    159,
+    185,
+    243,
+    208,
+    252,
+    171,
+    198,
+    2,
+    173,
+    126,
+    184,
+    139,
+    234,
+    3,
+    26,
+    128,
+    82,
+    58,
+    214,
+    33,
+    196,
+    113,
+    48,
+    245,
+    178,
+    237,
+    125,
+    189,
+    166,
+    111,
+    107,
+    34,
+    232,
+    162,
+    217,
+    207,
+    127,
+    161,
+    18,
+    131,
+    103,
+    199,
+    80,
+    91,
+    223,
+    148,
+    78,
+    51,
+    145,
+    241,
+    31,
+    153,
+    141,
+    16,
+    115,
+    216,
+    60,
+    251,
+    156,
+    123,
+    95,
+    215,
+    154,
+    109,
+    97,
+    70,
+    132,
+    79,
+    14,
+    136,
+    43,
+    119,
+    186,
+    180,
+    74,
+    181,
+    76,
+    138,
+    47,
+    242,
+    168,
+    28,
+    227,
+    114,
+    45,
+    206,
+    130,
+    36,
+    38,
+    71,
+    147,
+    30,
+    155,
+    160,
+    220,
+    84,
+    233,
+    253,
+    211,
+    175,
+    1,
+    90,
+    4,
+    7,
+    101,
+    219,
+    179,
+    240,
+    32,
+    134,
+    100,
+    13,
+    193,
+    64,
+    197,
+    201,
+    221,
+    229,
+    37,
+    86,
+    104,
+    143,
+    11,
+    87,
+    25,
+    209,
+    15,
+    120,
+    6,
+    61,
+    192,
+    110]
+
 
 class HashTableEntry:
     """
@@ -35,7 +289,7 @@ class HashTable:
         self.table = [None]*self.capacity
 
         # Initialize a Person hash lookup table (for use in hashing keys)
-        self.lookup = random.sample(list(range(0, 256)), 255)
+        self.lookup = lookup
 
     def get_num_slots(self):
         """
@@ -167,7 +421,7 @@ class HashTable:
                 found_value = True
                 break
 
-            # Is this the last node in the linked list
+            # Key not found. Is this the last node in the linked list
             if cur_node.next == None:
                 # Last node, item not found
                 break
@@ -183,15 +437,30 @@ class HashTable:
             return
 
         # Key has been found, delete the node
-        # Linked list has only one node. Effectively delete the node
-        if cur_node == last_node:
+        # At what position are we in the linked list?
+        # Linked list has only one node: it is the current, last, and only node
+        if cur_node == last_node and cur_node.next == None:
             # Remove the current node (first node)
             self.table[idx] = None
-            return cur_node.value
+            return
 
-        # Linked list has more than one node. Delete the pertinent (current) node
-        last_node.next = cur_node.next
-        return cur_node.value
+        # Last node of a list with more than one node
+        if last_node != cur_node and cur_node.next == None:
+            # current node is the last node of a list with >1 nodes
+            # remove last node
+            last_node.next = None
+            return
+
+        # Interim node of a list with more than two nodes
+        if last_node != cur_node and cur_node.next != None:
+            last_node.next = cur_node.next
+            return
+
+        # First node of a list with more than one node
+        #* PICK UP HERE!!!!
+        if last_node == cur_node and 
+
+
 
     def get(self, key):
         """
