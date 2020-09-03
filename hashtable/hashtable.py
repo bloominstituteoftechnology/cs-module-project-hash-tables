@@ -22,6 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = MIN_CAPACITY
+        self.storage = [None] * capacity
+        self.count = 0
 
 
     def get_num_slots(self):
@@ -35,6 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -63,6 +67,12 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash_num = 5381
+        byte_array = key.encode('utf-8')
+
+        for byte in byte_array:
+            hash_num = ((hash_num * 33) ^ byte) % 0x100000000
+        return hash_num
 
 
     def hash_index(self, key):
@@ -82,6 +92,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        storage = self.storage[index]
+        self.count += 1
+
+        if storage:
+            self.storage[index] = entry
+            self.storage[index].next = storage
+        else:
+            self.storage[index] = entry
 
 
     def delete(self, key):
@@ -93,6 +113,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.get(key):
+            self.put(key, None)
+            self.count -= 1
+        else:
+            print("Key not found")
+        
 
 
     def get(self, key):
@@ -104,6 +130,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        storage = self.storage[index]
+        while storage:
+            if storage.key == key:
+                return storage.value
+            storage = storage.next
+        return None
 
 
     def resize(self, new_capacity):
