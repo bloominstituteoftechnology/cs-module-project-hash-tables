@@ -11,6 +11,7 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 MAX_LOAD_FACTOR = 0.7
+MIN_LOAD_FACTOR = 0.2
 
 class HashTable:
 
@@ -105,6 +106,8 @@ class HashTable:
     def resize_if_needed(self):
         if self.get_load_factor() > MAX_LOAD_FACTOR:
             self.resize(self.capacity * 2)
+        elif self.get_load_factor() < MIN_LOAD_FACTOR and int(self.capacity / 2) >= MIN_CAPACITY:
+            self.resize(int(self.capacity / 2))
 
 
     def resize(self, new_capacity):
