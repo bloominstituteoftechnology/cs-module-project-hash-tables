@@ -22,10 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = capacity
-        if capacity < MIN_CAPACITY:
-            self.capacity = MIN_CAPACITY
-        self.storage = [None]*self.capacity
+        self.capacity = capacity #Number of buckets in the hashtable 
+        self.storage = [None]*capacity #init storage with empty capacity buckets
+        self.item_count = 0
         
 
     def get_num_slots(self):
@@ -39,6 +38,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
+        return len(self.storage)
 
 
     def get_load_factor(self):
