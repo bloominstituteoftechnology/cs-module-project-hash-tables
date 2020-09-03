@@ -52,31 +52,55 @@ class HashTable:
         return self.djb2(key) % self.capacity
 
 
-    # Ignores Collisions (will overwrite any existing values at the calculated index)
     def put(self, key, value):
         index = self.hash_index(key)
-        if self.array[index] is not None:
-            print(f"Collision Warning: overwriting value: '{self.array[index]}', with value: '{value}'")
-        self.array[index] = value
+        entry = self.array[index]
+
+        if entry is None:
+            self.array[index] = HashTableEntry(key, value)
+            return
+                
+        while entry.next != None and entry.key != key:
+            entry = entry.next
+        
+        if entry.key == key:
+                entry.value = value
+        else:
+            entry.next = HashTableEntry(key, value)
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
         index = self.hash_index(key)
-        if index is None:
-            print(f"Warning: Tried to delete a value from HashTable but no value exists for key: '{key}'")
-        self.array[index] = None
+        entry = self.array[index]
+        prev_entry = None
+        
+        if entry is not None:
+            while entry.next != None and entry.key != key:
+                prev_entry = entry
+                entry = entry.next
+            
+            if entry.key == key:
+                if prev_entry is None:
+                    self.array[index] = entry.next
+                else:
+                    prev_entry.next = entry.next
+                return
+        
+        print(f"Warning: Tried to delete a value from HashTable but no value exists for key: '{key}'")
+
 
 
     def get(self, key):
         index = self.hash_index(key)
-        return self.array[index]
+        entry = self.array[index]
+       
+        if entry is None:
+            return None
+
+        while entry.next != None and entry.key != key:
+            entry = entry.next
+
+        return entry.value if entry.key == key else None
 
 
     def resize(self, new_capacity):
