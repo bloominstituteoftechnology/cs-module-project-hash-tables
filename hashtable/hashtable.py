@@ -142,7 +142,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        new_hashtable = HashTable(new_capacity)
+        for entry in self.data:
+            # check if entry exists
+            if entry:
+                new_hashtable.put(entry.key, entry.value)
+                # check for next entry
+                if entry.next:
+                    current = current.next
+                    new_hashtable.put(current.key, current.value)
+        self.data = new_hashtable.data
+        self.capacity = new_hashtable.capacity
 
 
 
