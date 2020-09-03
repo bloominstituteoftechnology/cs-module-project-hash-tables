@@ -232,23 +232,42 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Ensure the new capacity >= the minimum capacity
+        if new_capacity < MIN_CAPACITY:
+            new_capacity = MIN_CAPACITY
 
-def foo():
-    pass
+        # Create a new list array
+        new_table = [None]*new_capacity
 
-ht = HashTable(8)
+        # Replicate the shared indexed values in the new list
+        common_length = self.capacity
+        if new_capacity <= common_length:
+            common_length = new_capacity
+        
+        # Replicate the items in the common elements of the old and new table
+        for idx, val in enumerate(self.table[:common_length]):
+            new_table[idx] = val
 
-ht.put("my_key_01", 1)
-ht.put("my_key_01", 101)
-ht.put("my_key_02", 2)
-ht.put("my_key_03", 3)
-ht.put("my_key_04", 4)
-ht.put("my_key_05", 5)
-ht.put("my_key_06", 6)
-ht.put("my_key_07", 7)
-ht.put("my_key_08", 8)
-ht.put("my_key_09", 9)
-ht.delete("my_key_01")
-ht.delete("my_key_01")
-foo()
+        # Set the current table to old_table
+        old_table = self.table
+
+        # Set the instance table to the new table
+        self.table = new_table  
+        # Set the instance capacity to the new table's capacity
+        self.capacity = new_capacity
+
+        # Any more nodes to inspect?
+        if len(old_table) > common_length:
+            # Yes... inspect the rest of the nodes and rehash
+            for jdx, jval in enumerate(old_table[common_length: len(old_table)]):
+                # Node at this table location?
+                if jval == None:
+                    # No node found, skip
+                    continue
+
+                # Found a node. Rehash to the the updated table and capacity
+                new_idx = self.hash_index(jval.key)
+                # Set the node value to the new index in the object's table
+                self.table[new_idx] = jval
+
+
