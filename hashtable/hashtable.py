@@ -55,7 +55,7 @@ class HashTable:
         if entry is None:
             self.array[index] = HashTableEntry(key, value)
             self.number_of_items += 1
-            self.resizeIfNeeded()
+            self.resize_if_needed()
             return
                 
         while entry.next != None and entry.key != key:
@@ -66,7 +66,7 @@ class HashTable:
         else:
             entry.next = HashTableEntry(key, value)
             self.number_of_items += 1
-            self.resizeIfNeeded()
+            self.resize_if_needed()
 
 
     def delete(self, key):
@@ -84,7 +84,7 @@ class HashTable:
                 else:
                     prev_entry.next = entry.next
                 self.number_of_items -= 1
-                self.resizeIfNeeded()
+                self.resize_if_needed()
                 return
         print(f"Warning: Tried to delete a value from HashTable but no value exists for key: '{key}'")
 
@@ -101,19 +101,33 @@ class HashTable:
 
         return entry.value if entry.key == key else None
 
-    def resizeIfNeeded(self):
+
+    def resize_if_needed(self):
         if self.get_load_factor() > MAX_LOAD_FACTOR:
             self.resize(self.capacity * 2)
 
+
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
+        old_array = self.array
+        self.array = [None] * new_capacity
+        self.capacity = new_capacity
+        
+        for old_entry in old_array:
+            while old_entry is not None:
+                key = old_entry.key
+                value = old_entry.value
+                index = self.hash_index(key)
+                entry = self.array[index]
 
-        Implement this.
-        """
-        # Your code here
-
+                # insert old key/value into resized hash table
+                if entry is None:
+                    self.array[index] = HashTableEntry(key, value)
+                else:
+                    while entry.next != None:
+                        entry = entry.next
+                    entry.next = HashTableEntry(key, value)
+                
+                old_entry = old_entry.next
 
 
 if __name__ == "__main__":
