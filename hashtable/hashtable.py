@@ -110,7 +110,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        if key = key:
+            self.put(key, None)
+            self.count -= 1
+        else:
+            print("Key is not found")
 
 
     def get(self, key):
