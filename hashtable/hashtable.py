@@ -10,13 +10,14 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
-
+MAX_LOAD_FACTOR = 0.7
 
 class HashTable:
 
     def __init__(self, capacity=MIN_CAPACITY):
         self.capacity = capacity
         self.array = [None] * capacity
+        self.number_of_items = 0
 
 
     def get_num_slots(self):
@@ -24,12 +25,7 @@ class HashTable:
 
 
     def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
-        # Your code here
+        return self.number_of_items / self.capacity
 
 
     def fnv1(self, key):
@@ -58,36 +54,39 @@ class HashTable:
 
         if entry is None:
             self.array[index] = HashTableEntry(key, value)
+            self.number_of_items += 1
+            self.resizeIfNeeded()
             return
                 
         while entry.next != None and entry.key != key:
             entry = entry.next
         
         if entry.key == key:
-                entry.value = value
+            entry.value = value
         else:
             entry.next = HashTableEntry(key, value)
+            self.number_of_items += 1
+            self.resizeIfNeeded()
 
 
     def delete(self, key):
         index = self.hash_index(key)
         entry = self.array[index]
         prev_entry = None
-        
+
         if entry is not None:
             while entry.next != None and entry.key != key:
                 prev_entry = entry
                 entry = entry.next
-            
             if entry.key == key:
                 if prev_entry is None:
                     self.array[index] = entry.next
                 else:
                     prev_entry.next = entry.next
+                self.number_of_items -= 1
+                self.resizeIfNeeded()
                 return
-        
         print(f"Warning: Tried to delete a value from HashTable but no value exists for key: '{key}'")
-
 
 
     def get(self, key):
@@ -102,6 +101,9 @@ class HashTable:
 
         return entry.value if entry.key == key else None
 
+    def resizeIfNeeded(self):
+        if self.get_load_factor() > MAX_LOAD_FACTOR:
+            self.resize(self.capacity * 2)
 
     def resize(self, new_capacity):
         """
