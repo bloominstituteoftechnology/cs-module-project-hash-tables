@@ -76,7 +76,6 @@ class HashTable:
         else:
             print("The key twas not found")
 
-
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -87,7 +86,6 @@ class HashTable:
         """
         # get the value stored with the key.
         index = self.hash_index(key)
-
         storage = self.storage[index]
         while storage:
             if storage.key == key:
@@ -95,7 +93,6 @@ class HashTable:
             storage = storage.next
         # key was not found.
         return None
-
 
     def resize(self, new_capacity):
         """
@@ -107,10 +104,12 @@ class HashTable:
 
         load = self.get_load_factor()
         if load > 0.7:
+            # Make a new array of double the size
             new_table = [None] * (new_capacity)
             old_table = self.storage
             self.storage = new_table
             self.capacity = new_capacity
+            # Go through all the elements in the old hash table
             for element in old_table:
                 current = element
                 # we want to then put the element into the new_table
