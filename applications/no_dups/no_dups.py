@@ -1,6 +1,11 @@
 def no_dups(s):
     # Your code here
-
+    s = s.split(' ')
+    unique = []
+    for i in s:
+        if i not in unique:
+            unique.append(i)
+    return ' '.join(unique)
 
 
 if __name__ == "__main__":
