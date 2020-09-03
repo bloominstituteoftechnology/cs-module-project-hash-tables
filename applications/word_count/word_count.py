@@ -1,5 +1,19 @@
 def word_count(s):
     # Your code here
+    filters = ['"', ':', ',', '.', '-', '+', '=', '/', '\\', '|', '[', ']', '{', '}', '(', ')', '*', '^', '&', ';','\r','\n','\t','\t','\r','\n']
+
+    for i in filters:
+        s = s.replace(i, ' ')
+    # print(s)
+    s = s.lower().split(' ')
+    count = {}
+    for i in s:
+        if i not in count:
+            count[i] = 0
+        count[i] += 1
+    if '' in count:
+        del count['']
+    return count
 
 
 
