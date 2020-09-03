@@ -110,7 +110,7 @@ class HashTable:
 
         Implement this.
         """
-        if key = key:
+        if key is key:
             self.put(key, None)
             self.count -= 1
         else:
