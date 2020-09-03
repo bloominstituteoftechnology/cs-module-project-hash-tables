@@ -89,7 +89,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        hst = HashTableEntry(key, value)
+        node = self.data[index]
+        if node is not None:
+            self.data[index] = hst
+            self.data[index].next = node
+        else:
+            self.data[index] = hst
+            self.count += 1
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
 
 
     def delete(self, key):
