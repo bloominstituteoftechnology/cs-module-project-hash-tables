@@ -1,5 +1,17 @@
 def no_dups(s):
-    # Your code here
+    dict = {}
+    wordList = s.split()
+
+    for word in wordList:
+        if word in dict:
+            continue
+        else:
+            dict[word] = 1
+
+    arr = [key for key in dict]
+    string = " "
+
+    return string.join(arr)
 
 
 
