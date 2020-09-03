@@ -139,7 +139,6 @@ class HashTable:
             entry = self.slots[hash_i]
             while entry:
                 if entry.key == hash_key:
-                    # print(f'key: {entry.key}, value: {entry.value} ')
                     return entry.value
                 entry = entry.next
 
@@ -151,17 +150,21 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if self.get_load_factor() < 0.7:
-            return
+        lf = self.get_load_factor()
 
-        self.capacity = self.capacity * 2
+        if lf > 0.7:
+            self.capacity = new_capacity
+
+        elif lf < 0.2:
+            self.capacity = self.capacity // 2
+
+        else: return
+
         self.items = 0
         new_slots = [None] * self.capacity
-
         for slot in self.slots:
             if slot:
                 entry = slot
-                # print(entry)
                 while entry:
                     hash_i = entry.key % self.capacity
                     entry_to_add = entry
@@ -175,63 +178,20 @@ class HashTable:
                             new_entry = new_entry.next
                         new_entry.next = entry_to_add
                         entry_to_add.next = None
+                    self.items += 1
         self.slots = new_slots
-        
-                
 
-
-
-        
-
-        
 
 ht = HashTable(8)
 
 ht.put("key-0", "val-0")
-ht.put("key-1", "val-1")
-ht.put("key-2", "val-2")
-ht.put("key-3", "val-3")
-ht.put("key-4", "val-4")
-ht.put("key-5", "val-5")
-ht.put("key-6", "val-6")
-ht.put("key-7", "val-7")
-ht.put("key-8", "val-8")
-ht.put("key-9", "val-9")
+# ht.put("key-1", "val-1")
 
-ht.put("key-0", "new-val-0")
-ht.put("key-1", "new-val-1")
-ht.put("key-2", "new-val-2")
-ht.put("key-3", "new-val-3")
-ht.put("key-4", "new-val-4")
-ht.put("key-5", "new-val-5")
-ht.put("key-6", "new-val-6")
-ht.put("key-7", "new-val-7")
-ht.put("key-8", "new-val-8")
-ht.put("key-9", "new-val-9")
 
-print(ht.get('key-2'))
+ht.resize(8)
 
-# ht.put("line_1", "'Twas brillig, and the slithy toves")
-# ht.put("line_2", "Did gyre and gimble in the wabe:")
-# ht.put("line_3", "All mimsy were the borogoves,")
-# ht.put("line_4", "And the mome raths outgrabe.")
-# ht.put("line_5", '"Beware the Jabberwock, my son!')
-# ht.put("line_6", "The jaws that bite, the claws that catch!")
-# ht.put("line_7", "Beware the Jubjub bird, and shun")
-# ht.put("line_8", 'The frumious Bandersnatch!"')
-# ht.put("line_9", "He took his vorpal sword in hand;")
-# ht.put("line_10", "Long time the manxome foe he sought--")
-# ht.put("line_11", "So rested he by the Tumtum tree")
-# ht.put("line_12", "And stood awhile in thought.")
+# ht = HashTable(8)
 
-# print(ht.slots[0].value)
-# ht.delete("line_1")
-# ht.delete("line_12")
-# ht.delete("line_9")
-# ht.delete("line_11")
-# ht.delete("line_7")
-# ht.get("line_3")
-# print(ht.slots[0].value)
 
 def show_ht(ht):
     for i, slot in enumerate(ht.slots):
