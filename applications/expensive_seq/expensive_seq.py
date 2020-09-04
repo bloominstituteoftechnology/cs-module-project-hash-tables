@@ -2,13 +2,17 @@
 cache = {}
 
 def expensive_seq(x, y, z):
+    if y == None:
+        breakpoint()
     # Will do memoization with a dictionary
     if x <= 0:
         return y +z
-
-    elif cach
-
-
+    # exps(x-1,y+1,z) + exps(x-2,y+2,z*2) + exps(x-3,y+3,z*3)
+    elif (x,y,z) in cache:
+        return cache[(x,y,z)]
+    else:
+        cache[(x,y,z)] = expensive_seq(x-1,y+1,z) + expensive_seq(x-2, y+2, z*2) + expensive_seq(x-3, y+3, z*3)
+        return cache[(x,y,z)]
 
 
 
