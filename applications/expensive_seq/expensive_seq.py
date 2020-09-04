@@ -1,8 +1,14 @@
 # Your code here
-
+cache = {}
 
 def expensive_seq(x, y, z):
-    # Your code here
+    # Will do memoization with a dictionary
+    if x <= 0:
+        return y +z
+
+    elif cach
+
+
 
 
 
