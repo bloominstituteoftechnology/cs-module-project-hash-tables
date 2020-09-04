@@ -457,10 +457,12 @@ class HashTable:
             return
 
         # First node of a list with more than one node
-        #* PICK UP HERE!!!!
-        if last_node == cur_node and 
+        if last_node == cur_node and cur_node.next != None:
+            self.table[idx] = cur_node.next
+            return
 
-
+        print("ERROR: got to an unexpected code route")
+        return
 
     def get(self, key):
         """
@@ -534,9 +536,6 @@ class HashTable:
                     # No node found, skip
                     continue
 
-                # Found a node. Rehash to the the updated table and capacity
-                new_idx = self.hash_index(jval.key)
-                # Set the node value to the new index in the object's table
-                self.table[new_idx] = jval
-
-
+                # Found a node. Rehash the key and "put" to the instance with the updated 
+                #    table
+                self.put(jval.key, jval.value)
