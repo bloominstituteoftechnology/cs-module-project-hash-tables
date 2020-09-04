@@ -33,3 +33,16 @@ class LinkedList:
             curr = curr.next
 
         return None
+
+a = Node(1)
+b = Node(2)
+c = Node(3)
+
+
+ll = LinkedList()
+ll.insert_at_head(a)
+ll.insert_at_head(b)
+ll.insert_at_head(c)
+print(ll)
+
+print(ll.find(5))
