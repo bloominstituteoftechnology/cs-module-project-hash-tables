@@ -1,5 +1,13 @@
 def no_dups(s):
     # Your code here
+    ht = set()
+    s = s.split(" ")
+    res = ""
+    for word in s:
+        if word not in ht:
+            ht.add(word)
+            res += f'{word} '
+    return res[:-1]
 
 
 
