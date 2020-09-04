@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -23,8 +22,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity #Number of buckets in the hashtable 
-        self.storage = [None]*capacity #init storage with empty capacity buckets
-        self.item_count = 0
+        self.data = [None] * capacity #init storage with empty capacity buckets
         
 
     def get_num_slots(self):
@@ -38,8 +36,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        
-        return len(self.storage)
+        print('Capacity of this hashtable: ', self.capacity)
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -49,6 +47,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
 
 
     def fnv1(self, key):
@@ -68,6 +67,11 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
@@ -87,6 +91,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        self.data[index] = value
 
 
     def delete(self, key):
@@ -98,6 +104,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        if self.data[index] is None:
+            print("Error not found")
+        else:
+            self.data[index] = None
 
 
     def get(self, key):
@@ -109,6 +120,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        value = self.data[index]
+        return value
 
 
     def resize(self, new_capacity):
