@@ -507,35 +507,34 @@ class HashTable:
         if new_capacity < MIN_CAPACITY:
             new_capacity = MIN_CAPACITY
 
-        # Create a new list array
-        new_table = [None]*new_capacity
-
-        # Replicate the shared indexed values in the new list
-        common_length = self.capacity
-        if new_capacity <= common_length:
-            common_length = new_capacity
-        
-        # Replicate the items in the common elements of the old and new table
-        for idx, val in enumerate(self.table[:common_length]):
-            new_table[idx] = val
-
-        # Set the current table to old_table
+        # Temporarily store the current list for hashing purposes
         old_table = self.table
 
-        # Set the instance table to the new table
-        self.table = new_table  
-        # Set the instance capacity to the new table's capacity
-        self.capacity = new_capacity
+        # Initialize the new list
+        self.table      = [None]*new_capacity
+        self.capacity   = new_capacity
+        
+        # Iterate through the old list and rehash and insert using the resized object 
+        for idx, val in enumerate(old_table):
+            # Is there a node at the current position?
+            if val == None:
+                # no node present, skip
+                continue
 
-        # Any more nodes to inspect?
-        if len(old_table) > common_length:
-            # Yes... inspect the rest of the nodes and rehash
-            for jdx, jval in enumerate(old_table[common_length: len(old_table)]):
-                # Node at this table location?
-                if jval == None:
-                    # No node found, skip
-                    continue
+            # Is there a single node at the current position
+            if val.next == None:
+                # encountered a single node; hash & insert and continue
+                self.put(val.key, val.value)
+                continue
 
-                # Found a node. Rehash the key and "put" to the instance with the updated 
-                #    table
-                self.put(jval.key, jval.value)
+            # Have a linked list with more than one node
+            # Traverse the list
+            tmp_node = val
+            while True:
+                self.put(tmp_node.key, tmp_node.value)
+                if tmp_node.next == None:
+                    # Last node in the link list
+                    break
+
+                tmp_node = tmp_node.next
+
