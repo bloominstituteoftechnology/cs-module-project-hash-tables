@@ -14,17 +14,23 @@ MIN_CAPACITY = 8
 
 class HashTable:
     """
-    A hash table that with `capacity` buckets
+    A hash table with `capacity` buckets
     that accepts string keys
 
     Implement this.
     """
 
     def __init__(self, capacity):
-        # Your code here
-        self.capacity = MIN_CAPACITY
-        self.storage = [None] * capacity
-        self.count = 0
+        # self.capacity = MIN_CAPACITY
+        # self.buckets = [None] * capacity
+        # self.count = 0
+
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = capacity
+
+        self.buckets = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -37,8 +43,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        return self.capacity
+        return len(self.buckets)
 
 
     def get_load_factor(self):
@@ -56,8 +61,16 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        FNV_offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
 
-        # Your code here
+        hashed_result = FNV_offset_basis
+        key_bytes = key.encode()
+
+        for byte in key_bytes:
+            hashed_result = hashed_result * FNV_prime
+            hashed_result = hashed_result ^ byte
+        return hashed_result
 
 
     def djb2(self, key):
@@ -66,19 +79,20 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-        hash_num = 5381
-        byte_array = key.encode('utf-8')
-
-        for byte in byte_array:
-            hash_num = ((hash_num * 33) ^ byte) % 0x100000000
-        return hash_num
-
+        # make a variable equal to 5381
+        hashed_result = 5381
+        ## iterate over the bytes of our key
+        key_bytes = key.encode()
+        ## for each byte,
+        for byte in key_bytes:
+            ### shift the variable and add it, then add the byte
+            hashed_result = ((hashed_result << 5) + hashed_result) + byte
+        return hashed_result
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
+        within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
@@ -91,17 +105,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        index = self.hash_index(key)
-        entry = HashTableEntry(key, value)
-        storage = self.storage[index]
-        self.count += 1
-
-        if storage:
-            self.storage[index] = entry
-            self.storage[index].next = storage
-        else:
-            self.storage[index] = entry
+        ### 1. Hash the key
+        ### 2. Take the hash and mod it with len of array
+        idx = self.hash_index(key)
+        ### 3. Go to index and put in value
+        self.buckets[idx] = value
 
 
     def delete(self, key):
@@ -112,13 +120,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        ## find index for given key
+        ## assign bucket back to None
         if self.get(key):
             self.put(key, None)
-            self.count -= 1
         else:
             print("Key not found")
-        
 
 
     def get(self, key):
@@ -129,14 +136,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        index = self.hash_index(key)
-        storage = self.storage[index]
-        while storage:
-            if storage.key == key:
-                return storage.value
-            storage = storage.next
-        return None
+        ### 1. Hash the key
+        ### 2. Take the hash and mod it with len of array
+        idx = self.hash_index(key)
+        ### 3. Go to index and return the value
+        return self.buckets[idx]
 
 
     def resize(self, new_capacity):
