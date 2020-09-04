@@ -1,7 +1,6 @@
 def no_dups(s):
     '''
     str -> str
-
     '''
     cache = ''
     words = s.split()
