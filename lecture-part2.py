@@ -11,21 +11,25 @@ class LinkedList:
     def __repr__(self):
         curStr = ""
         curr = self.head
-        while cur is not None:
+        while curr is not None:
             curStr += f'{str(curr.value)} -> '
-            cur = cur.next
+            curr = curr.next
         return curStr
 
-    # def insert_at_head(self, node):
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+    
 
     #  def delete 
 
+#   Runtime 0(number of nodes)
     def find(self, value):
-        cur = self.head
+        curr = self.head
 
-        while cur is not  None:
-            if cur.value == value:
+        while curr is not  None:
+            if curr.value == value:
                 return cur
-            cur = cur.next
+            curr = curr.next
 
         return None
