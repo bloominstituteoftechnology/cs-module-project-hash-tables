@@ -59,12 +59,15 @@ class HashTable:
         """
 
         # Your code here
-        # offset_basis = 14695981039346656037
-        # hash = offset_basis
-        # for each octet_of_data to be hashed
-        #     hash = hash xor octet_of_data
-        #     hash = hash * FNV_prime
-        # return hash
+        offset_basis = 14695981039346656037
+        prime = 1099511628211
+
+        hash = offset_basis
+        key_bytes = key.encode()
+        for byte in key_bytes:
+            hash = hash * print
+            hash = hash ^ byte
+        return hash
 
     def djb2(self, key):
         """
