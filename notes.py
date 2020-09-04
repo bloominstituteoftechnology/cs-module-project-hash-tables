@@ -1,16 +1,16 @@
 
 
-my_arr = ['hi', 'world', 'how', 'are', 'you', 'lorem', 'ipsum', 'set']
+#my_arr = ['hi', 'world', 'how', 'are', 'you', 'lorem', 'ipsum', 'set']
 
 # search for an element in this array
 
 ##O(n) -- linear search
-def find_element(arr, el):
-    for thing in arr:
-        if thing == el:
-            return True
+#def find_element(arr, el):
+ #   for thing in arr:
+  #      if thing == el:
+   #         return True
 
-        return False
+    #    return False
 
 ## or if we sorted, binary search
 ## O(log n)
@@ -19,22 +19,22 @@ def find_element(arr, el):
 ## constant time! O(1)
 ### if we increase the input, we still take number of steps to find what we're looking for
 
-def magic_function_find_index(arr, el):
-    return el_index
+#def magic_function_find_index(arr, el):
+ #   return el_index
 
 
-id = magic_funtion_find_index(my_arr, "set") ## 7
-my_arr[idx] # ta-da
+#id = magic_funtion_find_index(my_arr, "set") ## 7
+#my_arr[idx] # ta-da
 
 ##hash tables == array + hashing function
 
 
 ## write a function that will take a string and return a number
-def len_hash(str):
-    return len(str)
+#def len_hash(str):
+ #   return len(str)
 ## a lot of collisions
-print (len("sad") == len("was"))
-len("ball") == len("hats")
+#print (len("sad") == len("was"))
+#len("ball") == len("hats")
 
 #fast
 #deterministic
@@ -47,30 +47,30 @@ len("ball") == len("hats")
 ## a: 1
 ## b: 2
 
-def UTF8_hash(str):
-    for letter in str:
-        val = ord(letter)
-        total += val
+#def UTF8_hash(str):
+    #for letter in str:
+   #     val = ord(letter)
+  #      total += val
 
-    return total
+ #   return total
 
 # or
 
-total = 0
-def UTF8_hash(str):
-    utf_bytes = str.encode()
-        for byte in utf_bytes:
-            total += byte
+#total = 0
+#def UTF8_hash(str):
+    #utf_bytes = str.encode()
+   #     for byte in utf_bytes:
+  #          total += byte
     
 
-    return total
+ #   return total
 
-print(UTF8_hash('sad'))
-print(UTF8_hash('was'))
+#print(UTF8_hash('sad'))
+#print(UTF8_hash('was'))
 
 # but we will still have collisions 
-UTF8_hash('dad')
-UTF8_hash('add')
+#UTF8_hash('dad')
+#UTF8_hash('add')
 # a hash function: takes string, gives back number
 ## opersate on the bytes that make up the string
 ## derterministic 
@@ -105,23 +105,23 @@ UTF8_hash('add')
 
 ## we can now combine hash function and array
 
-my_arr2 = [None] * 20
+#y_arr2 = [None] * 20
 
-our_hash = utf8_hash('supercalifragilisticexpialidocious') ## 3643
-idx = our_hash % len(my_arr2)
+#our_hash = utf8_hash('supercalifragilisticexpialidocious') ## 3643
+#idx = our_hash % len(my_arr2)
 
-my_arr2[idx] = 'Mary Poppins'
+#my_arr2[idx] = 'Mary Poppins'
 
-print(my_arr2)
+#print(my_arr2)
 
 
 # 'get'
-our_hash = UTF8_hash('supercalifragilisticexpialidocious')
-idx = our_hash % len(my_arr2)
+#our_hash = UTF8_hash('supercalifragilisticexpialidocious')
+#idx = our_hash % len(my_arr2)
 
 #print(my_arr2[3])
-val = my_arr2[idx]
-print(val)
+#val = my_arr2[idx]
+#print(val)
 
 ## key value pair
 # 'supercalifragilisticexpialidocious' is the key
@@ -151,22 +151,22 @@ print(val)
 # O(1)
 
 ## collision
-key1 ='dad'
-key2 = 'add'
+#key1 ='dad'
+#key2 = 'add'
 
-hash_1 = UTF8_hash(key1)
-idx1 = hash1 % len(my_arr2)
-my_arr2[idx1] = 'howdy'
+#hash_1 = UTF8_hash(key1)
+#idx1 = hash1 % len(my_arr2)
+#my_arr2[idx1] = 'howdy'
 
-hash2 = UTF8_hash(key2)
-idx2 = hash2 % len(my_arr2)
-my_arr2[idx2] = 'whats up yall'
+#hash2 = UTF8_hash(key2)
+#idx2 = hash2 % len(my_arr2)
+#my_arr2[idx2] = 'whats up yall'
 
 ###get
-get_hash = UTF8_hash(key1)
-idx3 = get_hash % len(my_arr2)
+#get_hash = UTF8_hash(key1)
+#idx3 = get_hash % len(my_arr2)
 
-print(my_arr2[idx3])
+#print(my_arr2[idx3])
 
 ## even when we use our hash function with modulo we get collisions
 ### to be solved later
@@ -197,4 +197,4 @@ print(my_arr2[idx3])
 #### can use the output as a fingerprint for your string
 
 
-my_string = " Dear everybody, how are? I write to you ..."
+#my_string = " Dear everybody, how are? I write to you ..."
