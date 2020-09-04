@@ -19,9 +19,30 @@ class LinkedList:
     def insert_at_head(self, node):
         node.next = self.head
         self.head = node
-    
 
     #  def delete 
+    def delete(self,value):
+        curr = self.head
+
+        if curr.value == value:
+            self.head = curr.next
+            return curr
+
+        prev = curr
+        curr = curr.next
+
+        while curr is not None:
+            if curr.value == value:
+                prev.next == curr.next
+                curr.next = None
+                return curr
+            else:
+                prev = curr
+                curr = curr.next
+
+        return None
+
+
 
 #   Runtime 0(number of nodes)
     def find(self, value):
