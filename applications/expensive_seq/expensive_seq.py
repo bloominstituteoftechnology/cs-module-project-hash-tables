@@ -1,21 +1,30 @@
-# Your code here
-
-
+from functools import lru_cache
+@lru_cache(maxsize=64)
 def expensive_seq(x, y, z):
-    # Your code here
-    #print(f'Run: {x}, {y}, {z}')
     if x <= 0: return y + z
-    if x >  0: return expensive_seq(x-1,y+1,z) + expensive_seq(x-2,y+2,z*2) + expensive_seq(x-3,y+3,z*3)
+    if x > 0: return expensive_seq(x-1,y+1,z) + expensive_seq(x-2,y+2,z*2) + expensive_seq(x-3,y+3,z*3)
+
+"""
+cache = {}
+def expensive_seq(x, y, z):
+    if x <= 0:
+        return y + z
+    if (x, y, z) not in cache:
+        cache[(x, y, z)] = expensive_seq(x - 1, y + 1, z) + expensive_seq(x - 2, y + 2, z * 2) + expensive_seq(x - 3, y + 3, z * 3)
+    return cache[(x, y, z)]
+"""
+
 
 
 
 if __name__ == "__main__":
-    """
+    
     for i in range(10):
         x = expensive_seq(i*2, i*3, i*4)
         print(f"{i*2} {i*3} {i*4} = {x}")
+    
+    print(expensive_seq(150, 400, 800))
     """
-    #print(expensive_seq(150, 400, 800))
     print(f'input: 111 output: {expensive_seq(1, 1, 1)}')
     print(f'input: 222 output: {expensive_seq(2, 2, 2)}')
     print(f'input: 333 output: {expensive_seq(3, 3, 3)}')
@@ -83,3 +92,4 @@ if __name__ == "__main__":
     print(f'input: 510 output: {expensive_seq(5, 1, 0)}')
     print(f'input: 501 output: {expensive_seq(5, 0, 1)}')
     print(f'input: 511 output: {expensive_seq(5, 1, 1)}')
+    """

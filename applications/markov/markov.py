@@ -7,10 +7,10 @@ wordDict = { word : [] for word in set(content) }
 # For word in content add the words successor to dict
 for idx, word in enumerate(content[:-1]): # not the last word
     wordDict[word].append(content[idx + 1].replace(' ', ''))# no spaces
-"""
+
 for x, y in wordDict.items():
   print(x, y)
-"""
+
 
 """
 def startSentence():
@@ -35,6 +35,9 @@ def buildSentence(words = []):
         buildSentence(words.append(randomPredecessor(str(words[-1]))))
 """
 
+
+
+"""
 def lc(word):
     word = word.lower()
     print(word)
@@ -63,6 +66,10 @@ print(speak())
 print(r.choice(str(wordDict.keys())))
 print(r.choice(list(wordDict.keys())))
 print(speak())
-# TODO: construct 5 random sentences
+
+"""
+
+
+
 
 
