@@ -9,7 +9,7 @@ class Histo:
         self.theText =self.__readFile(text_path)
         self.countFreq = {}
         if ignore == "default":
-            self.ignore = {"\"" : "", ":":"" , ";":"", ",":"",  ".":"", "-":"", "\n":"",
+            self.ignore = {"\"" : "", ":":"" , ";":"", ",":"",  ".":"", "-":"", "?":"", "!":"",
                          "+":"",  "=":"",  "/":"", "\\":"", "|":"",  "[":"",  
                          "]":"",  "{":"",  "}":"",  "(":"",  ")":"",  "*":"",  "^":"",  "&":""}
 
@@ -63,22 +63,27 @@ class Histo:
         of the type of word
         """
         s = ""
-        putInDict = 0
+        putInDict = 0 # this is the flag to say some word of some kind has been found
         for l in self.theText:
             if l not in self.ignore:
-                # here we will add to the separated string
-                if l == " ":
+                # here we will add to the separated string  need to account for the newline
+                if l == " " or  l == "\n":
                     if putInDict == 1:  # in here we will put the string in the word count dictionary
                         if s not in self.countFreq:
                             self.countFreq[s] = 0
                         self.countFreq[s] +=1
-                        putInDict = 0
+                        putInDict = 0  
                         s = ""
                 else:
                     l = l.lower()
                     s += l
                     putInDict = 1
         return self.sort_word_freq(descending)
+
+
+
+    def readF(self, text_path):
+        self.__readFile(text_path)
         
 
                     
@@ -87,4 +92,6 @@ class Histo:
 
 if __name__ == "__main__":  
     my = Histo()
+    print(my.theText)
+    #my.split_string()
     my.make_histo()
