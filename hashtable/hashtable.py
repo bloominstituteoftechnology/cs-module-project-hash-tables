@@ -20,10 +20,6 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # self.capacity = MIN_CAPACITY
-        # self.buckets = [None] * capacity
-        # self.count = 0
-
         if capacity < MIN_CAPACITY:
             self.capacity = MIN_CAPACITY
         else:
@@ -105,16 +101,29 @@ class HashTable:
 
         Implement this.
         """
-        ### 1. Hash the key
-        ### 2. Take the hash and mod it with len of array
         idx = self.hash_index(key)
-        ### 3. Check if there's a value at that index
-        if self.buckets[idx] != None:
-            print('WARNING! you are overwriting a value')
-        ### 3a. Go to index and put in value
-        self.buckets[idx] = value
-        self.count += 1
 
+        new_node = HashTableEntry(key, value)
+        current_node = self.buckets[idx]
+        
+        if self.buckets[idx] == None:
+            self.buckets[idx] = new_node
+            self.count += 1
+        
+        elif self.buckets[idx] is not None and self.buckets[idx].key == key:
+            self.buckets[idx].value = value
+        
+        elif self.buckets[idx] is not None:
+            while current_node is not None:
+                if current_node.next is None:
+                    current_node.next = new_node
+                    self.count += 1
+                    return current_node
+                elif current_node.next is not None and current_node.next.key == key:
+                    current_node.next.value = value
+                    return current_node.next
+                else:
+                    current_node = current_node.next
 
     def delete(self, key):
         """
@@ -124,13 +133,25 @@ class HashTable:
 
         Implement this.
         """
-        ## find index for given key
-        ## assign bucket back to None
-        if self.get(key):
-            self.put(key, None)
-            self.count -= 1
+        hashed_index = self.hash_index(key)
+        current_node = self.buckets[hashed_index]
+
+        if self.buckets[hashed_index] is None:
+            return None
+
+        if self.buckets[hashed_index].key == key:
+            node_to_delete = self.buckets[hashed_index]
+            self.buckets[hashed_index] = node_to_delete.next
+            node_to_delete.next = None
+
         else:
-            print("Key not found")
+            while current_node is not None:
+                if current_node.next.key == key and current_node.next.next is not None:
+                    next_node = current_node.next
+                    current_node.next = current_node.next.next
+                    return next_node
+
+                current_node = current_node.next
 
 
     def get(self, key):
@@ -141,11 +162,18 @@ class HashTable:
 
         Implement this.
         """
-        ### 1. Hash the key
-        ### 2. Take the hash and mod it with len of array
-        idx = self.hash_index(key)
-        ### 3. Go to index and return the value
-        return self.buckets[idx]
+        hashed_index = self.hash_index(key)
+        current_node = self.buckets[hashed_index]
+
+        if current_node is not None and current_node.key == key:
+            return self.buckets[hashed_index].value
+
+        else:
+            while current_node is not None:
+                if current_node.key == key:
+                    return current_node.value
+                current_node = current_node.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -155,7 +183,23 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        new_bucket = [None] * new_capacity
+        old_bucket = self.buckets
+
+        self.buckets = new_bucket
+        self.count = 0
+        self.capacity = new_capacity
+
+        current_index = 0
+        while current_index < len(old_bucket):
+            current_node = old_bucket[current_index]
+            if current_node is not None:
+                next_node = current_node.next
+                current_node.next = None
+                self.put(current_node.key, current_node.value)
+                old_bucket[current_index] = next_node
+            elif current_node is None:
+                current_index += 1
 
 
 
