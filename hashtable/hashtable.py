@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table with `capacity` buckets
@@ -31,6 +30,7 @@ class HashTable:
             self.capacity = capacity
 
         self.buckets = [None] * self.capacity
+        self.count = 0
 
 
     def get_num_slots(self):
@@ -52,7 +52,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -108,8 +108,12 @@ class HashTable:
         ### 1. Hash the key
         ### 2. Take the hash and mod it with len of array
         idx = self.hash_index(key)
-        ### 3. Go to index and put in value
+        ### 3. Check if there's a value at that index
+        if self.buckets[idx] != None:
+            print('WARNING! you are overwriting a value')
+        ### 3a. Go to index and put in value
         self.buckets[idx] = value
+        self.count += 1
 
 
     def delete(self, key):
@@ -124,6 +128,7 @@ class HashTable:
         ## assign bucket back to None
         if self.get(key):
             self.put(key, None)
+            self.count -= 1
         else:
             print("Key not found")
 
