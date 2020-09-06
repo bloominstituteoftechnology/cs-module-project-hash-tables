@@ -63,8 +63,10 @@ class HashTable:
         FNV_prime = 1099511628211
         byte_size = 2 ** 64
 
+        h = FNV_offset_basis
+
         for c in key:
-            h = ((FNV_offset_basis ^ ord(c)) * FNV_prime) % byte_size
+            h = ((h ^ ord(c)) * FNV_prime) % byte_size
 
         return h
         
