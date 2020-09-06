@@ -96,8 +96,24 @@ class HashTable:
 
         Implement this.
         """
-        # No collisions yet
-        self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+
+        index = self.hash_index(key)
+
+        entry = self.storage[index]
+
+        if entry:
+            while True:
+                if entry.key == key:
+                    entry.value = value
+                    break
+                elif entry.next == None:
+                    entry.next = HashTableEntry(key, value)
+                    break
+                else:
+                    entry = entry.next
+        else:
+            self.storage[index] = HashTableEntry(key, value)
+
 
 
     def delete(self, key):
@@ -110,11 +126,13 @@ class HashTable:
         """
         entry = self.storage[self.hash_index(key)]
 
-        if entry:
+        while entry:
             if entry.key == key:
                 entry.value = None
+                return
             else:
-                print('Key not found')
+                entry = entry.next
+        print('Key not found')
 
 
     def get(self, key):
@@ -127,10 +145,11 @@ class HashTable:
         """
         entry = self.storage[self.hash_index(key)]
 
-        if entry:
+        while entry:
             if entry.key == key:
                 return entry.value
-
+            else:
+                entry = entry.next
         return None
 
 
