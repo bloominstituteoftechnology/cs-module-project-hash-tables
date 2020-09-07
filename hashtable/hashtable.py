@@ -116,12 +116,45 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # def delete(self, value):
+        # curr = self.head
+
+        # if curr.value == value:
+        #     self.head = curr.next
+        #     return curr
+
+        # prev = curr
+        # curr = curr.next
+
+        # while curr is not None:
+        #     if curr.value == value:
+        #         prev.next = curr.next
+        #         curr.next = None
+        #         return curr
+        #     else:
+        #         prev = curr
+        #         curr = curr.next
+
+        # return None
+
+        
         i = self.hash_index(key)
-        if i is None:
-            print("key not found")
-        else:
-            self.count -= 1
-            self.hash_table[i] = None
+        curr = self.hash_table[i]
+        prev = None
+
+        if curr.key == key:
+            self.hash_table[i] = curr.next
+            return 
+        while(curr is not None):
+            if curr.key == key:
+                prev.next = curr.next
+                self.hash_table[i].next = None
+                return 
+            else:
+                prev = curr
+                curr = curr.next
+        self.count -= 1
+        return
 
     def get(self, key):
         """
@@ -134,13 +167,16 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         entry = self.hash_table[index]
-
+        
         while entry:
             if entry.key == key:
                 return entry.value
             entry = entry.next
         return entry
+
                 
+
+ 
 
     def resize(self, new_capacity):
         """
@@ -162,6 +198,8 @@ class HashTable:
                 self.put(curr.key, curr.value)
                 curr = curr.next
             
+
+
 
 
 if __name__ == "__main__":
@@ -197,4 +235,9 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
+    print("")
+
+    ht.delete("line_12")
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
     print("")
