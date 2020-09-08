@@ -270,6 +270,7 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+MAX_LOAD     = 0.7
 
 class HashTable:
     """
@@ -291,6 +292,9 @@ class HashTable:
         # Initialize a Person hash lookup table (for use in hashing keys)
         self.lookup = lookup
 
+        # Number of table entries
+        self.num_entries = 0
+
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
@@ -310,7 +314,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Calcualate and return the load factor
+        return float(self.num_entries) / float(self.capacity)
 
 
     def fnv1(self, key):
@@ -361,6 +366,11 @@ class HashTable:
 
         Implement this.
         """
+        # Over the resize threshold?  If so, resize the hash table
+        if self.get_load_factor() > MAX_LOAD:
+            # load factor currently exceeds the maximum threshold.  Resize the hash table
+            self.resize(2*self.capacity)
+
         # Generate the hashed index of the inbound key
         idx         = self.hash_index(key)
         # Generate a new value node to be placed into the hash table
@@ -370,6 +380,7 @@ class HashTable:
         if self.table[idx] == None:
             # Empty table entry, store the passed value as a new node
             self.table[idx] = new_node
+            self.num_entries = self.num_entries + 1
             return
 
         # Have at least one node at this table index
@@ -391,6 +402,7 @@ class HashTable:
             cur_node = cur_node.next
 
         # Place new node at the end of the linked list
+        self.num_entries = self.num_entries + 1
         cur_node.next = new_node
 
     def delete(self, key):
@@ -442,6 +454,7 @@ class HashTable:
         if cur_node == last_node and cur_node.next == None:
             # Remove the current node (first node)
             self.table[idx] = None
+            self.num_entries = self.num_entries - 1
             return
 
         # Last node of a list with more than one node
@@ -449,16 +462,19 @@ class HashTable:
             # current node is the last node of a list with >1 nodes
             # remove last node
             last_node.next = None
+            self.num_entries = self.num_entries - 1
             return
 
         # Interim node of a list with more than two nodes
         if last_node != cur_node and cur_node.next != None:
             last_node.next = cur_node.next
+            self.num_entries = self.num_entries - 1
             return
 
         # First node of a list with more than one node
         if last_node == cur_node and cur_node.next != None:
             self.table[idx] = cur_node.next
+            self.num_entries = self.num_entries - 1
             return
 
         print("ERROR: got to an unexpected code route")
