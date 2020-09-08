@@ -94,18 +94,25 @@ class HashTable:
         """
         # Your code here
         i = self.hash_index(key)
-        entry = HashTableEntry(key, value)
+        # entry = HashTableEntry(key, value)
 
-        if self.hash_table is None:
-            self.hash_table[i] = entry
+        if self.hash_table[i] is None:
+            self.hash_table[i] = HashTableEntry(key, value)
             self.count += 1
-            return
+            
+        else: 
+            curr = self.hash_table[i]
+            if curr.key == key:
+                curr.value = value
+            else:
+                entry = HashTableEntry(key, value)
+                entry.next = curr
+                self.hash_table[i] = entry
+                self.count += 1
         
-        node = self.hash_table[i]
-        self.hash_table[i] = entry
-        self.hash_table[i].next = node
-        self.count += 1
-
+        load_factor = self.get_load_factor()
+        if load_factor > .7:
+            self.resize(int(self.capacity * 2))
 
     def delete(self, key):
         """
@@ -115,29 +122,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        # def delete(self, value):
-        # curr = self.head
-
-        # if curr.value == value:
-        #     self.head = curr.next
-        #     return curr
-
-        # prev = curr
-        # curr = curr.next
-
-        # while curr is not None:
-        #     if curr.value == value:
-        #         prev.next = curr.next
-        #         curr.next = None
-        #         return curr
-        #     else:
-        #         prev = curr
-        #         curr = curr.next
-
-        # return None
-
-        
+        # Your code here    
         i = self.hash_index(key)
         curr = self.hash_table[i]
         prev = None
@@ -154,6 +139,9 @@ class HashTable:
                 prev = curr
                 curr = curr.next
         self.count -= 1
+        load_factor = self.get_load_factor()
+        if load_factor > .2:
+            self.resize(self.capacity // 2)
         return
 
     def get(self, key):
@@ -174,9 +162,6 @@ class HashTable:
             entry = entry.next
         return entry
 
-                
-
- 
 
     def resize(self, new_capacity):
         """
@@ -235,9 +220,4 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    print("")
-
-    ht.delete("line_12")
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
     print("")
