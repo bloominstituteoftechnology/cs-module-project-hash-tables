@@ -1,3 +1,19 @@
+'''
+    Great articles 
+        First one explains what a hash table is 
+        
+        https://www.educative.io/edpresso/what-is-a-hash-table
+        
+        second one explains what a hash table collision and chaining is 
+        
+        https://www.educative.io/edpresso/what-is-chaining-in-hash-tables
+        
+'''
+
+
+
+
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -15,14 +31,16 @@ class HashTable:
     """
     A hash table that with `capacity` buckets
     that accepts string keys
-
     Implement this.
     """
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = capacity #Number of buckets in the hashtable 
-        self.data = [None] * capacity #init storage with empty capacity buckets
+        self.capacity = capacity
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        self.storage = [None]*self.capacity
+        self.item_stored = 0
         
 
     def get_num_slots(self):
@@ -30,9 +48,7 @@ class HashTable:
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
         but the number of slots in the main list.)
-
         One of the tests relies on this.
-
         Implement this.
         """
         # Your code here
@@ -43,17 +59,16 @@ class HashTable:
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
-
         Implement this.
         """
         # Your code here
+        return self.item_stored/self.capacity
         
 
 
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
-
         Implement this, and/or DJB2.
         """
 
@@ -63,7 +78,6 @@ class HashTable:
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
-
         Implement this, and/or FNV-1.
         """
         # Your code here
@@ -85,54 +99,121 @@ class HashTable:
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Implement this.
         """
         # Your code here
-        index = self.hash_index(key)
-        self.data[index] = value
+        hash_index = self.hash_index(key)
+        # self.data[index] = value
+        
+        #insert into an emtpy spot 
+        if not self.storage[hash_index]:
+            self.storage[hash_index] = HashTableEntry(key, value)
+            self.item_stored += 1
+            
+        #linked list exist current location
+        #update the value of the existing key
+        #or we can create a new entry for the new key 
+        else: 
+            current = self.storage[hash_index]
+            
+            while current.key != key and current.next:
+                current = current.next
+
+            #find key and update the current value
+            if current.key == key:
+                current.value = value
+                
+            #key is not found then add an entry 
+            else:
+                current.next = HashTableEntry(key, value)
+                self.item_stored += 1
+            # resize if load factor is too big
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity*2)
 
 
     def delete(self, key):
         """
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Implement this.
         """
         # Your code here
-        index = self.hash_index(key)
-        if self.data[index] is None:
-            print("Error not found")
+        hash_index = self.hash_index(key)
+        current = self.storage[hash_index]
+        #if nothing to delete
+        if not current:
+            print("The key is not found")
+        
+        #1 element, the head in the index bucket
+        elif not current.next:
+            self.storage[hash_index] = None
+            self.item_stored -= 1
+        #store a pointer to the previous node
         else:
-            self.data[index] = None
-
+            prev = None
+            
+            #move to next node 
+            #if key won't match and there is a next
+            while current.key != key and current.next:
+                prev = current
+                current = current.next
+            
+            #value to delete int he edn of index
+            if not current.next:
+                prev.next = None
+                self.item_stored -= 1
+            #value in the middle of index bucket
+            else:
+                prev.next = current.next
+                self.item_stored -= 1
+            
+            #if loader factor is too small resize it 
+            if self.get_load_factor() < 0.2:
+                self.resize(self.capacity // 2)
+            
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Implement this.
         """
         # Your code here
-        index = self.hash_index(key)
-        value = self.data[index]
-        return value
+        hash_index = self.hash_index(key)
+        if self.storage[hash_index]:
+            current = self.storage[hash_index]
+            while current.key is not key and current.next:
+                current = current.key
+            if not current.next:
+                return current.value
+            else:
+                return current.value
+        else:
+            return None
 
 
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
         Implement this.
         """
         # Your code here
+        old_storage = self.storage
+        
+        #initialize new hashtable 
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+        
+        #loop through and add each node to new hastable 
+        for item in old_storage:
+            if item:
+                current = item
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
 
 
 
