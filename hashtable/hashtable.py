@@ -146,7 +146,7 @@ class HashTable:
 
         else:
             while current_node is not None:
-                if current_node.next.key == key and current_node.next.next is not None:
+                if current_node.next.key == key and current_node.next is not None:
                     next_node = current_node.next
                     current_node.next = current_node.next.next
                     return next_node
