@@ -106,14 +106,14 @@ class HashTable:
         new_node = HashTableEntry(key, value)
         current_node = self.buckets[idx]
         
-        if self.buckets[idx] == None:
+        if current_node == None:
             self.buckets[idx] = new_node
             self.count += 1
         
-        elif self.buckets[idx] is not None and self.buckets[idx].key == key:
+        elif current_node is not None and current_node.key == key:
             self.buckets[idx].value = value
         
-        elif self.buckets[idx] is not None:
+        elif current_node is not None:
             while current_node is not None:
                 if current_node.next is None:
                     current_node.next = new_node
@@ -136,11 +136,11 @@ class HashTable:
         hashed_index = self.hash_index(key)
         current_node = self.buckets[hashed_index]
 
-        if self.buckets[hashed_index] is None:
+        if current_node is None:
             return None
 
-        if self.buckets[hashed_index].key == key:
-            node_to_delete = self.buckets[hashed_index]
+        if current_node.key == key:
+            node_to_delete = current_node
             self.buckets[hashed_index] = node_to_delete.next
             node_to_delete.next = None
 
