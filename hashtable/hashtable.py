@@ -9,6 +9,7 @@ class HashTableEntry:
 
 
 # Hash table can't have fewer than this many slots
+# must remain divisible by 2
 MIN_CAPACITY = 8
 
 
@@ -144,6 +145,9 @@ class HashTable:
                 else:
                     prev.next = None
                     self.size -= 1
+
+                if (self.get_load_factor() < 0.2) and (self.capacity > MIN_CAPACITY):
+                    self.resize(self.capacity // 2)
                 return
             else:
                 prev = entry
