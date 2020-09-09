@@ -7,3 +7,10 @@ z = 3
 z %= (a+b)*10
 
 print(z)
+
+first = "poker."
+second = 'the pokers"'
+theTuple = (".", "\"")
+
+print(f"first is {first.endswith(theTuple)}")
+print(f"second is  {second.endswith(theTuple)}")
