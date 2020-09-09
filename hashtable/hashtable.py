@@ -201,19 +201,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        old_storage = self.storage
-        
-        #initialize new hashtable 
-        self.capacity = new_capacity
-        self.storage = [None] * new_capacity
-        
-        #loop through and add each node to new hastable 
-        for item in old_storage:
-            if item:
-                current = item
-                while current:
-                    self.put(current.key, current.value)
-                    current = current.next
+
 
 
 
