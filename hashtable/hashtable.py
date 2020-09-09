@@ -24,6 +24,7 @@ class HashTable:
         if capacity >= MIN_CAPACITY:
             self.capacity = capacity
             self.storage = [None] * self.capacity
+            self.size = 0
         else:
             raise ValueError('Hash table must be 8 or larger')
 
@@ -38,8 +39,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        # could do len(self.storage), but if I've coded correctly capacity
+        # is the same.
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -48,8 +50,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        return self.size / self.capacity
 
 
     def fnv1(self, key):
@@ -110,11 +111,16 @@ class HashTable:
                     break
                 elif entry.next == None:
                     entry.next = HashTableEntry(key, value)
+                    self.size += 1
                     break
                 else:
                     entry = entry.next
         else:
             self.storage[index] = HashTableEntry(key, value)
+            self.size += 1
+
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
 
 
 
@@ -126,13 +132,21 @@ class HashTable:
 
         Implement this.
         """
-        entry = self.storage[self.hash_index(key)]
+        index = self.hash_index(key)
+        entry = self.storage[index]
+        prev = None
 
         while entry:
             if entry.key == key:
-                entry.value = None
+                if not prev:
+                    self.storage[index] = entry.next
+                    self.size -= 1
+                else:
+                    prev.next = None
+                    self.size -= 1
                 return
             else:
+                prev = entry
                 entry = entry.next
         print('Key not found')
 
@@ -162,8 +176,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        old_storage = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * self.capacity
+        self.size = 0 #resetting to be able to use put
+
+        for entry in old_storage:
+            while entry:
+                self.put(entry.key, entry.value)
+                entry = entry.next
+
+
 
 
 
