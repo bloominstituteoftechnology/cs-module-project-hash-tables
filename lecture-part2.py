@@ -67,3 +67,6 @@ ll.insert_at_head(c)
 print(ll)
 
 print(ll.find(5))
+
+ll.delete(3)
+print(ll)
