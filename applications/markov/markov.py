@@ -1,7 +1,9 @@
 import random
+import os.path
 
 # Read in all the words in one go
-with open("input.txt") as f:
+input_txt = os.path.join(os.path.dirname(__file__), 'input.txt')
+with open(input_txt) as f:
     words = f.read()
 
 # TODO: analyze which words can follow other words
