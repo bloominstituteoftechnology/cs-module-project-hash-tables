@@ -32,16 +32,27 @@ def endsWithStopWord(s):
 def printRandomSentences(numberOfSentences):
     print("\n")
     for _ in range(numberOfSentences):
+
+        # Get a random 'start word'
         word = random.choice(wordList)
         while not beginsWithStartWord(word):
             word = random.choice(wordList)
         sentence = word
-
+        
+        # Add random words until a 'stop word' is found
         word = random.choice(nextWordDict[word])
         sentence += " " + word
         while not endsWithStopWord(word):
             word = random.choice(nextWordDict[word])
             sentence += " " + word
+        
+        # Make sure any quotation mark punctuations are paired up (opening and closing marks)
+        if sentence.count('\"') % 2 != 0:
+            if sentence[-1] == '\"':
+                sentence = sentence[:-1]
+            else:
+                sentence += '\"'
+        
         print(f"{sentence}\n")
 
 printRandomSentences(5)
