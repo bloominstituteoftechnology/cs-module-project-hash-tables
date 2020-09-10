@@ -28,3 +28,24 @@ def naive_hash(str, list_size):
         sum += byte
 
     return sum % list_size
+
+
+# def swap(a, b):
+#     for i in range(len(a)):
+#         for j in range(len(b)):
+#             a[i], b[j] = b[j], a[i]
+#             if sum(a) == sum(b):
+#                 return [b[j], a[i]]
+#             a[i], b[j] = b[j], a[i]
+
+
+def swap(a, b):
+    a_sum = sum(a)
+    b_sum = sum(b)
+    b = set(b)
+    for i in a:
+        diff = ((b_sum - a_sum) // 2) + i
+        if diff in b:
+            return [i, diff]
+
+print(swap([1], [2,3]))
