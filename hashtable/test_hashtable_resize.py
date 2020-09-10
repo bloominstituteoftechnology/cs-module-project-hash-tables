@@ -3,6 +3,7 @@ import unittest
 from hashtable import HashTable
 
 
+
 class TestHashTable(unittest.TestCase):
 
     def test_hash_table_insertion_and_retrieval(self):
