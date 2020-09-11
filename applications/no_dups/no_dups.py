@@ -1,6 +1,14 @@
-def no_dups(s):
-    # Your code here
+from collections import Counter 
 
+def no_dups(s):
+    input = s.split(" ") 
+
+    for i in range(0, len(input)): 
+        input[i] = "".join(input[i]) 
+    UniqW = Counter(input) 
+
+    s = " ".join(UniqW.keys()) 
+    return s
 
 
 if __name__ == "__main__":
