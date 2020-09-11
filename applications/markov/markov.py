@@ -48,6 +48,7 @@ for idx, wrd in enumerate(arr_words):
     word2words[wrd].append(wrd_next)
 
 # Generate Markov Chains given a random input word
+print("")
 for i in range(5):
     lne = i + 1
     print(f'Chain-{lne}: {markov_me(random.choice(arr_words))}\n')
