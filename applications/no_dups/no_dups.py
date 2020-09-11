@@ -1,5 +1,14 @@
 def no_dups(s):
     # Your code here
+    inputString = s.split(" ")
+
+    newArr = []
+    for word in inputString:
+        if word not in newArr:
+            newArr.append(word)
+
+    return " ".join(newArr)
+
 
 
 
