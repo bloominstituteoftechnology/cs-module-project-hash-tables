@@ -15,26 +15,32 @@ theTuple = (".", "\"")
 print(f"first is {first.endswith(theTuple)}")
 print(f"second is  {second.endswith(theTuple)}")
 
+def mySwap(theList, left, right):
+    temp = theList[left]
+    theList[left] = theList[right]
+    theList[right] = temp
+    return theList
 
 
+theList = [1,2,3]
 
-theList = [1,2,3,4]
-
-def myPerm(theList):
+def myPerm(theList, left, right):
     outPut = []
-    if len(theList) == 1:
+    if left == right:
         return theList
   
-    for i in range(len(theList)):
-        # doing the swapping of the 
-        # value that was chosen
+    for i in range(left, right):
+        # doing the swap
+        breakpoint()
+        swappedList = mySwap(theList, left, i)
+        # then calling the permutation again
+        outPut += myPerm(swappedList, left+1, right)
+
         
-        # will now do the recursive call to the permutaton function
         
-        outPut += [theList[i]] + myPerm(theList[:i] + theList[i+1:])
     return outPut
 
 
-print(myPerm(theList))
+print(myPerm(theList, 0, len(theList))-1)
 
 
