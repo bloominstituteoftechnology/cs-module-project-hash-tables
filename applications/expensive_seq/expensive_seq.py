@@ -2,8 +2,8 @@
 cache = {}
 
 def expensive_seq(x, y, z):
-    if y == None:
-        breakpoint()
+    
+        
     # Will do memoization with a dictionary
     if x <= 0:
         return y +z
