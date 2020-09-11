@@ -1,10 +1,10 @@
 # Your code here
-
+hashTable = {}
 
 def expensive_seq(x, y, z):
     # Your code here
     #  ROT13 -> In Python, a dict key can be any immutable type... including a tuple.
-    hashTable = {}
+    
     inputTup = (x, y, z)
     if inputTup not in hashTable:
         if x <= 0: 
