@@ -129,25 +129,26 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-        self.storage[idx]= value
-       
-        new_linked_pair = HashTableEntry(key, value)
-
-        node = self.storage[idx]
-        if node is None:
-            self.storage[idx] = new_linked_pair
-            return
-
-        while node is not None and node.key != key:
-            prev = node
-            node = node.next
-
-        if node is None:
-            prev.next = new_linked_pair
-
-        else:
-            node.value = value
-            return value
+         
+         
+         
+        if self.storage[idx] != None:
+             #check if the key is already in our linked list
+             node = self.storage[idx] #this is the head
+             
+             while node is not None:
+                 if node.key == key:
+        
+             ##If so, overwrite that value
+                    node.value = value
+                    return
+            ## if not add a node to the head of the linked list
+                    old_head = self.storage[idx] 
+                    new_head = HashTableEntry(key,value)
+                    new_head.next = old_head
+                    self.storage[idx]=new_head
+        else:    
+            self.storage[idx]  = new_head
             
     def delete(self, key):
         """
@@ -175,7 +176,7 @@ class HashTable:
             return None
         prev.next = node.next
         
-
+  ## Teachers code
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -186,15 +187,13 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key) 
-        # value = self.storage[idx]
-        # return value 
         node = self.storage[idx]
-        while node is not None and node.key != key:
+        # return value 
+        while node is not None:
+            if node.key == key:
+                node = node.value
             node = node.next
-        if node is None:
-            return None     
-        else:
-            return node.value
+        return None         
         
     def resize(self, new_capacity):
         """
