@@ -2,29 +2,19 @@
 import math
 import random
 from hashtable import HashTable
+import time
 
+start = time.time()
 
-factorial = HashTable()
-power = HashTable()
-division = HashTable()
-modulo = HashTable()
+power = HashTable(12*3)
+factorial = HashTable(12*3)
+division = HashTable(12*3)
+modulo = HashTable(12*3)
 
-def part_fact(start, value, end):
-    for i in range(start + 1, end):
-        value *= i
-    return value
-
-def nearest_fact(value):
-    # because the test case won't generate less than 8 factorial
-    # a little specific an hacky, but fine for this example since we don't have
-    # unit tests to consider.
-    for i in range(int(value), 7, -1):
-        entry = factorial.get(str(i))
-        if entry:
-            return (i, entry)
-    return (None, None)
-
-
+# power = {}
+# factorial = {}
+# division = {}
+# modulo = {}
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -46,53 +36,43 @@ def slowfun(x, y):
     entry = power.get(p_key)
 
     if entry:
-        print('found power')
         v = entry
     else:
         v = math.pow(x, y)
         power.put(p_key, v)
+        #power[p_key] = v
 
-    f_key = f'{v}'
+    f_key = f'({p_key})!'
     entry = factorial.get(f_key)
 
-    # TODO: Consider looking for the nearest factorial and computing from there
-
     if entry:
-        print('found factorial')
         v = entry
     else:
-        i, nearest = nearest_fact(v)
-        if i:
-            v = part_fact(1, nearest, v)
-            factorial.put(f_key, v)
-        else:
-            v = math.factorial(v)
-            factorial.put(f_key, v)
+        v = math.factorial(v)
+        factorial.put(f_key, v)
+        #factorial[f_key] = v
 
     denom = x + y
-    d_key = f'{v}//{denom}'
+    d_key = f'{f_key}//({x} + {y})'
     entry = division.get(d_key)
 
-    # TODO: Consider common denoms
-
     if entry:
-        print('found division')
         v = entry
     else:
         v //= denom
         division.put(d_key, v)
+        #division[d_key] = v
 
-    m_key = f'{v}'
+    m_key = f'({d_key}) % 982451653'
     entry = modulo.get(m_key)
 
     if entry:
-        print('found modulo')
         return entry
     else:
         v %= 982451653
         modulo.put(m_key, v)
+        #modulo[m_key] = v
         return v
-
 
 # Do not modify below this line!
 
@@ -100,3 +80,10 @@ for i in range(50000):
     x = random.randrange(2, 14)
     y = random.randrange(3, 6)
     print(f'{i}: {x},{y}: {slowfun(x, y)}')
+
+end = time.time()
+
+print('Runtime: ', end - start)
+
+#2.0707 with python dicts
+#2.5381 with my hash table.  Not shabby
