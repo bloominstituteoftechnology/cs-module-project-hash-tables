@@ -54,26 +54,26 @@ def myFunction(q):
         # reversed be
         # add_cache[ans_cache[theTuple[0]] + ans_cache[theTuple[1]]] = theTuple
         # using only the subtraction becuase changing the formula to solve for a
-        if theTuple == (1, 7, 12):
-            breakpoint()
-        if (cache[theTuple[0]] - cache[theTuple[1]] - cache[theTuple[2]]) not in sub_cache:
-            sub_cache[cache[theTuple[0]] - cache[theTuple[1]] - cache[theTuple[2]]] = theTuple
-        if (cache[theTuple[1]] - cache[theTuple[0]] - cache[theTuple[2]]) not in sub_cache:
-            sub_cache[cache[theTuple[1]] - cache[theTuple[0]] - cache[theTuple[2]]] = (theTuple[1], theTuple[0], theTuple[2])
-        if (cache[theTuple[1]] - cache[theTuple[2]] - cache[theTuple[0]]) not in sub_cache:   
-            sub_cache[cache[theTuple[1]] - cache[theTuple[2]] - cache[theTuple[0]]] = (theTuple[1], theTuple[2], theTuple[0])
-        if (cache[theTuple[0]] - cache[theTuple[2]] - cache[theTuple[1]]) not in sub_cache:
-            sub_cache[cache[theTuple[0]] - cache[theTuple[2]] - cache[theTuple[1]]] = (theTuple[0], theTuple[2], theTuple[1])
-        if (cache[theTuple[2]] - cache[theTuple[0]] - cache[theTuple[1]]) not in sub_cache:
-            sub_cache[cache[theTuple[2]] - cache[theTuple[0]] - cache[theTuple[1]]] = (theTuple[2], theTuple[0], theTuple[1])
-        if (cache[theTuple[2]] - cache[theTuple[1]]) - cache[theTuple[0]] not in sub_cache:
-            sub_cache[(cache[theTuple[2]] - cache[theTuple[1]]) - cache[theTuple[0]]] = (theTuple[2], theTuple[1], theTuple[0])
+        
+            
+        if (theTuple) not in sub_cache:
+            sub_cache[theTuple] =  cache[theTuple[0]] - cache[theTuple[1]] - cache[theTuple[2]]
+        if (theTuple[1], theTuple[0], theTuple[2]) not in sub_cache:
+            sub_cache[(theTuple[1], theTuple[0], theTuple[2])] =   cache[theTuple[1]] - cache[theTuple[0]] - cache[theTuple[2]]
+        if (theTuple[1], theTuple[2], theTuple[0]) not in sub_cache:   
+            sub_cache[(theTuple[1], theTuple[2], theTuple[0])] =   cache[theTuple[1]] - cache[theTuple[2]] - cache[theTuple[0]]
+        if (theTuple[0], theTuple[2], theTuple[1]) not in sub_cache:
+            sub_cache[(theTuple[0], theTuple[2], theTuple[1])] =  cache[theTuple[0]] - cache[theTuple[2]] - cache[theTuple[1]]
+        if (theTuple[2], theTuple[0], theTuple[1]) not in sub_cache:
+            sub_cache[(theTuple[2], theTuple[0], theTuple[1])] =  cache[theTuple[2]] - cache[theTuple[0]] - cache[theTuple[1]]
+        if (theTuple[2], theTuple[1], theTuple[0]) not in sub_cache:
+            sub_cache[(theTuple[2], theTuple[1], theTuple[0])] =  cache[theTuple[2]] - cache[theTuple[1]] - cache[theTuple[0]]
 
     # now need to go through and see if there are any thing in the answer cache that will equal that of the sub cache
     for k , v in sub_cache.items():
         
-        if k in ans_cache:
-            combos.append((ans_cache[k], v[2], v[0], v[1]))
+        if v in ans_cache:
+            combos.append((ans_cache[v], k[2], k[0], k[1]))
     
     return combos
 
