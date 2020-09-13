@@ -19,7 +19,7 @@ from itertools import combinations_with_replacement
 
 def myFunction(q):
     theList = list(q)
-    answers = []
+    
     ans_cache = {}
     combos = [] # This will store those that that make the correct
     cache = {}
