@@ -22,6 +22,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        self.storage = [None] * capacity
 
 
     def get_num_slots(self):
@@ -35,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return [None] * 8
+        return len(self.storage)
 
     def get_load_factor(self):
         """
@@ -52,8 +54,21 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
         # Your code here
+        keyInBytes = str(key).encode()
+
+        #Constants
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
+
+        #FNV-1a Hash Function
+        hash = offset_basis 
+
+        for char in keyInBytes:
+            hash = hash * FNV_prime
+            hash = hash ^ ord(char)
+
+        return hash
 
 
     def djb2(self, key):
@@ -70,8 +85,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -80,9 +95,13 @@ class HashTable:
         Hash collisions should be handled with Linked List Chaining.
 
         Implement this.
+
+        O(n) over the length (number of bytes) of the key
+	    O(1) over the number of items in the table
         """
         # Your code here
-
+        index = self.hash_index(key)
+        self.storage[index] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -104,8 +123,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        hash_entry = self.storage[index]
 
+        if hash_entry:
+            return hash_entry.value
+        else:
+            return None
 
+# ignore - for tomorrow
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
