@@ -35,7 +35,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return [None] * 8
 
     def get_load_factor(self):
         """
