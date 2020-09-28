@@ -55,8 +55,6 @@ class HashTable:
         Implement this, and/or DJB2.
         """
         # Your code here
-        keyInBytes = str(key).encode()
-
         #Constants
         FNV_prime = 1099511628211
         offset_basis = 14695981039346656037
@@ -64,7 +62,7 @@ class HashTable:
         #FNV-1a Hash Function
         hash = offset_basis 
 
-        for char in keyInBytes:
+        for char in key:
             hash = hash * FNV_prime
             hash = hash ^ ord(char)
 
@@ -112,6 +110,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        
+        if self.storage[index]:
+            self.storage[index] = None
+        else:
+            print(f'{key} is not found in the hash table')
 
 
     def get(self, key):
