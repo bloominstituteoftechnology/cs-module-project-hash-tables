@@ -21,7 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.table = [None] * capacity
 
 
     def get_num_slots(self):
@@ -52,8 +53,15 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        k = str(key).encode()
+        hash = 14695981039346656037
 
-        # Your code here
+        for byte in k:
+            hash *= 1099511628211
+            hash = hash ^ byte
+            hash &= 0xffffffffffffffff
+
+        return hash
 
 
     def djb2(self, key):
@@ -70,8 +78,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,7 +89,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        self.table[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -92,7 +101,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        del self.table[index]
 
 
     def get(self, key):
@@ -103,7 +113,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        return self.table[index].value
 
 
     def resize(self, new_capacity):
@@ -138,7 +149,7 @@ if __name__ == "__main__":
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
-
+"""
     # Test resizing
     old_capacity = ht.get_num_slots()
     ht.resize(ht.capacity * 2)
@@ -151,3 +162,4 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+"""
