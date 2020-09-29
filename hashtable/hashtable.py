@@ -1,3 +1,5 @@
+from llref import LinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -6,6 +8,11 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+
+    def __repr__(self):
+        return f"(key: {self.key} next: {self.next})"
+
+
 
 
 # Hash table can't have fewer than this many slots
@@ -24,6 +31,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.table = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -45,7 +53,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        number_of_slots = len(self.table)
+        total_num_of_items = self.count
+        load_factor = total_num_of_items / number_of_slots
+        return load_factor
 
     def fnv1(self, key):
         """
@@ -88,7 +99,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.table[self.hash_index(key)] = value
+        print(self.hash_index(key))
+        if(self.table[self.hash_index(key)] != None):
+            head = HashTableEntry(key, value)
+            head.next = self.table[self.hash_index(key)]
+            self.table[self.hash_index(key)] = head
+            self.count += 1
+        else:
+            self.table[self.hash_index(key)] = HashTableEntry(key, value)
+            self.count += 1
+        
+            # if (self.get_load_factor() > 0.7):
+            #     self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -100,6 +122,7 @@ class HashTable:
         """
         # Your code here
         self.table[self.hash_index(key)] = None
+        self.count -= 1
 
     def get(self, key):
         """
@@ -110,7 +133,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.table[self.hash_index(key)]
+
+        index = self.hash_index(key)
+        
+        if(self.table[index] == None):
+            return None
+        else:
+            curr_node = self.table[index]
+            while(curr_node != None):
+                if(curr_node.key == key):
+                    return curr_node.value
+                curr_node = curr_node.next
+            return None
 
     def resize(self, new_capacity):
         """
@@ -120,7 +154,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        # table_to_add = [None]*new_capacity
+        # self.capacity = new_capacity
+        # do this after implementing linked list chaining
 
 
 if __name__ == "__main__":
