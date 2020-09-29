@@ -54,10 +54,14 @@ class HashTable:
         Implement this, and/or DJB2.
         """
         k = str(key).encode()
-        hash = 14695981039346656037
+        hash = 0
+        offset_basis = 14695981039346656037
+        prime = 1099511628211
+        size = 2**64
+
 
         for byte in k:
-            hash *= 1099511628211
+            hash = (offset_basis * prime) % size
             hash = hash ^ byte
             hash &= 0xffffffffffffffff
 
@@ -102,7 +106,7 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        del self.table[index]
+        self.table[index] = None
 
 
     def get(self, key):
@@ -114,7 +118,10 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        return self.table[index].value
+        if self.table[index] is None:
+            return None
+        else:
+            return self.table[index].value
 
 
     def resize(self, new_capacity):
@@ -149,7 +156,7 @@ if __name__ == "__main__":
     # Test storing beyond capacity
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
-"""
+
     # Test resizing
     old_capacity = ht.get_num_slots()
     ht.resize(ht.capacity * 2)
@@ -162,4 +169,3 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
-"""
