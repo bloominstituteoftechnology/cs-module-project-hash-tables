@@ -23,6 +23,7 @@ class HashTable:
     def __init__(self, capacity=MIN_CAPACITY,):
         self.capacity = capacity
         self.table = [None] * capacity
+        self.count = 0
 
         # Your code here
 
@@ -48,6 +49,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.count / self.get_num_slots()
 
 
 
@@ -93,7 +95,9 @@ class HashTable:
         # Your code here
 
         index = self.hash_index(key)
+
         self.table[index] = HashTableEntry(key,value)
+
 
 
     def delete(self, key):
