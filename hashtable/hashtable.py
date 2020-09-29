@@ -32,6 +32,7 @@ class HashTable:
         self.capacity = capacity
         self.table = [None] * capacity
         self.count = 0
+        
 
     def get_num_slots(self):
         """
@@ -109,8 +110,8 @@ class HashTable:
             self.table[self.hash_index(key)] = HashTableEntry(key, value)
             self.count += 1
         
-            # if (self.get_load_factor() > 0.7):
-            #     self.resize(self.capacity * 2)
+        if (self.get_load_factor() > 0.7):
+            self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -120,9 +121,33 @@ class HashTable:
 
         Implement this.
         """
+        
+        if(self.table[self.hash_index(key)] == None):
+            return None
+
+        if(self.table[self.hash_index(key)].key == key):
+            old_head = self.table[self.hash_index(key)]
+            
+            self.table[self.hash_index(key)] = self.table[self.hash_index(key)].next
+            old_head.next = None
+            self.count -= 1
+            return old_head
+        prev = self.table[self.hash_index(key)]
+        curr_node = self.table[self.hash_index(key)].next
+
+        while(curr_node is not None):
+            if(curr_node.key == key):
+                prev.next = curr_node.next
+                curr_node = None
+                self.count -= 1
+                return curr_node
+            prev = prev.next
+            curr_node = curr_node.next
+
+        return "Key is not found"
         # Your code here
-        self.table[self.hash_index(key)] = None
-        self.count -= 1
+        
+        
 
     def get(self, key):
         """
@@ -133,7 +158,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        print(f"\n {self.table} \n")
+        print(f"\n {self.hash_index(key)} \n")
         index = self.hash_index(key)
         
         if(self.table[index] == None):
@@ -154,9 +180,26 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        # table_to_add = [None]*new_capacity
-        # self.capacity = new_capacity
+        table_to_add = [None]*new_capacity
+        copy_of_table = self.table.copy()
+        self.table = table_to_add
+        self.capacity = new_capacity
+
         # do this after implementing linked list chaining
+        for i in range(len(copy_of_table)):
+            curr_node = copy_of_table[i]
+            if(curr_node == None):
+                pass
+            elif(curr_node.next != None):
+                while(curr_node != None):
+                    self.put(curr_node.key, curr_node.value)
+                    curr_node = curr_node.next
+            else:
+                self.put(curr_node.key, curr_node.value)
+                
+
+
+            
 
 
 if __name__ == "__main__":
