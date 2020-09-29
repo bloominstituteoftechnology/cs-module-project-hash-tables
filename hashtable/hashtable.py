@@ -7,6 +7,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+        def __repr__(self, key, value):
+            return f'{self.key} has {self.value}'
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -22,7 +25,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.table = [None] * self.capacity
 
     def get_num_slots(self):
         """
@@ -35,16 +39,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.storage)
 
+    # def get_load_factor(self):
+    #     """   
+    #     Return the load factor for this hash table.
 
-    def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
-        # Your code here
-
+    #     Implement this.
+    #     """
+    #     # Your code here
 
     def fnv1(self, key):
         """
@@ -52,10 +55,35 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
         # Your code here
+        FNV_prime = 1099511628211
+        FNV_offset = 14695981039346656037
+        hashNum = FNV_offset
 
+        # for each byte of data
+        for bite in key:
+            # hash × FNV_prime
+            hashNum = hashNum * FNV_prime
+            # hash XOR byte_of_data
+            # b = str(bite).encode()
+            # hashNum = hashNum ^ b
+            hashNum = hashNum ^ ord(bite)
 
+        return hashNum
+
+    # unsigned long
+    # hash(unsigned char *str)
+    # {
+    #     unsigned long hash = 5381;
+    #     int c;
+
+    #     while (c = *str++)
+    #         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    #     return hash;
+    # }
+    # uses xor: hash(i) = hash(i - 1) * 33 ^ str[i], k = 33
+     
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
@@ -63,15 +91,22 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hashNum = 5381
+        for bite in key:
+            hashNum = hashNum * 33 + ord(bite)
 
+        return hashNum
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        # value = hashf(s)
+	    # return value % len(table)
+
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -82,7 +117,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        self.table[index] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -93,7 +129,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        if self.table[index]:
+            self.table[index] = None
+        else:
+            print('Key not found')
 
     def get(self, key):
         """
@@ -104,16 +144,21 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        hash_entry = self.table[index]
+        if hash_entry:
+            return hash_entry.value
+        else:
+            return None
 
+    # def resize(self, new_capacity):
+    #     """
+    #     Changes the capacity of the hash table and
+    #     rehashes all key/value pairs.
 
-    def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
-        # Your code here
+    #     Implement this.
+    #     """
+    #     # Your code here
 
 
 
