@@ -1,5 +1,17 @@
 def no_dups(s):
-    # Your code here
+    words_already_seen = set()
+    result = ''
+    words = s.split()
+
+    for word in words:
+        if word not in words_already_seen:
+            result += word + ' '
+            words_already_seen.add(word)
+    
+    if result.endswith(' '):
+        return result[:-1]
+    
+    return result
 
 
 
