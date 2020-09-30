@@ -13,28 +13,14 @@ MIN_CAPACITY = 8
 
 
 class HashTable:
-    """
-    A hash table that with `capacity` buckets
-    that accepts string keys
 
-    Implement this.
-    """
-
-    def __init__(self, capacity):
-        # Your code here
+    def __init__(self, capacity=MIN_CAPACITY):
+        self.capacity = capacity
+        self.array = [None] * capacity
 
 
     def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-
-        One of the tests relies on this.
-
-        Implement this.
-        """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -47,41 +33,31 @@ class HashTable:
 
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
+        hash = 14695981039346656037 # offset_basis
+        for s in key:
+            hash = hash * 1099511628211 # FNV_prime
+            hash = hash ^ ord(s)
+        return hash % len(self.array)
 
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xffffffff % self.capacity
 
 
     def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
+
+    # Ignores Collisions (will overwrite any existing values at the calculated index)
     def put(self, key, value):
-        """
-        Store the value with the given key.
-
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
+        index = self.hash_index(key)
+        if self.array[index] is not None:
+            print(f"Collision Warning: overwriting value: '{self.array[index]}', with value: '{value}'")
+        self.array[index] = value
 
 
     def delete(self, key):
@@ -92,18 +68,15 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if index is None:
+            print(f"Warning: Tried to delete a value from HashTable but no value exists for key: '{key}'")
+        self.array[index] = None
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
+        index = self.hash_index(key)
+        return self.array[index]
 
 
     def resize(self, new_capacity):
