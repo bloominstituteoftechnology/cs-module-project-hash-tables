@@ -14,6 +14,7 @@ def word_count(s):
             dict_of_elems[elem] = 1  
 
     return dict_of_elems
+    
 
 
 if __name__ == "__main__":
