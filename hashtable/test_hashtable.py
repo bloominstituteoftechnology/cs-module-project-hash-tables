@@ -3,6 +3,7 @@ import unittest
 from hashtable import HashTable
 
 
+
 class TestHashTable(unittest.TestCase):
 
     def test_hash_table_insertion_and_retrieval(self):
@@ -147,9 +148,9 @@ class TestHashTable(unittest.TestCase):
         return_value = ht.get("key-7")
         self.assertTrue(return_value is None)
         return_value = ht.get("key-8")
-        self.assertTrue(return_value is "val-8")
+        self.assertTrue(return_value == "val-8")
         return_value = ht.get("key-9")
-        self.assertTrue(return_value is "val-9")
+        self.assertTrue(return_value == "val-9")
 
         ht.delete("key-9")
         ht.delete("key-8")

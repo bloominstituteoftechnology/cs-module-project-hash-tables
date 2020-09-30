@@ -87,6 +87,7 @@ it's a safe bet that the key includes this mapping:
 E -> X
 ```
 
+
 ## Challenge
 
 Write a program that automatically finds the key for the ciphertext in
