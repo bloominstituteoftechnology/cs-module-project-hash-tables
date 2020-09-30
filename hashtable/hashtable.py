@@ -1,4 +1,4 @@
-from llref import LinkedList
+
 
 class HashTableEntry:
     """
@@ -10,7 +10,7 @@ class HashTableEntry:
         self.next = None
 
     def __repr__(self):
-        return f"(key: {self.key} next: {self.next})"
+        return f"(key: {self.key} value: {self.value})"
 
 
 
@@ -99,15 +99,22 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
         # Your code here
-        print(self.hash_index(key))
-        if(self.table[self.hash_index(key)] != None):
-            head = HashTableEntry(key, value)
-            head.next = self.table[self.hash_index(key)]
-            self.table[self.hash_index(key)] = head
-            self.count += 1
+        print(index)
+        if(self.table[index] != None):
+            if(self.table[index].key == key):
+                head = HashTableEntry(key, value)
+                head.next = self.table[index].next
+                self.table[index] = head
+                
+            else:
+                head = HashTableEntry(key, value)
+                head.next = self.table[index]
+                self.table[index] = head
+                self.count += 1
         else:
-            self.table[self.hash_index(key)] = HashTableEntry(key, value)
+            self.table[index] = HashTableEntry(key, value)
             self.count += 1
         
         if (self.get_load_factor() > 0.7):
@@ -190,7 +197,7 @@ class HashTable:
             curr_node = copy_of_table[i]
             if(curr_node == None):
                 pass
-            elif(curr_node.next != None):
+            elif(curr_node != None):
                 while(curr_node != None):
                     self.put(curr_node.key, curr_node.value)
                     curr_node = curr_node.next
