@@ -43,7 +43,7 @@ class HashTable:
 
         return hash
 
-    def djb2(self, key):
+    # def djb2(self, key):
         # Your code here
 
     def hash_index(self, key):
