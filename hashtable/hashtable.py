@@ -16,7 +16,7 @@ MIN_CAPACITY = 8
 
 
 class HashTable:
-    """
+    """  
     A hash table that with `capacity` buckets
     that accepts string keys
 
@@ -27,6 +27,8 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.table = [None] * self.capacity
+        # self.head = None
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -39,15 +41,27 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.storage)
+        return len(self.table)
 
-    # def get_load_factor(self):
-    #     """   
-    #     Return the load factor for this hash table.
+    def get_load_factor(self):
+        """   
+        Return the load factor for this hash table.
 
-    #     Implement this.
-    #     """
-    #     # Your code here
+        Implement this.
+        """
+        # Your code here
+
+        sum = 0
+        for index in range(len(self.table)):
+            if self.table[index] is not None:
+                cur = self.table[index]
+                while cur is not None:
+                    sum += 1
+                    cur = cur.next
+        
+        load_factor = sum/len(self.table)
+        # load_factor = self.count / len(self.table)
+        return load_factor
 
     def fnv1(self, key):
         """
@@ -118,7 +132,10 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        temp = self.table[index]
         self.table[index] = HashTableEntry(key, value)
+        self.table[index].next = temp
+            
 
     def delete(self, key):
         """
@@ -130,10 +147,42 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        if self.table[index]:
-            self.table[index] = None
-        else:
-            print('Key not found')
+
+        # Special case of deleting the head of the list 
+           
+        pointer = self.table[index]
+        if pointer.key == key:
+            self.table[index] = pointer.next
+            pointer.next = None
+            self.count -= 1
+            
+            return pointer
+
+
+        # General case
+        prev = self.table[index]
+        pointer = prev.next
+        while pointer is not None:
+            if pointer.key == key:
+                prev.next = pointer.next
+                pointer.next = None
+                self.count -= 1
+                return pointer
+            # pointer is None or # Special case of empty list
+
+        return None
+
+        # def find(self, value):
+		# cur = self.head
+
+		# while cur is not None:
+		# 	if cur.value == value:
+		# 		return cur
+
+		# 	cur = cur.next
+
+		# # If we get here, it's not in the list
+		# return None
 
     def get(self, key):
         """
@@ -146,20 +195,44 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         hash_entry = self.table[index]
-        if hash_entry:
-            return hash_entry.value
-        else:
-            return None
+        while hash_entry:
+            if hash_entry.key == key:
+                return hash_entry.value
+            else:
+                hash_entry = hash_entry.next
 
-    # def resize(self, new_capacity):
-    #     """
-    #     Changes the capacity of the hash table and
-    #     rehashes all key/value pairs.
+        return None
 
-    #     Implement this.
-    #     """
-    #     # Your code here
+    def resize(self, new_capacity):
+        """
+        Changes the capacity of the hash table and
+        rehashes all key/value pairs.
 
+        Implement this.
+        """
+        # Your code 
+
+        # load_factor = self.get_load_factor()
+        # if load_factor < 0.2:
+        #     if self.capacity > 16:
+        #         new_capacity = self.capacity/2 
+        #     else:
+        #         return
+        # elif load_factor > 0.7:
+        #     new_capacity = 2 * self.capacity
+        # else:
+        #     return
+        if new_capacity < 8:
+            return
+        old_table = self.table
+        self.table = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for i in range(len(old_table)):
+            cur = old_table[i]
+            while cur is not None:
+                self.put(cur.key, cur.value)
+                cur = cur.next
 
 
 if __name__ == "__main__":
