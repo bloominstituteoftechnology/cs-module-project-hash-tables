@@ -1,5 +1,7 @@
 # Your code here
-
+import random
+import math
+d = {}
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -15,6 +17,16 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
+    tup = (x, y)
+    if(tup not in d):
+        v = math.pow(x, y)
+        v = math.factorial(v)
+        v //= (x + y)
+        v %= 982451653
+        d[tup] = v
+        return v
+    else:
+        return d[tup]
 
 
 
