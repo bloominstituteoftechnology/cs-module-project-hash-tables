@@ -7,13 +7,16 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+        def __repr__(self, key, value):
+            return f'{self.key} has {self.value}'
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
 
 class HashTable:
-    """
+    """  
     A hash table that with `capacity` buckets
     that accepts string keys
 
@@ -22,7 +25,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.table = [None] * self.capacity
+        # self.head = None
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -35,16 +41,27 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return len(self.table)
 
     def get_load_factor(self):
-        """
+        """   
         Return the load factor for this hash table.
 
         Implement this.
         """
         # Your code here
 
+        sum = 0
+        for index in range(len(self.table)):
+            if self.table[index] is not None:
+                cur = self.table[index]
+                while cur is not None:
+                    sum += 1
+                    cur = cur.next
+        
+        load_factor = sum/len(self.table)
+        # load_factor = self.count / len(self.table)
+        return load_factor
 
     def fnv1(self, key):
         """
@@ -52,10 +69,35 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
         # Your code here
+        FNV_prime = 1099511628211
+        FNV_offset = 14695981039346656037
+        hashNum = FNV_offset
 
+        # for each byte of data
+        for bite in key:
+            # hash × FNV_prime
+            hashNum = hashNum * FNV_prime
+            # hash XOR byte_of_data
+            # b = str(bite).encode()
+            # hashNum = hashNum ^ b
+            hashNum = hashNum ^ ord(bite)
 
+        return hashNum
+
+    # unsigned long
+    # hash(unsigned char *str)
+    # {
+    #     unsigned long hash = 5381;
+    #     int c;
+
+    #     while (c = *str++)
+    #         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    #     return hash;
+    # }
+    # uses xor: hash(i) = hash(i - 1) * 33 ^ str[i], k = 33
+     
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
@@ -63,15 +105,22 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hashNum = 5381
+        for bite in key:
+            hashNum = hashNum * 33 + ord(bite)
 
+        return hashNum
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        # value = hashf(s)
+	    # return value % len(table)
+
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -82,7 +131,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        temp = self.table[index]
+        self.table[index] = HashTableEntry(key, value)
+        self.table[index].next = temp
+            
 
     def delete(self, key):
         """
@@ -93,7 +146,43 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
 
+        # Special case of deleting the head of the list 
+           
+        pointer = self.table[index]
+        if pointer.key == key:
+            self.table[index] = pointer.next
+            pointer.next = None
+            self.count -= 1
+            
+            return pointer
+
+
+        # General case
+        prev = self.table[index]
+        pointer = prev.next
+        while pointer is not None:
+            if pointer.key == key:
+                prev.next = pointer.next
+                pointer.next = None
+                self.count -= 1
+                return pointer
+            # pointer is None or # Special case of empty list
+
+        return None
+
+        # def find(self, value):
+		# cur = self.head
+
+		# while cur is not None:
+		# 	if cur.value == value:
+		# 		return cur
+
+		# 	cur = cur.next
+
+		# # If we get here, it's not in the list
+		# return None
 
     def get(self, key):
         """
@@ -104,7 +193,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        hash_entry = self.table[index]
+        while hash_entry:
+            if hash_entry.key == key:
+                return hash_entry.value
+            else:
+                hash_entry = hash_entry.next
 
+        return None
 
     def resize(self, new_capacity):
         """
@@ -113,8 +210,29 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Your code 
 
+        # load_factor = self.get_load_factor()
+        # if load_factor < 0.2:
+        #     if self.capacity > 16:
+        #         new_capacity = self.capacity/2 
+        #     else:
+        #         return
+        # elif load_factor > 0.7:
+        #     new_capacity = 2 * self.capacity
+        # else:
+        #     return
+        if new_capacity < 8:
+            return
+        old_table = self.table
+        self.table = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for i in range(len(old_table)):
+            cur = old_table[i]
+            while cur is not None:
+                self.put(cur.key, cur.value)
+                cur = cur.next
 
 
 if __name__ == "__main__":
