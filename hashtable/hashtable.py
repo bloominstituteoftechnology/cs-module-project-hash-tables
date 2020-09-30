@@ -24,6 +24,8 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.storage = [None] * capacity
+        self.head = None
+        self.size = 0
 
 
     def get_num_slots(self):
@@ -46,8 +48,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-
+        return self.size / self.get_num_slots()
+        
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
@@ -64,6 +66,7 @@ class HashTable:
 
         for char in key:
             hash = hash * FNV_prime
+            # ord() returns an integer representing the Unicode character
             hash = hash ^ ord(char)
 
         return hash
@@ -98,8 +101,29 @@ class HashTable:
 	    O(1) over the number of items in the table
         """
         # Your code here
+        # get index of key
         index = self.hash_index(key)
-        self.storage[index] = HashTableEntry(key, value)
+        self.head = self.storage[index]
+
+        # search the linked list at the index for the key
+        while self.head:
+            # if the key is found, overwrite the value stored there
+            if self.head.key == key:
+                self.head.value = value
+            self.head = self.head.next
+        # else insert the key and value at the head of the list at that index
+        newNode = HashTableEntry(key, value)
+        newNode.next = self.storage[index]
+        self.storage[index] = newNode
+        self.size += 1
+
+        # If load factor goes beyond threshold, then 
+        # double hash table size 
+        if self.get_load_factor() >= 0.7:
+            self.resize(self.get_num_slots() * 2)
+
+        # if self.get_load_factor() <= 0.2:
+        #     self.resize(self.get_num_slots() / 2)
 
     def delete(self, key):
         """
@@ -110,13 +134,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # get the index for the key
         index = self.hash_index(key)
-        
-        if self.storage[index]:
-            self.storage[index] = None
-        else:
-            print(f'{key} is not found in the hash table')
+        self.head = self.storage[index]
 
+        # search the linked list for the key at that index
+        while self.head:
+            # if found, delete it, return it
+            if self.head.key == key:
+                old_head = self.head
+                self.storage[index] = self.head.next
+                old_head.next = None
+                self.size -= 1
+                return old_head
+
+        # else return None
+        print(f'{key} is not found in the hash table')
+        return None
 
     def get(self, key):
         """
@@ -128,12 +162,17 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        hash_entry = self.storage[index]
+        self.head = self.storage[index]
+    
+        # search the linked list at that index for the key
+        while self.head:
+            # if found, return the value
+            if self.head.key == key:
+                return self.head.value
+            self.head = self.head.next
 
-        if hash_entry:
-            return hash_entry.value
-        else:
-            return None
+        # else return None
+        return None
 
 # ignore - for tomorrow
     def resize(self, new_capacity):
@@ -144,6 +183,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # Make a new array 2x the size of the old one
+        oldStorage = self.storage
+        self.storage = [None] * new_capacity
+        #set capacity to new size
+        self.capacity = new_capacity
+        #reset the items count
+        self.items = 0
+
+	    # for each entry in the list at that index:
+        for entry in oldStorage:
+            while entry is not None:
+                # Add it to the new array
+                self.put(entry.key, entry.value)
+                entry = entry.next
 
 
 
