@@ -21,7 +21,11 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = capacity
+        self.buckets = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -34,7 +38,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.buckets)
 
 
     def get_load_factor(self):
@@ -53,7 +57,22 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        fnv_offset_basis = 14695981039346656037
+        fnv_prime = 1099511628211
+
+
+        # # algorithm fnv-1 is
+            # hash := FNV_offset_basis do
+        hashed_result = fnv_offset_basis
+        key_bytes = key.encode()
+        # for each byte_of_data to be hashed
+        for byte in key_bytes:
+        #     hash := hash × FNV_prime
+            hashed_result = hashed_result * fnv_prime
+        #     hash := hash XOR byte_of_data
+        hashed_result  hashed_result ^ byte
+        # return hash
+        return hashed_result
 
 
     def djb2(self, key):
@@ -62,7 +81,20 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        # make a variable equal to 5381
+        hashed_result = 5381
+        ## iterate over the bytes of our key
+        key_bytes = key.encode()
+        ## for each byte,
+        for byte in key_bytes:
+        ### shift the variable and add it and add the byte
+            hashed_result = ((hashed_result << 5) + hashed_result) + byte
+        return hashed_result
+
+    #hash = 5381
+    #    for letter in key:
+    #        hash = ((hash * 33) + hash + ord(letter))
+    #    return (hash & 0xFFFFFFFF)
 
 
     def hash_index(self, key):
@@ -81,7 +113,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        idx = self.hash_index(key)
+        if self.buckets-idx != None:
+            print (' Warning you are overwriting a value')
+        self.buckets[idx] = value
+
 
 
     def delete(self, key):
@@ -92,7 +128,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        idx = self.hash_index(key)
+        self.buckets[idx] = None
 
 
     def get(self, key):
@@ -103,7 +140,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        idx = self.hash_index(key)
+        value = self.buckets[idx]
+        return value
 
 
     def resize(self, new_capacity):
