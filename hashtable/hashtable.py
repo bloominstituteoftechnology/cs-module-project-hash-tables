@@ -136,6 +136,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.count == 0:
+            self.capacity = new_capacity
+            self.table = [None] * self.capacity
+
+        new_table = [None] * new_capacity
+        for item in enumerate(self.table):
+            if item is None:
+                pass
+            hashed_key = self.djb2(item)
+            hashed_index = self.hash_index(hashed_key)
+            new_table.insert(hashed_index, item)
+
+        self.table = new_table
 
 
 if __name__ == "__main__":
