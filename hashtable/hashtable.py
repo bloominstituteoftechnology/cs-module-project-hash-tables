@@ -21,7 +21,7 @@ class HashTable:
     def count_at_index(self, index):
         count = 0
         if self.table[index] is None:
-            return None
+            return count
         else:
             current = self.table[index]
             while current is not None:
