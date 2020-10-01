@@ -1,6 +1,6 @@
 # Your code here
-
-
+import random
+import math
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
     v = math.factorial(v)
@@ -9,6 +9,9 @@ def slowfun_too_slow(x, y):
 
     return v
 
+
+hash_t = {}
+
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
@@ -16,10 +19,22 @@ def slowfun(x, y):
     """
     # Your code here
 
+    if (x,y) not in hash_t:
+        hash_t[(x,y)] = slowfun_too_slow(x,y)
+    else:
+        return hash_t[(x,y)]
+
+
+
+
+
+
+
+
 
 
 # Do not modify below this line!
-
+#
 for i in range(50000):
     x = random.randrange(2, 14)
     y = random.randrange(3, 6)

@@ -7,36 +7,53 @@ def word_count(s):
     # Your code here
 
    words = {}
-   ignored = ' " : ; , . - + = / \ | [ ] { } ( ) * ^ & '
+   ignored =  '":;,.-+=/\\|[]{}()*^&'
 
    for ignors in ignored:
-       if s == "" or s == str(ignors):
+       if s == "" or s == ignored:
            return words
 
    for word in s.split():
-       if word.lower() not in words:
-           words[str(word.lower())] = 1
-
-       elif word.lower() in words:
-           words[str(word.lower())] += 1
-
-
-   print(words)
-
-
-
-
-
-
-
-
-
+       if not word.lower()[-1].isalnum() and not word.lower()[0].isalnum():
+            if word[1:-1] in words:
+                words[word[1:-1]] += 1
+            else:
+                words[word[1:-1]] = 1
+       elif not word.lower()[-1].isalnum():
+           if word.lower()[:-1] in words:
+               words[word.lower()[:-1]] += 1
+           else:
+               words[word.lower()[:-1]] = 1
+       else:
+           if word.lower() in words:
+               words[word.lower()] += 1
+           else:
+               words[word.lower()] = 1
 
 
-# if __name__ == "__main__":
-# #     print(word_count(""))
-# #     print(word_count("Hello"))
-# #     print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
-# #     print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
+   return words
 
-word_count('Hello Hello')
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    print(word_count(""))
+    print(word_count("Hello"))
+    print(word_count('Hello, my cat. And my cat doesn\'t say "hello" back.'))
+    print(word_count('This is a test of the emergency broadcast network. This is only a test.'))
+
+
+
+
+
+
+
