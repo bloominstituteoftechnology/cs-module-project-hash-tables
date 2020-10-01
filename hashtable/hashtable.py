@@ -20,11 +20,10 @@ class HashTable:
 
     def count_at_index(self, index):
         count = 0
-        table = self.table
-        if table[index] is None:
+        if self.table[index] is None:
             return None
         else:
-            current = table[index]
+            current = self.table[index]
             while current is not None:
                 next = current.next
                 count += 1
@@ -63,26 +62,73 @@ class HashTable:
 
     def put(self, key, value):
         index = self.hash_index(key)
-        self.table[index] = HashTableEntry(key, value)
+
+        if self.table[index] is None:
+            self.table[index] = HashTableEntry(key, value)
+        else:
+            current = self.table[index]
+            while current.next is not None:
+                current = current.next
+            current.next = HashTableEntry(key, value)
+
+        if self.get_load_factor() >= 0.7:
+            self.resize(self.capacity * 2)
+        return
+        
 
     def delete(self, key):
         index = self.hash_index(key)
-        self.table[index] = None
+        current = self.table[index]
+
+        if current is None:
+            return
+        elif current.key is key:
+            if current.next is not None:
+                self.table[index] = current.next
+            else:
+                self.table[index] = None
+        else:
+            while current is not None:
+                next = current.next
+                if next.key is key:
+                    current.next = next.next
+                    next = None
+                    return
+                current = next
+
+        if self.get_load_factor() <= 0.2:
+            self.resize(self.capacity // 2)
+        return
 
     def get(self, key):
         index = self.hash_index(key)
-        if self.table[index] is None:
+        current = self.table[index]
+
+        if current is None:
             return None
-        else:
-            return self.table[index].value
+
+        while current is not None:
+            if current.key is key:
+                return current.value
+            current = current.next
+        return None
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-        Implement this.
-        """
-        # Your code here
+        old_table = self.table
+        self.table = [None] * new_capacity
+
+        for item in old_table:
+            if item is None:
+                continue
+            else:
+                current = item
+                while current is not None:
+                    next = current.next
+                    self.put(current.key, current.value)
+                    current = next
+                
+
+        
 
 
 if __name__ == "__main__":
