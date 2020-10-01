@@ -212,16 +212,16 @@ class HashTable:
         """
         # Your code 
 
-        # load_factor = self.get_load_factor()
-        # if load_factor < 0.2:
-        #     if self.capacity > 16:
-        #         new_capacity = self.capacity/2 
-        #     else:
-        #         return
-        # elif load_factor > 0.7:
-        #     new_capacity = 2 * self.capacity
-        # else:
-        #     return
+        load_factor = self.get_load_factor()
+        if load_factor < 0.2:
+            if self.capacity > 16:
+                new_capacity = self.capacity/2 
+            else:
+                return
+        elif load_factor > 0.7:
+            new_capacity = 2 * self.capacity
+        else:
+            return
         if new_capacity < 8:
             return
         old_table = self.table
