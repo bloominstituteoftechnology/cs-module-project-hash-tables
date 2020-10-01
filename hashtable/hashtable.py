@@ -103,6 +103,8 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        if hash_array[index] != None:
+            print(f'Collision! Overwriting {repr(hash_array[index])}!')
         self.hash_array[index] = HashTableEntry(key, value)
 
     def delete(self, key):
@@ -138,7 +140,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+    
 
 
 if __name__ == "__main__":
