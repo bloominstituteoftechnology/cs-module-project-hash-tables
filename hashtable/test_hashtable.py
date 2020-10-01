@@ -42,7 +42,7 @@ class TestHashTable(unittest.TestCase):
 
     def test_hash_table_pution_overwrites_correctly(self):
         ht = HashTable(8)
-
+        print('---------------------------here')
         ht.put("key-0", "val-0")
         ht.put("key-1", "val-1")
         ht.put("key-2", "val-2")
@@ -88,7 +88,7 @@ class TestHashTable(unittest.TestCase):
 
     def test_hash_table_removes_correctly(self):
         ht = HashTable(8)
-
+        
         ht.put("key-0", "val-0")
         ht.put("key-1", "val-1")
         ht.put("key-2", "val-2")

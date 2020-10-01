@@ -1,9 +1,12 @@
 # Your code here
 
 
+import random
+import math as m
+
 def slowfun_too_slow(x, y):
-    v = math.pow(x, y)
-    v = math.factorial(v)
+    v = m.pow(x, y)
+    v = m.factorial(v)
     v //= (x + y)
     v %= 982451653
 
@@ -23,4 +26,4 @@ def slowfun(x, y):
 for i in range(50000):
     x = random.randrange(2, 14)
     y = random.randrange(3, 6)
-    print(f'{i}: {x},{y}: {slowfun(x, y)}')
+    print(f'{i}: {x},{y}: {slowfun_too_slow(x, y)}')
