@@ -2,10 +2,12 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-    def __init__(self, key, value):
+    def __init__(self, key, value, Next=None):
         self.key = key
         self.value = value
-        self.next = None
+        self.next = Next
+    def __str__(self):
+        return f'Key: {self.key} - Value: {self.value} - Next: {self.next}'
 
 
 # Hash table can't have fewer than this many slots
@@ -21,7 +23,10 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity if capacity >= MIN_CAPACITY else MIN_CAPACITY
+        self.store = [None] * self.capacity
+        self.itemCount = 0
+
 
 
     def get_num_slots(self):
@@ -35,7 +40,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -44,9 +49,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.itemCount / self.get_num_slots()
 
 
-    def fnv1(self, key):
+    def fnv1(self, string, seed=0):
         """
         FNV-1 Hash, 64-bit
 
@@ -54,6 +60,19 @@ class HashTable:
         """
 
         # Your code here
+        """
+        Returns: The FNV-1 hash of a given string. 
+        """
+	#Constants
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
+
+        #FNV-1a Hash Function
+        hash = offset_basis + seed
+        for char in string:
+            hash = hash * FNV_prime
+            hash = hash ^ ord(char)
+        return hash
 
 
     def djb2(self, key):
@@ -62,16 +81,20 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        # Your code here                                                                                                                      
+        hash = 5381
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
-    def hash_index(self, key):
+    def hash_index(self, key, mode=1):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.djb2(key) % self.capacity if mode else self.fnv1(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -82,6 +105,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        collision = self.store[index] != None
+        exists = self.get(key, False)
+        self.itemCount += 1
+        if exists:
+            exists.value = value
+            self.itemCount -= 1
+        elif collision:
+            current = self.store[index]
+            self.store[index] = HashTableEntry(key, value, current)
+        else:
+            self.store[index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -93,9 +128,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-
-    def get(self, key):
+        index = self.hash_index(key)
+        current = self.store[index]
+        last = current
+        self.itemCount -= 1
+        if current == None:
+            self.itemCount += 1
+        elif current.key == key:
+            self.store[index] = current.next
+        else:
+            while current.key != key or current == None:
+                last = current
+                current = current.next
+            if current == None:
+                self.itemCount -= 1
+            else:
+                last.next = current.next
+            
+    def get(self, key, mode=True):
         """
         Retrieve the value stored with the given key.
 
@@ -104,7 +154,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        current = self.store[index]
+        multiple = current.next != None if current else False
+        if current == None:
+            return None
+        elif current.key == key:
+            return current.value if mode else current
+        elif multiple:
+            while current.key != key and current != None:
+                current = current.next
+            if current == None:
+                return None
+            else:
+                return current.value if mode else current
 
     def resize(self, new_capacity):
         """
@@ -114,6 +177,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        old_store = self.store
+        self.capacity = new_capacity
+        self.store = [None] * self.capacity
+        self.itemCount = 0
+        for i in old_store:
+            if i != None:
+                if i.next == None:
+                    self.put(i.key, i.value)
+                else:
+                    current = i
+                    while current:
+                        self.put(current.key, current.value)
+                        current = current.next
+
+                    
+
 
 
 
