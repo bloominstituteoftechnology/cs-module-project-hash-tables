@@ -1,3 +1,263 @@
+import random
+
+# Define a lookup table for the Pearson hash method
+lookup = [44,
+    152,
+    117,
+    52,
+    116,
+    140,
+    151,
+    225,
+    29,
+    170,
+    204,
+    22,
+    122,
+    88,
+    121,
+    83,
+    183,
+    158,
+    230,
+    9,
+    203,
+    77,
+    124,
+    172,
+    238,
+    213,
+    63,
+    35,
+    169,
+    62,
+    23,
+    164,
+    19,
+    235,
+    236,
+    248,
+    149,
+    174,
+    24,
+    92,
+    249,
+    98,
+    68,
+    41,
+    176,
+    212,
+    81,
+    135,
+    49,
+    194,
+    177,
+    254,
+    224,
+    167,
+    53,
+    202,
+    96,
+    244,
+    10,
+    69,
+    188,
+    133,
+    21,
+    118,
+    65,
+    93,
+    40,
+    250,
+    85,
+    157,
+    46,
+    20,
+    205,
+    218,
+    55,
+    73,
+    246,
+    94,
+    8,
+    137,
+    72,
+    99,
+    102,
+    255,
+    144,
+    142,
+    106,
+    108,
+    187,
+    226,
+    12,
+    42,
+    89,
+    75,
+    105,
+    129,
+    112,
+    146,
+    231,
+    56,
+    59,
+    54,
+    165,
+    190,
+    191,
+    50,
+    222,
+    39,
+    200,
+    5,
+    182,
+    27,
+    67,
+    17,
+    57,
+    247,
+    150,
+    228,
+    210,
+    195,
+    66,
+    239,
+    163,
+    159,
+    185,
+    243,
+    208,
+    252,
+    171,
+    198,
+    2,
+    173,
+    126,
+    184,
+    139,
+    234,
+    3,
+    26,
+    128,
+    82,
+    58,
+    214,
+    33,
+    196,
+    113,
+    48,
+    245,
+    178,
+    237,
+    125,
+    189,
+    166,
+    111,
+    107,
+    34,
+    232,
+    162,
+    217,
+    207,
+    127,
+    161,
+    18,
+    131,
+    103,
+    199,
+    80,
+    91,
+    223,
+    148,
+    78,
+    51,
+    145,
+    241,
+    31,
+    153,
+    141,
+    16,
+    115,
+    216,
+    60,
+    251,
+    156,
+    123,
+    95,
+    215,
+    154,
+    109,
+    97,
+    70,
+    132,
+    79,
+    14,
+    136,
+    43,
+    119,
+    186,
+    180,
+    74,
+    181,
+    76,
+    138,
+    47,
+    242,
+    168,
+    28,
+    227,
+    114,
+    45,
+    206,
+    130,
+    36,
+    38,
+    71,
+    147,
+    30,
+    155,
+    160,
+    220,
+    84,
+    233,
+    253,
+    211,
+    175,
+    1,
+    90,
+    4,
+    7,
+    101,
+    219,
+    179,
+    240,
+    32,
+    134,
+    100,
+    13,
+    193,
+    64,
+    197,
+    201,
+    221,
+    229,
+    37,
+    86,
+    104,
+    143,
+    11,
+    87,
+    25,
+    209,
+    15,
+    120,
+    6,
+    61,
+    192,
+    110]
+
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -10,7 +270,7 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
-
+MAX_LOAD     = 0.7
 
 class HashTable:
     """
@@ -21,8 +281,19 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        # Set the capacity for th hash table
+        self.capacity = capacity
+        if self.capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
 
+        # Initialize the hash table
+        self.table = [None]*self.capacity
+
+        # Initialize a Person hash lookup table (for use in hashing keys)
+        self.lookup = lookup
+
+        # Number of table entries
+        self.num_entries = 0
 
     def get_num_slots(self):
         """
@@ -34,7 +305,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +314,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Calcualate and return the load factor
+        return float(self.num_entries) / float(self.capacity)
 
 
     def fnv1(self, key):
@@ -64,14 +336,27 @@ class HashTable:
         """
         # Your code here
 
+    # hash_pearson returns the hash of an inbound message (string) based on the 
+    #    given lookup table
+    def hash_pearson(self, msg):
+        # Initialize a hash value
+        hsh = 0
+
+        # Iterate over each character in the string
+        for char in msg:
+            # Generate the lookup value keyed of the current hash value xor'ed
+            #   with unicode value of the current character
+            hsh = self.lookup[hsh ^ ord(char)]
+
+        # Done iterating: return the current hash value
+        return hsh
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.hash_pearson(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,8 +366,44 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Over the resize threshold?  If so, resize the hash table
+        if self.get_load_factor() > MAX_LOAD:
+            # load factor currently exceeds the maximum threshold.  Resize the hash table
+            self.resize(2*self.capacity)
 
+        # Generate the hashed index of the inbound key
+        idx         = self.hash_index(key)
+        # Generate a new value node to be placed into the hash table
+        new_node    = HashTableEntry(key, value)
+
+        # Is the current table entry empty?
+        if self.table[idx] == None:
+            # Empty table entry, store the passed value as a new node
+            self.table[idx] = new_node
+            self.num_entries = self.num_entries + 1
+            return
+
+        # Have at least one node at this table index
+        cur_node    = self.table[idx]
+        while True:
+            # Are we replacing an existing key/value pair (key == cur_node.key)
+            if key == cur_node.key:
+                # Yes, replace current node value with passed value
+                cur_node.value = value
+                return
+
+            # Is this the last node?
+            if cur_node.next == None:
+                # at the last node in the linked list
+                # append a new node referenced by a new key
+                break
+
+            # More nodes to traverse, advance to the next node
+            cur_node = cur_node.next
+
+        # Place new node at the end of the linked list
+        self.num_entries = self.num_entries + 1
+        cur_node.next = new_node
 
     def delete(self, key):
         """
@@ -92,8 +413,72 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Generate the hashed index of the inbound key
+        idx = self.hash_index(key)
 
+        # Is there a node at the index?
+        if self.table[idx] == None:
+            # No value associated with the key
+            print("no value found associated with this hash key")
+            return
+
+        # One or more nodes exist at this index value
+        last_node   = self.table[idx]
+        cur_node    = self.table[idx]
+        found_value = False
+        while True:
+            # Is the current node the node (droid) we're looking for?
+            if cur_node.key == key:
+                # Found our value
+                found_value = True
+                break
+
+            # Key not found. Is this the last node in the linked list
+            if cur_node.next == None:
+                # Last node, item not found
+                break
+
+            # Advance to the next node
+            last_node = cur_node
+            cur_node  = cur_node.next
+
+        # Key not found?
+        if not found_value:
+            # key not found, message the user
+            print("no value found associated with this hash key")
+            return
+
+        # Key has been found, delete the node
+        # At what position are we in the linked list?
+        # Linked list has only one node: it is the current, last, and only node
+        if cur_node == last_node and cur_node.next == None:
+            # Remove the current node (first node)
+            self.table[idx] = None
+            self.num_entries = self.num_entries - 1
+            return
+
+        # Last node of a list with more than one node
+        if last_node != cur_node and cur_node.next == None:
+            # current node is the last node of a list with >1 nodes
+            # remove last node
+            last_node.next = None
+            self.num_entries = self.num_entries - 1
+            return
+
+        # Interim node of a list with more than two nodes
+        if last_node != cur_node and cur_node.next != None:
+            last_node.next = cur_node.next
+            self.num_entries = self.num_entries - 1
+            return
+
+        # First node of a list with more than one node
+        if last_node == cur_node and cur_node.next != None:
+            self.table[idx] = cur_node.next
+            self.num_entries = self.num_entries - 1
+            return
+
+        print("ERROR: got to an unexpected code route")
+        return
 
     def get(self, key):
         """
@@ -103,8 +488,29 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Generate the hashed index of the inbound key
+        idx = self.hash_index(key)
 
+        # Is there a node at the index?
+        if self.table[idx] == None:
+            # No value associated with the key
+            return None
+
+        # One or more nodes exist at this index value
+        cur_node  = self.table[idx]
+        while True:
+            # Is the current node the node (droid) we're looking for?
+            if cur_node.key == key:
+                # Found our value
+                return cur_node.value
+
+            # Is this the last node in the linked list
+            if cur_node.next == None:
+                # Last node, item not found
+                return None
+
+            # Advance to the next node
+            cur_node = cur_node.next
 
     def resize(self, new_capacity):
         """
@@ -113,41 +519,38 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Ensure the new capacity >= the minimum capacity
+        if new_capacity < MIN_CAPACITY:
+            new_capacity = MIN_CAPACITY
 
+        # Temporarily store the current list for hashing purposes
+        old_table = self.table
 
+        # Initialize the new list
+        self.table      = [None]*new_capacity
+        self.capacity   = new_capacity
+        
+        # Iterate through the old list and rehash and insert using the resized object 
+        for idx, val in enumerate(old_table):
+            # Is there a node at the current position?
+            if val == None:
+                # no node present, skip
+                continue
 
-if __name__ == "__main__":
-    ht = HashTable(8)
+            # Is there a single node at the current position
+            if val.next == None:
+                # encountered a single node; hash & insert and continue
+                self.put(val.key, val.value)
+                continue
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
+            # Have a linked list with more than one node
+            # Traverse the list
+            tmp_node = val
+            while True:
+                self.put(tmp_node.key, tmp_node.value)
+                if tmp_node.next == None:
+                    # Last node in the link list
+                    break
 
-    print("")
+                tmp_node = tmp_node.next
 
-    # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
-
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
-
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
-
-    print("")
