@@ -1,5 +1,19 @@
+import re
+import string
 def word_count(s):
     # Your code here
+    d = {}
+    sp = re.sub('['+'":;,.+=\\-/\\\|{}()\\[\\]*^&'+']', '', s).split()
+    for i in sp:
+        
+        jstring = i.lower()
+        
+        if(jstring not in d):
+            d[jstring] = 1
+        else:
+            d[jstring] += 1
+    return d
+    
 
 
 

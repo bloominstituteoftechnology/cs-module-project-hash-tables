@@ -1,7 +1,16 @@
 def no_dups(s):
     # Your code here
-
-
+    d = {}
+    string = ""
+    sp = s.split(" ")
+    if(s == ""):
+        return string
+    else:
+        for i in sp:
+            if i not in d:
+                d[i] = 0
+                string = string + i + " "
+        return string.strip()
 
 if __name__ == "__main__":
     print(no_dups(""))

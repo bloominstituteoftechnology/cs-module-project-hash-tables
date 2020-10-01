@@ -1,9 +1,18 @@
 # Your code here
-
+d = {}
 
 def expensive_seq(x, y, z):
     # Your code here
-
+    tup = (x, y, z)
+    if(tup not in d):
+        if (x <= 0): 
+            d[tup] = y + z
+            return y + z
+        if (x >  0):
+            d[tup] = expensive_seq(x-1,y+1,z) + expensive_seq(x-2,y+2,z*2) + expensive_seq(x-3,y+3,z*3) 
+            return expensive_seq(x-1,y+1,z) + expensive_seq(x-2,y+2,z*2) + expensive_seq(x-3,y+3,z*3)
+    else:
+        return d[tup]
 
 
 if __name__ == "__main__":
