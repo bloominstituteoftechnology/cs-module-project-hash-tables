@@ -12,4 +12,14 @@ def f(x):
     return x * 4 + 6
 
 # Your code here
+cache = {}
+sums = {}
+
+for sm in sums:
+    if sm in diff:
+        for l in sums[sm]:
+            for k in diff[u]:
+                if l == k:
+                    a,b = l[0],l[1]
+                    c,d = k[0], k[1]
 
