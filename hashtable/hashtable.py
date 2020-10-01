@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -21,8 +22,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = capacity
+        self.bucket = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -34,8 +36,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # Day 2
+        return len(self.bucket)
 
     def get_load_factor(self):
         """
@@ -43,8 +45,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # Day 2
+        load_factor = self.count / self.get_num_slots()
+        return load_factor
 
     def fnv1(self, key):
         """
@@ -54,7 +57,7 @@ class HashTable:
         """
 
         # Your code here
-
+        pass
 
     def djb2(self, key):
         """
@@ -62,15 +65,27 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        # Day 1
+        # hash = 5381
+        # byte_array = key.encode('utf-8')
 
+        # for byte in byte_array:
+        #     # the modulus keeps it 32-bit, python ints don't overflow
+        #     hash = ((hash * 33) ^ byte) % 0x100000000
+
+        # return hash
+
+        hash = 5381
+        for c in key:
+            hash = (hash << 5) + hash + ord(c)
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,8 +96,42 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Day 1
+        # index = self.hash_index(key)
+        # print('INDEXES:', index)
+        # self.bucket[index] = value
+        # print(index)
 
+        # Day 2
+
+        # get the key index value by hashing the key with hash_index
+        index = self.hash_index(key)
+        # initialize an table entry using the key and the value
+        new_node = HashTableEntry(key, value)
+        # assign a current node to the node at the hash key position
+        current_node = self.bucket[index]
+        # check if the value at the hashed key/index in bucket is None
+        # if it is place the node at this position
+        if self.bucket[index] == None:
+            self.bucket[index] = new_node
+            self.count += 1
+
+        elif self.bucket[index] is not None and self.bucket[index].key == key:
+            self.bucket[index].value = value
+
+        # else enter while loop to find the next none position then place
+        # the node there.
+        elif self.bucket[index] is not None:
+            while current_node is not None:
+                if current_node.next is None:
+                    current_node.next = new_node
+                    self.count += 1
+                    return current_node
+                elif current_node.next is not None and current_node.next.key == key:
+                    current_node.next.value = value
+                    return current_node.next
+                else:
+                    current_node = current_node.next
 
     def delete(self, key):
         """
@@ -92,8 +141,43 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Day 1
+        # index = self.hash_index(key)
+        # self.bucket[index] = None
 
+        # Day 2
+
+        # check item at hashed index keys are identical
+        # if the item is found:
+        # if it is at the head value then create a reference to that item
+        # take the next item and insert it to the bucket at the same index
+        # as the found index.
+        # Use the reference to remove that indexes next node --- will be cleaned up in memory
+        # if the item at the index of the bucket isn't the item enter a while loop
+        # keep checking the next nodes to see if the next node is the value
+        # we are looking for.
+        # when the item is found in the next node:
+        # make a reference to the next node
+        # make the current nodes next reference refer to to the next node's, next node.
+        # return the node reference
+
+        hashed_index = self.hash_index(key)
+        current_node = self.bucket[hashed_index]
+
+        if self.bucket[hashed_index] is None:
+            return None
+        if self.bucket[hashed_index].key == key:
+            node_to_delete = self.bucket[hashed_index]
+            self.bucket[hashed_index] = node_to_delete.next
+            node_to_delete.next = None
+        else:
+            while current_node is not None:
+                if current_node.next.key == key and current_node.next.next is not None:
+                    next_node = current_node.next
+                    current_node.next = current_node.next.next
+                    return next_node
+
+                current_node = current_node.next
 
     def get(self, key):
         """
@@ -103,8 +187,35 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Day 1
+        # index = self.hash_index(key)
+        # return self.bucket[index]
 
+        # Day 2
+        # grab the hashed version of the key and store it in a variable
+        # use variable to initialize a current_node value.
+
+        # check if value at head index is has the same key.
+        # if it does return that node's value
+        # if it doesn't have the same value enter a while loop while
+        # current node id not none.
+        # check each next node to see if it's key matches the key.
+        # if so return that value.
+        # if not move the current node to the next node.
+        # if while loop break then the item was not found so return None
+
+        hashed_index = self.hash_index(key)
+        current_node = self.bucket[hashed_index]
+
+        if current_node is not None and current_node.key == key:
+            return self.bucket[hashed_index].value
+
+        else:
+            while current_node is not None:
+                if current_node.key == key:
+                    return current_node.value
+                current_node = current_node.next
+        return None
 
     def resize(self, new_capacity):
         """
@@ -113,8 +224,27 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Make a new array thats DOUBLE the current size
+        # Go through each linked list in the array
+        # GO through each item and re-hash it
+        # Insert the items into their new locations
 
+        new_bucket = [None] * new_capacity
+        old_bucket = self.bucket
+        self.bucket = new_bucket
+        self.count = 0
+        self.capacity = new_capacity
+        # print(new_capacity)
+        current_index = 0
+        while current_index < len(old_bucket):
+            current_node = old_bucket[current_index]
+            if current_node is not None:
+                next_node = current_node.next
+                current_node.next = None
+                self.put(current_node.key, current_node.value)
+                old_bucket[current_index] = next_node
+            elif current_node is None:
+                current_index += 1
 
 
 if __name__ == "__main__":
@@ -139,15 +269,24 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
+    # for i in ht.bucket:
+    #     print(i)
+    # print('LOAD FACTOR: ', ht.get_load_factor())
     # Test resizing
     old_capacity = ht.get_num_slots()
     ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
-
+    # print('LOAD FACTOR: ', ht.get_load_factor())
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
+
+    # for i in ht.bucket:
+    #     if i is not None:
+    #         print(i.value)
+    #     else:
+    #         print(None)
 
     print("")
