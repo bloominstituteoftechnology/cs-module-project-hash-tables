@@ -20,9 +20,11 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity = MIN_CAPACITY):
         # Your code here
-
+        self.capacity = capacity
+        self.hash_array = [None] * capacity
+        self.number_of_items = 0
 
     def get_num_slots(self):
         """
@@ -35,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -44,7 +46,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.number_of_items / self.capacity
 
     def fnv1(self, key):
         """
@@ -54,7 +56,19 @@ class HashTable:
         """
 
         # Your code here
+         #Constants
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
 
+        #FNV-1a Hash Function
+        hash = offset_basis 
+
+        for char in key:
+            hash = hash * FNV_prime
+            # ord() returns an integer representing the Unicode character
+            hash = hash ^ ord(char)
+
+        return hash
 
     def djb2(self, key):
         """
@@ -63,7 +77,13 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        byte_array = key.encode('utf-8')
 
+        for byte in byte_array:
+            hash = ((hash * 33) ^ byte) % 0x100000000
+
+        return hash
 
     def hash_index(self, key):
         """
@@ -93,7 +113,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        
 
     def get(self, key):
         """
