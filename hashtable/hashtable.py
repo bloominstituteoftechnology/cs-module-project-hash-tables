@@ -68,7 +68,7 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        hash = 2470
+        hash = 5381
 
         for x in key:
             hash = ((hash << 5) + hash) + ord(x)
