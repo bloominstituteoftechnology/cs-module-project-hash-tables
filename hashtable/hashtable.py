@@ -102,7 +102,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        self.hash_array[index] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -113,7 +114,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        
+        index = self.hash_index(key)
+        self.hash_array[index] = None
 
     def get(self, key):
         """
@@ -124,7 +126,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        if self.hash_array[index]:
+            return self.hash_array[index].value
 
     def resize(self, new_capacity):
         """
