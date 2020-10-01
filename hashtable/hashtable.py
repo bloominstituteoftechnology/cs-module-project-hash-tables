@@ -31,6 +31,7 @@ class HashTable:
         """
         Return the load factor for this hash table.
         """
+        # IMPLEMENT
         pass
 
     def fnv1(self, key):
@@ -67,8 +68,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -76,6 +77,7 @@ class HashTable:
 
         Hash collisions should be handled with Linked List Chaining.
         """
+        # IMPLEMENT WITH CHAINING
         hash = self.hash_index(key)
 
         if hash <= self.capacity:
@@ -87,6 +89,7 @@ class HashTable:
 
         Print a warning if the key is not found.
         """
+        # IMPLEMENT WITH CHAINING
         hash = self.hash_index(key)
 
         if hash <= self.capacity:
@@ -100,6 +103,7 @@ class HashTable:
 
         Returns None if the key is not found.
         """
+        # IMPLEMENT WITH CHAINING
         hash = self.hash_index(key)
 
         if hash <= self.capacity:
@@ -112,6 +116,7 @@ class HashTable:
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
         """
+        # IMPLEMENT
         pass
 
 if __name__ == "__main__":
