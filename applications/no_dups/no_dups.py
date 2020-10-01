@@ -1,5 +1,13 @@
 def no_dups(s):
-    # Your code here
+    result = ""
+    words = {}
+
+    for word in s.split():
+        if word not in words and word != "":
+            result += f'{word} '
+            words[word] = 1
+    
+    return result.rstrip()
 
 
 
