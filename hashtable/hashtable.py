@@ -4,6 +4,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __repr__(self):
+	    return f'HashTableEntry({repr(self.value)})'
+
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -13,21 +16,29 @@ class HashTable:
         self.table = [None] * capacity
 
     def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-        One of the tests relies on this.
-        Implement this.
-        """
-        # Your code here
+        return len(self.table)
+
+    def count_at_index(self, index):
+        count = 0
+        table = self.table
+        if table[index] is None:
+            return None
+        else:
+            current = table[index]
+            while current is not None:
+                next = current.next
+                count += 1
+                current = next
+            return count
 
     def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-        Implement this.
-        """
-        # Your code here
+        load = 0
+        for index in self.table:
+            if index is None:
+                continue
+            else:
+                load += self.count_at_index(index)
+        return load / self.capacity
 
     def fnv1(self, key):
         k = str(key).encode()
