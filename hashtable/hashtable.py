@@ -17,6 +17,7 @@ class HashTable:
     """
     def __init__(self, capacity):
         self.capacity = MIN_CAPACITY
+        self.list = [None] * self.capacity
 
     def get_num_slots(self):
         """
@@ -75,7 +76,10 @@ class HashTable:
 
         Hash collisions should be handled with Linked List Chaining.
         """
-        # Your code here
+        hash = self.hash_index(key)
+
+        if hash <= self.capacity:
+            self.list[hash] = value
 
     def delete(self, key):
         """
@@ -83,7 +87,12 @@ class HashTable:
 
         Print a warning if the key is not found.
         """
-        # Your code here
+        hash = self.hash_index(key)
+
+        if hash <= self.capacity:
+            self.list[hash] = None
+        else:
+            print('Key not found')
 
     def get(self, key):
         """
@@ -91,7 +100,12 @@ class HashTable:
 
         Returns None if the key is not found.
         """
-        # Your code here
+        hash = self.hash_index(key)
+
+        if hash <= self.capacity:
+            return self.list[hash]
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
