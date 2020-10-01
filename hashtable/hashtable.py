@@ -11,7 +11,7 @@ class HashTableEntry:
 MIN_CAPACITY = 8
 
 class HashTable:
-    def __init__(self, capacity):
+    def __init__(self, capacity = MIN_CAPACITY):
         self.capacity = capacity
         self.table = [None] * capacity
 
@@ -20,22 +20,18 @@ class HashTable:
 
     def count_at_index(self, index):
         count = 0
-        if self.table[index] is None:
-            return count
-        else:
+        if self.table[index] is not None:
             current = self.table[index]
             while current is not None:
-                next = current.next
+                next_index = current.next
                 count += 1
-                current = next
+                current = next_index
             return count
 
     def get_load_factor(self):
         load = 0
-        for index in self.table:
-            if index is None:
-                continue
-            else:
+        for index in range(len(self.table)):
+            if self.table[index] is not None:
                 load += self.count_at_index(index)
         return load / self.capacity
 
@@ -68,12 +64,15 @@ class HashTable:
         else:
             current = self.table[index]
             while current.next is not None:
+                if current.key is key:
+                    current.value = value
                 current = current.next
-            current.next = HashTableEntry(key, value)
-
+            if current.key is key:
+                current.value = value
+            else:
+                current.next = HashTableEntry(key, value)
         if self.get_load_factor() >= 0.7:
             self.resize(self.capacity * 2)
-        return
         
 
     def delete(self, key):
@@ -114,8 +113,10 @@ class HashTable:
         return None
 
     def resize(self, new_capacity):
+        self.capacity = new_capacity
         old_table = self.table
-        self.table = [None] * new_capacity
+        self.table = [None] * self.capacity
+        
 
         for item in old_table:
             if item is None:
