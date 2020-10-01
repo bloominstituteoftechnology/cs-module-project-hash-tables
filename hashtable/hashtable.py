@@ -21,8 +21,11 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        if capacity < MIN_CAPACITY:
+            capacity = MIN_CAPACITY
+            
+        self.capacity = capacity
+        self.table = [None] * capacity
 
     def get_num_slots(self):
         """
@@ -34,7 +37,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -53,8 +56,15 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
-
+        FNV_offset_basis = 14695981039346656037
+        bytes_representation = key.encode()
+        for byte_of_data in bytes_representation:
+            FNV_prime = 1099511628211
+            FNV_offset_basis = FNV_offset_basis * FNV_prime
+            FNV_offset_basis = FNV_offset_basis ^ byte_of_data
+        
+        hashValue = FNV_offset_basis
+        return hashValue
 
     def djb2(self, key):
         """
@@ -70,8 +80,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,9 +90,22 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        
+        indexForKey = self.hash_index(key)
+        
+        if self.table[indexForKey] is None: #no pairs found
+            self.table[indexForKey] = HashTableEntry(key, value) #create new
+        else: #pairs found
+            pair = self.table[indexForKey]
+            while pair is not None:
+                if pair.key == key: #if exists
+                    pair.value = value #update value
+                    return
+                if pair.next is None: #last
+                    pair.next = HashTableEntry(key, value) #append new
+                    return
+                pair = pair.next #advance
+        
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -92,8 +114,47 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        
+        indexForKey = self.hash_index(key)
+        firstPair = True 
+        pair = self.table[indexForKey]
+        prevPair = None
+        
+        while pair is not None: #is there
+            if pair.key == key: #found it
+                if firstPair: #is head
+                    if pair.next == None: #one pair
+                        self.table[indexForKey] = None
+                        pair = None
+                    else: 
+                        self.table[indexForKey] = pair.next #shift / cut out node from list
+                        pair = None
+                else: #inside linked list
+                    if pair.next == None: #is last
+                        prevPair.next = None
+                        pair = None
+                    else: 
+                        prevPair.next = pair.next #shift / cut out node from list
+                        pair = None
+                return
+            
+            firstPair = False
+            if pair.next == None:
+                return 
+            prevPair = pair
+            pair = pair.next 
+        
+        
+        
+        
+        
+        # solution for list
+#        if self.table[indexForKey] is None: #guard, has value
+#            return
+#        for index in range (0, len(self.table[indexForKey])):
+#            if self.table[indexForKey][index].key == key:
+#                self.table[indexForKey].pop(index)
+#                return
 
     def get(self, key):
         """
@@ -103,8 +164,15 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        indexForKey = self.hash_index(key)
+        pair = self.table[indexForKey]
+        
+        while pair is not None: #there is something
+            if pair.key == key: #found it?
+                return pair.value #return it
+            pair = pair.next  #advance
 
+        return None
 
     def resize(self, new_capacity):
         """
@@ -113,9 +181,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        old_table = self.table
+        old_capacity = self.capacity
 
+        self.table = [None] * new_capacity
+        self.capacity = new_capacity
 
+        for index in range(old_capacity):
+            pair = old_table[index]
+            while pair is not None:
+                self.put(pair.key, pair.value)
+                pair = pair.next 
 
 if __name__ == "__main__":
     ht = HashTable(8)
