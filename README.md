@@ -1,3 +1,5 @@
+an amazing project but plz make index page of resources
+
 # Hash Tables
 
 ## Day 1
