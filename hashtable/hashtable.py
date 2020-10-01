@@ -22,7 +22,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        pass
+        self.capacity = capacity
+        self.array = [None] * capacity #where the list starts[None] so thing can be added
 
 
     def get_num_slots(self):
@@ -64,6 +65,14 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        long_hash = 5381
+
+        for hashs in key:
+            long_hash= long_hash * 33 * ord(hashs)
+
+        return long_hash
+
+
 
 
     def hash_index(self, key):
@@ -83,7 +92,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        self.array[index] = HashTableEntry(key,value)
 
     def delete(self, key):
         """
@@ -93,7 +103,13 @@ class HashTable:
 
         Implement this.
         """
+
         # Your code here
+        index = self.hash_index(key)
+        if self.array[index]:
+            self.array[index] = None
+        else:
+            print(f'{key} is not not found.')
 
 
     def get(self, key):
@@ -105,7 +121,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        hash_value = self.array[index]
 
+        if hash_value:
+            return hash_value.value
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -141,14 +163,14 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
-
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
-
-    print("")
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
+    #
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    #
+    # # Test if data intact after resizing
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
+    #
+    # print("")
