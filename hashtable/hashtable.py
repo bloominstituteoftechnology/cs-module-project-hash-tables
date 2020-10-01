@@ -6,7 +6,7 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
-
+# [key: value] and next to search next value 
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -22,6 +22,11 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        if capacity < MIN_CAPACITY:
+            capacity = MIN_CAPACITY
+        self.capacity = capacity
+        self.hash_data = [None] * capacity
+        self.total = 0
 
 
     def get_num_slots(self):
@@ -34,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.hash_data)
 
 
     def get_load_factor(self):
@@ -44,6 +49,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.total / self.capacity
 
 
     def fnv1(self, key):
@@ -63,6 +69,12 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        key_encoded = key.encode()
+        hash = 5381
+        for k in key_encoded:
+            hash = ((hash << 5) + hash) + k ; # same as hash * 33 + byte
+            hash &= 0xffffffff
+        return hash
 
 
     def hash_index(self, key):
@@ -82,6 +94,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # we are making new entry and link it to that.
+        index = self.hash_index(key)
+        cur_entry = self.hash_data[index]
+
+         
+        while cur_entry is not None:
+            if cur_entry.key == key:
+                cur_entry.value = value
+                return
+
+            cur_entry = cur_entry.next
+
+        new_entry = HashTableEntry(key, value)
+        new_entry.next = self.hash_data[index]
+        self.hash_data[index] = new_entry
+        self.total += 1
 
 
     def delete(self, key):
@@ -93,17 +121,28 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        self.hash_data[index] = None
 
+        
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
 
         Returns None if the key is not found.
-
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        
+        currentData = self.hash_data[index]
+
+        while currentData is not None:
+            if currentData.key == key:
+                return currentData.value 
+        
+            currentData = currentData.next
 
 
     def resize(self, new_capacity):
@@ -151,3 +190,87 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
+#Collision resolution by chaining
+"""
+1. Make our array of slots into an array of linked lists.
+2. Each Linked list node is HashTableEntry.
+
+PUT:
+
+Slot
+Index   Chain  (Linked List)
+if not found add in those tables
+0 -> None
+1 -> HashTableEntry{Foo:12} -> None
+2 {baz:999} -> {bar:30} -> None
+3-> None
+
+put("foo", 12) # hashes to 1
+put("bar", 20) # hashes to 2
+put("baz", 999) # hashes to 2 -- collision. 
+put("bar", 50) # hashes to 2 -- collision. 
+
+
+1. Figure out the index that holds this thing, in this case 1
+2. Search the linked list to see if the key is there.
+2a. if the key is there, overwrite the value, if the key already exists
+2b. if not there, create a new HashTableEntry and insert it in the List.
+
+
+GET:
+
+1. Figure out the index for the key
+2. Search the linked list at the index for the hastableentry that matches they key 
+3. Return the value for the entry, or None if not found.
+
+
+DELETE:
+1. Figure out the index ffor the key 
+2. Search the linked list at the index for the hashTableEntry that matches the key
+2a. If found, delete the entry from the linked list---return the valuie
+2b, if not found, then return none
+"""
+
+""" Hashh table load factor
+
+1. Metric to indicate how overfull the hashtable is
+w
+O(1) hash table:
+
+0 | -> D
+1 | -> h
+2 | -> A
+3 | -> C
+4 | -> G
+5 | -> B
+6 | -> E
+7 | -> D
+
+0 | -> D
+1 | -> h -> R -> X -> Y
+2 | -> A
+3 | -> C -> J -> L -> N -> Z
+4 | -> G
+5 | -> B -> O 1 -> 2
+6 | -> E
+7 | -> D
+
+
+
+how do we knoew when to resize the hash table?
+
+load factor = number of elements stored in the hastable / number of slots.
+8 / 8 = 1.0
+16/ 8 = 2.0
+
+if the load factor is over 0.7, grow the table (performance starts degrading.)
+if the load factor is under 0.2, shrink the table (down to some minimum)
+grow the table: double the size
+shrink the table: halve the size.
+
+When you PUT:
+if the load factor > 0.7
+create new  array with double size of the old one 
+
+"""
