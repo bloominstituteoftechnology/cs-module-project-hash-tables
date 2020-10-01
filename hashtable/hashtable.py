@@ -21,8 +21,13 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        if capacity > MIN_CAPACITY:
+            self.capacity = capacity
+        else:
+            self.capacity = MIN_CAPACITY
+        self.array = [None] * capacity
 
+        self.entries = 0
 
     def get_num_slots(self):
         """
@@ -34,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +48,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.entries / self.get_num_slots()
+
 
 
     def fnv1(self, key):
@@ -53,7 +59,15 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        #Values pulled from Wikipedia
+        prime = 1099511628211
+        offset_basis = 14695981039346656037
+
+        hash = offset_basis
+        for char in key:
+            hash = hash ^ ord(char) #XOR is defined by a carat
+            hash = hash * prime
+        return hash
 
 
     def djb2(self, key):
@@ -70,8 +84,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -81,7 +95,28 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        if self.array[index] is None:
+            self.array[index] = entry
+            self.entries += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.entries * 2)
+            return
+        else: # Colliding.
+            prev = None
+            current = self.array[index]
+            while current:
+                if current.key == key:  # Overwrite
+                    current.value = value
+                    return
+                prev = current
+                current = current.next
+            prev.next = entry
+            self.entries += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.entries * 2)
+            return
 
 
     def delete(self, key):
@@ -92,7 +127,29 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        current = self.array[index]
+        prev = None
+        while current:
+            if current.key == key:
+                if prev: #There is a node before this one. Works regardless if next is None or not.
+                    prev.next = current.next
+                    self.entries -= 1
+                    if self.get_load_factor() < 0.2:
+                        self.resize(self.entries * 2)
+                    return
+                else: #Previous is None, may or may not be a node after this.
+                    self.array[index] = current.next
+                    self.entries -= 1
+                    if self.get_load_factor() < 0.2:
+                        self.resize(self.entries * 2)
+                    return
+            prev = current
+            current = current.next
+        return None
+
+
+
 
 
     def get(self, key):
@@ -103,7 +160,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        current = self.array[index]
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -113,7 +176,21 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        if new_capacity < MIN_CAPACITY: #Minimums are minimums for a reason.
+            new_capacity = MIN_CAPACITY
+        old_array = self.array
+        self.capacity = new_capacity
+        self.array = [None] * new_capacity
+        self.entries = 0
+
+        #Rehashing
+        for item in old_array:
+            current = item
+            while current:
+                self.put(current.key, current.value)
+                current = current.next
+
+
 
 
 
