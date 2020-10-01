@@ -120,7 +120,7 @@ class TestHashTable(unittest.TestCase):
         self.assertTrue(return_value == "val-8")
         return_value = ht.get("key-9")
         self.assertTrue(return_value == "val-9")
-
+        
         ht.delete("key-9")
         ht.delete("key-8")
         ht.delete("key-7")
@@ -155,7 +155,6 @@ class TestHashTable(unittest.TestCase):
 
     def test_hash_table_resize(self):
         ht = HashTable(8)
-
         ht.put("key-0", "val-0")
         ht.put("key-1", "val-1")
         ht.put("key-2", "val-2")
