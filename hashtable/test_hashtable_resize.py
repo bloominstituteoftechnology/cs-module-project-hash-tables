@@ -167,9 +167,9 @@ class TestHashTable(unittest.TestCase):
         ht.put("key-8", "val-8")
         ht.put("key-9", "val-9")
 
-        ht.resize(1024)
+        ht.resize(64)
 
-        self.assertTrue(ht.get_num_slots() == 1024)
+        self.assertTrue(ht.get_num_slots() == 64)
 
         return_value = ht.get("key-0")
         self.assertTrue(return_value == "val-0")

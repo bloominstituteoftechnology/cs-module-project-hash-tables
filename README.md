@@ -18,11 +18,11 @@ Task: Implement a basic hash table without collision resolution.
 
 3. Implement the `hash_index()` that returns an index value for a key.
 
-4. Implement the `put()`, `get()`, and `delete()` methods.
+4. Implement the `put()` , `get()` , and `delete()` methods.
 
 You can test this with:
 
-```
+``` terminal
 python test_hashtable_no_collisions.py
 ```
 
@@ -34,13 +34,13 @@ FNV-1 (64 bit) hashing functions, there are no collisions.
 
 Task: Implement linked-list chaining for collision resolution.
 
-1. Modify `put()`, `get()`, and `delete()` methods to handle collisions.
+1. Modify `put()` , `get()` , and `delete()` methods to handle collisions.
 
 2. There is no step 2.
 
 You can test this with:
 
-```
+``` terminal
 python test_hashtable.py
 ```
 
@@ -49,19 +49,20 @@ doubling.
 
 1. Compute and maintain load factor.
 
-2. When load factor increases above `0.7`, automatically rehash the
+2. When load factor increases above `0.7` , automatically rehash the
+
    table to double its previous size.
 
    Add the `resize()` method.
 
 You can test this with both of:
 
-```
+``` terminal
 python test_hashtable.py
 python test_hashtable_resize.py
 ```
 
-Stretch: When load factor decreases below `0.2`, automatically rehash
+Stretch: When load factor decreases below `0.2` , automatically rehash
 the table to half its previous size, down to a minimum of 8 slots.
 
 ## Day 3 and Day 4
@@ -81,4 +82,3 @@ full-featured.)
 * [Histogram](applications/histo/)
 * [Cracking Caesar Ciphers](applications/crack_caesar/)
 * [Sum and Difference](applications/sumdiff/)
-
