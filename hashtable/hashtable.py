@@ -127,7 +127,7 @@ class HashTable:
         if hash_value:
             return hash_value.value
         else:
-            return None
+            return  None
 
     def resize(self, new_capacity):
         """
