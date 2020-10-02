@@ -1,5 +1,8 @@
 # Draw a histogram of words in an input string
 
+Histogram
+A histogram is a graphical display of data using bars of different heights. In a histogram, each bar groups numbers into ranges.
+
 This is a variation of the "word count" exercise, with a focus on how to
 sort the data in a dictionary.
 
@@ -67,14 +70,15 @@ bow              ######
 
 ## Hints
 
-Items: `.vgrzf()` zrgubq ba n qvpgvbanel zvtug or hfrshy.
+Items: `.vgrzf()` zrgubq ba n qvpgvbanel zvtug or hfrshy. `.items()` method on a dictionary might be useful.
 
-Sorting: vg'f cbffvoyr sbe `.fbeg()` gb fbeg ba zhygvcyr xrlf ng bapr.
+Sorting: vg'f cbffvoyr sbe `.fbeg()` gb fbeg ba zhygvcyr xrlf ng bapr. it's possible for `.sort()` to sort on multiple keys at once.
 
-Sorting: artngvirf zvtug uryc jurer `erirefr` jba'g.
+Sorting: artngvirf zvtug uryc jurer `erirefr` jba'g. negatives might help where `reverse` won't.
 
 Printing: lbh pna cevag n inevnoyr svryq jvqgu va na s-fgevat jvgu
-arfgrq oenprf, yvxr fb `{k:{l}}`
+arfgrq oenprf, yvxr fb `{k:{l}}`. you can print a variable field width in an f-string with
+nested braces, like so `{x:{y}}`
 
 (The hints are encrypted with ROT13. Google for `rot13 decoder` to see
 them.)
