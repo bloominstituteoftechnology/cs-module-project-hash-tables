@@ -7,6 +7,10 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -17,7 +21,7 @@ class HashTable:
     """
     def __init__(self, capacity):
         self.capacity = MIN_CAPACITY
-        self.list = [None] * self.capacity
+        self.list = [LinkedList()] * self.capacity
 
     def get_num_slots(self):
         """
@@ -77,11 +81,26 @@ class HashTable:
 
         Hash collisions should be handled with Linked List Chaining.
         """
-        # IMPLEMENT WITH CHAINING
-        hash = self.hash_index(key)
+        # Naive Approach
+        # hash = self.hash_index(key)
 
-        if hash <= self.capacity:
-            self.list[hash] = value
+        # if hash <= self.capacity:
+        #     self.list[hash] = value
+
+        # Chaining Approach
+        hash = self.hash_index(key)
+        hash_entry = HashTableEntry(key, value)
+
+        if self.list[hash].head is None:
+            self.list[hash].head = hash_entry
+        else:
+            current = self.list[hash].head
+            while current.next:
+                if current.key == key:
+                    current.value = value
+                current = current.next
+            
+            current.next = hash_entry
 
     def delete(self, key):
         """
@@ -89,13 +108,32 @@ class HashTable:
 
         Print a warning if the key is not found.
         """
-        # IMPLEMENT WITH CHAINING
-        hash = self.hash_index(key)
+        # Naive Approach
+        # hash = self.hash_index(key)
 
-        if hash <= self.capacity:
-            self.list[hash] = None
-        else:
-            print('Key not found')
+        # if hash <= self.capacity:
+        #     self.list[hash] = None
+        # else:
+        #     print('Key not found')
+
+        # Chaining Approach
+        hash = self.hash_index(key)
+        current = self.list[hash].head
+        previous = None
+
+        while current:
+            if current.key == key:
+                if previous:
+                    previous.next = current.next
+                    return
+                else:
+                    self.list[hash].head = self.list[hash].head.next
+                    return
+            
+            previous = current
+            current = current.next
+        
+        print('Key not found')
 
     def get(self, key):
         """
@@ -103,13 +141,31 @@ class HashTable:
 
         Returns None if the key is not found.
         """
-        # IMPLEMENT WITH CHAINING
-        hash = self.hash_index(key)
+        # Naive Approach
+        # hash = self.hash_index(key)
 
-        if hash <= self.capacity:
-            return self.list[hash]
-        else:
+        # if hash <= self.capacity:
+        #     return self.list[hash]
+        # else:
+        #     return None
+
+        # Chaining Approach
+        hash = self.hash_index(key)
+        current = self.list[hash].head
+
+        if current is None:
             return None
+        
+        if current.key == key:
+            return current.value
+
+        while current.next:
+            current = current.next
+
+            if current.key == key:
+                return current.value
+        
+        return None
 
     def resize(self, new_capacity):
         """
