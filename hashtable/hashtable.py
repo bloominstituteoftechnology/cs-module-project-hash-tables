@@ -93,6 +93,8 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
+        if self.array[index] is not None:
+
         self.array[index] = HashTableEntry(key,value)
 
     def delete(self, key):
@@ -137,6 +139,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #create a blank array, with a double size of old array
+        #we have to rehash every single item because the hash function has changed
+            #go through each slot in the array
+            #go through each iten in each linked list in the array
+            #rehash the key in each item and store it in new array
+
+        #make new array the new storage O(n)
+
 
 
 
