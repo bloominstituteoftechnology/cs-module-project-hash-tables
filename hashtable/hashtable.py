@@ -193,12 +193,20 @@ class HashTable:
 
             for item in hash_entries:
                 self.put(item.key, item.value)
-                
+
         if load < 0.2:
             if self.capacity / 2 <= MIN_CAPACITY:
                 self.capacity = MIN_CAPACITY
+                self.list = [LinkedList()] * self.capacity
+
+                for item in hash_entries:
+                    self.put(item.key, item.value)
             else:
                 self.capacity = self.capacity / 2
+                self.list = [LinkedList()] * self.capacity
+
+                for item in hash_entries:
+                    self.put(item.key, item.value)
 
 if __name__ == "__main__":
     ht = HashTable(8)
