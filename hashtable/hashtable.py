@@ -22,6 +22,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = MIN_CAPACITY
         self.list = [LinkedList()] * self.capacity
+        self.items = 0
 
     def get_num_slots(self):
         """
@@ -35,8 +36,7 @@ class HashTable:
         """
         Return the load factor for this hash table.
         """
-        # IMPLEMENT
-        pass
+        return self.items / self.capacity
 
     def fnv1(self, key):
         """
@@ -93,6 +93,7 @@ class HashTable:
 
         if self.list[hash].head is None:
             self.list[hash].head = hash_entry
+            self.items += 1
         else:
             current = self.list[hash].head
             while current.next:
@@ -101,6 +102,7 @@ class HashTable:
                 current = current.next
             
             current.next = hash_entry
+            self.items += 1
 
     def delete(self, key):
         """
@@ -125,9 +127,11 @@ class HashTable:
             if current.key == key:
                 if previous:
                     previous.next = current.next
+                    self.items -= 1
                     return
                 else:
                     self.list[hash].head = self.list[hash].head.next
+                    self.items -= 1
                     return
             
             previous = current
@@ -172,8 +176,29 @@ class HashTable:
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
         """
-        # IMPLEMENT
-        pass
+        # IMPLEMENT!
+        load = self.get_load_factor()
+        hash_entries = []
+
+        for item in self.list:
+            current = item.head
+            while current:
+                hash_entries.append(item.head)
+                self.delete(item.head.key)
+                current = current.next
+
+        if load > 0.7:
+            self.capacity = new_capacity
+            self.list = [LinkedList()] * self.capacity
+
+            for item in hash_entries:
+                self.put(item.key, item.value)
+                
+        if load < 0.2:
+            if self.capacity / 2 <= MIN_CAPACITY:
+                self.capacity = MIN_CAPACITY
+            else:
+                self.capacity = self.capacity / 2
 
 if __name__ == "__main__":
     ht = HashTable(8)
