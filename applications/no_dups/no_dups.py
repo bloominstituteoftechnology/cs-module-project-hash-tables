@@ -1,6 +1,15 @@
 def no_dups(s):
     # Your code here
 
+    words = s.split()
+    dupes = {}
+    res = []
+    for word in words:
+        if word not in dupes:
+            dupes[word] = True
+            res.append(word)
+    return ' '.join(res)
+
 
 
 if __name__ == "__main__":
