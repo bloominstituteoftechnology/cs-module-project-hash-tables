@@ -10,19 +10,25 @@ def hash_fn(str):
   return sum
 
 # store banana inside hash_array
-hash_value = hash_fn("banana")
-print(hash_value)
-index = hash_value % len(hash_array)
-hash_array[index] = ("banana","is yellow")
-print(hash_array)
+def insert_to_hash_table(key,value):
+  hash_value = hash_fn(key)
+  index = hash_value % len(hash_array)
+  print(index)
+  hash_array[index] = (key,value)
+
 
 
 # Look up Banana in hash_array
-hash_value = hash_fn("banana")
-index = hash_value % len(hash_array)
+def get_from_hash_table(key):
+  hash_value = hash_fn(key)
+  index = hash_value % len(hash_array)
+  print(hash_array[index])
 
-print(hash_array[index])
 
+insert_to_hash_table('mango', 'mangoes are available in india')
+insert_to_hash_table('apple', 'I love apples')
+# print(hash_array)
+get_from_hash_table('mango')
 
 
 
