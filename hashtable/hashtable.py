@@ -85,7 +85,7 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.hash_array[index] = value
+        self.hash_array[index] = HashTableEntry(key, value)
 
 
 
@@ -112,7 +112,7 @@ class HashTable:
         # Your code here
         index_value = self.hash_index(key)
         if self.hash_array[index_value] is not None:
-            return self.hash_array[index_value]
+            return self.hash_array[index_value].value
         else:
             None    
 
