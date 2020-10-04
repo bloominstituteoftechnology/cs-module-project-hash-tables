@@ -25,6 +25,9 @@ class HashTable:
         self.capacity = capacity
         self.hash_array = [None] * capacity
         self.number_of_items = 0
+        self.head = None
+        self.tail = None
+        
 
     def get_num_slots(self):
         """
@@ -102,10 +105,38 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.number_of_items += 1
         index = self.hash_index(key)
-        if hash_array[index] != None:
-            print(f'Collision! Overwriting {repr(hash_array[index])}!')
-        self.hash_array[index] = HashTableEntry(key, value)
+        node = self.hash_array[index]
+
+        if node is None:
+            self.hash_array[index] = HashTableEntry(key, value)
+            self.number_of_items += 1
+            return
+        
+        while node.next != None and node.key != key:
+            node = node.next
+        
+        if node.key == key:
+            node.value = value
+        else:
+            node.next = HashTableEntry(key, value)
+            self.number_of_items += 1
+
+
+        # if hash_array is None:
+        #     self.hash_array[index] = HashTableEntry(key, value)
+        #     return
+        # prev = None
+
+        # while node is not None:
+        #     prev = node
+        #     node = node.next
+        # prev.next = HashTableEntry(key, value)
+
+
+
+      
 
     def delete(self, key):
         """
@@ -117,7 +148,34 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.hash_array[index] = None
+        node = self.hash_array[index]
+        prev = None
+
+        if node is not None:
+            while node.next != None and node.key != key:
+                prev = node
+                node = node.next
+            if node.key == key:
+                if prev is None:
+                    self.hash_array[index] = node.next
+                else:
+                    prev.next = node.next
+                self.number_of_items -= 1
+                return
+        
+        # while node is not None and node.key != key:
+        #     prev = node
+        #     node = node.next
+        # if node is None:
+        #     return None
+        # else:
+        #     self.number_of_items -= 1
+        #     result = node.value
+        #     if prev is None:
+        #         node = None
+        #     else:
+        #         prev.next = prev.next.next
+        #         return result
 
     def get(self, key):
         """
@@ -129,8 +187,13 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        if self.hash_array[index]:
-            return self.hash_array[index].value
+        node = self.hash_array[index]
+
+        if node is None:
+            return None
+        while node.next != None and node.key != key:
+            node = node.next
+        return node.value if node.key == key else None
 
     def resize(self, new_capacity):
         """
@@ -140,8 +203,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
-    
+        # new_hash_array = [None] * new_capacity
+        # old_hash_array = self.hash_array
 
+        # self.hash_array = new_hash_array
+        # self.count = 0
+        # self.capacity = new_capacity
+
+        # current_index = 0
+        # while current_index < len(old_hash_array):
+        #     current_node = old_hash_array[current_index]
+        #     if current_node is not None:
+        #         next_node = current_node.next
+        #         current_node.next = None
+        #         self.put(current_node.key, current_node.value)
+        #         old_hash_array[current_index] = next_node
+        #     elif current_node is None:
+        #         current_index += 1 
+        # return
 
 if __name__ == "__main__":
     ht = HashTable(8)
