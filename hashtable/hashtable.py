@@ -10,6 +10,7 @@ class HashTableEntry:
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+MAX_LOAD_FACTOR = .7
 
 
 class HashTable:
@@ -24,6 +25,8 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.array = [None] * capacity #where the list starts[None] so thing can be added
+        self.number_of_items = 0
+        self.head = 0
 
 
     def get_num_slots(self):
@@ -37,6 +40,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.array)
 
 
     def get_load_factor(self):
@@ -46,7 +50,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.number_of_items / self.get_num_slots()
 
     def fnv1(self, key):
         """
@@ -93,9 +97,22 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        if self.array[index] is not None:
+        self.head = self.array[index]
+        while self.head: # searching the linked list
+            if self.head.key == key:
+                #if the key is found put the value there
+                self.head.value = value
+            self.head = self.head.next
+            #put the key, value at the head
+        new_node = HashTableEntry(key,value)
+        new_node.next = self.array[index]
+        self.array[index] = new_node
+        self.number_of_items += 1
 
-        self.array[index] = HashTableEntry(key,value)
+        if self.get_load_factor() >= .7:
+               #if its bigger then.07 double the size
+            self.resize(self.get_num_slots()*2)
+
 
     def delete(self, key):
         """
@@ -108,10 +125,19 @@ class HashTable:
 
         # Your code here
         index = self.hash_index(key)
-        if self.array[index]:
-            self.array[index] = None
-        else:
-            print(f'{key} is not not found.')
+        self.head = self.array[index]
+
+        while self.head:# searching ll
+            if self.head.key == key: #deleting
+                prev_head = self.head
+                self.array[index]= self.head.next
+                prev_head.next = None
+                self.number_of_items -+ 1
+                return prev_head
+
+        print(f'{key} is not not found.')
+        return None
+
 
 
     def get(self, key):
@@ -124,12 +150,14 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        hash_value = self.array[index]
+        self.head = self.array[index]
+        while self.head:#search LL
+            if self.head.key ==key: #if found return value
+                return self.head.value
+            self.head = self.head.next
 
-        if hash_value:
-            return hash_value.value
-        else:
-            return  None
+        return None
+
 
     def resize(self, new_capacity):
         """
@@ -146,6 +174,16 @@ class HashTable:
             #rehash the key in each item and store it in new array
 
         #make new array the new storage O(n)
+        old_array = self.array #make new array
+        self.array = [None] * new_capacity
+        self.capacity = new_capacity#new size
+        self.items = 0 #reset items
+
+        for array in old_array:
+            while array is not None:
+                #added it to new list
+                self.put(array.key, array.value)
+                array = array.next
 
 
 
@@ -172,15 +210,15 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
-    #
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-    #
-    # # Test if data intact after resizing
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
-    #
-    # print("")
+    #Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
+
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
+
+    print("")
