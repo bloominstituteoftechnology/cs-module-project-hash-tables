@@ -33,6 +33,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -74,37 +75,46 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
+        
+
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        self.hash_array[index] = value
+
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
+        """ Remove the value stored with the given key.
         Print a warning if the key is not found.
-
-        Implement this.
-        """
+        Implement this."""
         # Your code here
+        index = self.hash_index(key)
+        if index > self.capacity:
+            print("Out of range!!!")
+        if self.hash_array[index] is None:
+            print('Key not found')   
+        self.hash_array[index] = None     
+
 
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Implement this.
         """
         # Your code here
+        index_value = self.hash_index(key)
+        if self.hash_array[index_value] is not None:
+            return self.hash_array[index_value]
+        else:
+            None    
 
 
     def resize(self, new_capacity):
