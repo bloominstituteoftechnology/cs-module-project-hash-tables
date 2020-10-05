@@ -85,7 +85,12 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.hash_array[index] = HashTableEntry(key, value)
+        if self.hash_array[index] is not None:
+            self.hash_array[index] = HashTableEntry(key, value)
+        else:
+            new_entry = HashTableEntry(key,value)
+            new_entry.next = self.hash_array[index]
+            self.hash_array[index] =   new_entry
 
 
 
@@ -99,7 +104,11 @@ class HashTable:
             print("Out of range!!!")
         if self.hash_array[index] is None:
             print('Key not found')   
-        self.hash_array[index] = None     
+        current = self.get(key)
+        if current.next is None:
+            self.hash_array[index] = None     
+        if current.next is not None:
+                
 
 
 
