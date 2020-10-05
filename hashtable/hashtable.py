@@ -1,3 +1,7 @@
+# Required for fnv1
+import sys
+import re
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -6,11 +10,47 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+        
+    def __repr__(self):
+        return f'HashTableEntry({repr(self.key)}, {repr(self.value)})'
 
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def add_to_head(self, node):
+        node.next = self.head
+        self.head = node
+
+    def get(self, target):
+        current = self.head
+        while current is not None:
+            if current.value == target:
+                return current
+            elif current.value == None:
+                return None
+            current = current.next
+
+    def remove(self, target):
+        current = self.head
+        if current.value == target:
+            self.head = self.head.next
+            return current
+        previous = current
+        current = current.next
+
+        while current is not None:
+            if current.value == target:
+                previous.next = current.next
+                return current
+            else:
+                previous = previous.next
+                current = current.next
+        return None
 
 class HashTable:
     """
@@ -22,6 +62,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        self.storage = [None] * capacity
 
 
     def get_num_slots(self):
@@ -35,7 +77,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return len(self.storage)
 
     def get_load_factor(self):
         """
@@ -44,7 +86,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # Number of things stored in the hash table / number of slots in the array.
+        # Might be better, i.e. not O(n), just keep a running total of what is in the hash table.
+        # Add an item? Increment the count.
+        # Removing an item? Decrement the count.
 
+        # When is it overloaded? Determined by the spec. In our case load factor > 0.7
+        total = 0
+        
+        for i in range(len(self.storage)):
+            if self.storage[i] != None:
+                current = self.storage[i].head
+                while current.next is not None:
+                    total += 1
+                    current = current.next
+                total += 1
+        return total / self.get_num_slots()        
 
     def fnv1(self, key):
         """
@@ -54,7 +111,15 @@ class HashTable:
         """
 
         # Your code here
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
 
+        # FNV-1a Hash Function
+        hash = offset_basis
+        for char in key:
+            hash = hash * FNV_prime
+            hash = hash ^ ord(char)
+        return hash
 
     def djb2(self, key):
         """
@@ -63,6 +128,17 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        # hash = 5381
+        # for c in key:
+        #     hash = (hash * 33) + ord(c)
+        # return hash
+        bytes_obj = str(key).encode("utf-8")
+        djb2_val = 5381
+        total_val = 0
+        for char in bytes_obj:
+            total_val += ((djb2_val << 5) + djb2_val) + char
+            total_val &= 0xffffffff
+        return total_val
 
 
     def hash_index(self, key):
@@ -82,6 +158,28 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+
+        # Is something there?
+        if self.storage[index] != None:
+            # If key is already here
+            current = self.storage[index].head
+
+            while current.next is not None:
+                # Set the current key
+                if current.key == key:
+                    current.value = value
+                # Then advance
+                current = current.next
+
+            if current.key == key:
+                current.value = value
+            else:
+                self.storage[index].add_to_head(HashTableEntry(key, value))
+        else:
+            # Key is not there, make a new linked list and add the value.
+            self.storage[index] = LinkedList()
+            self.storage[index].add_to_head(HashTableEntry(key, value))
 
 
     def delete(self, key):
@@ -93,7 +191,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        # self.storage[index] is a node with tuple as a value
+        # if self.storage[index].key is not equal to the key, traverse the linked list
+        if self.storage[index].head.key == key:
+            self.storage[index].head.value = None
+        else:
+            current = self.storage[index].head
+            while current.next is not None:
+                if current.key == key:
+                    current.value = None
+                current = current.next
+            # current.next is now None, the last current will be the tail
+            if current.key == key:
+                current.value = None
+            else:
+                return "Key not found!"
 
     def get(self, key):
         """
@@ -104,7 +217,27 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
 
+        hash_entry = self.storage[index]
+
+        if hash_entry == None:
+            return None
+
+        if hash_entry.head.key == key:
+            return hash_entry.head.value
+
+        else:
+            current = hash_entry.head
+
+            while current.next is not None:
+                if current.key == key:
+                    return current.value
+                current = current.next
+            if current.key == key:
+                return current.value
+            else:
+                return None
 
     def resize(self, new_capacity):
         """
@@ -114,7 +247,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # Create a new array of a bigger size. Typically double. 8, is 16, then 32, then 64 and so on.
+        # Traverse the old hash table
+        # For each of the elements:
+        # Figure it's slot in the new array.
+        # Put it at that slot.
+        storage_copy = self.storage
+        self.capacity = new_capacity
+        self.storage = [None]*self.capacity
 
+        for i in range(len(storage_copy)):
+            if storage_copy[i] != None:
+                current = storage_copy[i].head
+
+                while current.next is not None:
+                    self.put(current.key, current.value)
+                    current = current.next
+                self.put(current.key, current.value)
 
 
 if __name__ == "__main__":
