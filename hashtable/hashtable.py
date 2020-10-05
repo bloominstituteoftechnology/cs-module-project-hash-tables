@@ -22,8 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = MIN_CAPACITY
-        self.storage = [None for i in range (self.capacity)]
+        # self.storage = [None for i in range (self.capacity)]
+        self.capacity = capacity
+        self.table = [None] * capacity
+        self.length = 0
 
 
     def get_num_slots(self):
@@ -48,7 +50,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.length // self.capacity
 
 
     def fnv1(self, key):
@@ -82,6 +84,7 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
+
     def put(self, key, value):
         """
         Store the value with the given key.
@@ -91,8 +94,35 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        self.storage[i] = value 
+        # i = self.hash_index(key)
+        # # if self.hash_index[i] is not None:
+        # #     print("Waning! You are overwriting an index!")
+        # self.storage[i] = value #(key, value) tuple
+
+        index = self.hash_index(key)
+        new_node = HashTableEntry(key, value)
+
+        current_node = self.table[index]
+
+        if current_node is None:
+            self.table[index] = new_node
+            self.length += 1
+            return
+
+        while current_node is not None and current_node.key != key:
+            prev = current_node
+            current_node = current_node.next
+
+        if current_node is None:
+            prev.next = new_node
+            self.length += 1
+        else:
+            current_node.value = value
+
+        load_factor = self.get_load_factor()
+
+        if load_factor > 0.7:
+            self.resize(self.capacity * 2)
 
 
     def delete(self, key):
@@ -106,7 +136,27 @@ class HashTable:
         # Your code here
         i = self.hash_index(key)
 
-        # if self.storage[i].key == key:
+        node = self.table[index]
+
+        if node.key == key:
+            self.table[index] = node.next
+            self.length -= 1
+            return
+
+        while node is not None and node.key != key:
+            prev_node = node
+            node = node.next
+
+        if node is None:
+            return None
+
+        prev_node.next = node.next
+        self.length -= 1
+
+        load_factor = self.get_load_factor()
+
+        if load_factor < MIN_CAPACITY:
+            self.resize(self.capacity // 2)
 
     
         self.storage[i] = None
@@ -121,18 +171,38 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        i = self.hash_index(key)
-        return self.storage[i]
+        # i = self.hash_index(key)
+        # return self.storage[i]
+        index = self.hash_index(key)
+
+        # Get the first node
+        node = self.table[index]
+
+        # Loop through the linked to found the key
+        while node is not None and node.key != key:
+            node = node.next
+
+        return None if node is None else node.value
 
 
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
         Implement this.
         """
         # Your code here
+        old_storage = self.table
+        self.capacity = new_capacity
+        self.table = [None] * self.capacity
+
+        for i in range(len(old_storage)):
+            node = old_storage[i]
+
+            while node is not None:
+                index = self.hash_index(node.key)
+                self.table[index] = node
+                node = node.next
 
 
 
