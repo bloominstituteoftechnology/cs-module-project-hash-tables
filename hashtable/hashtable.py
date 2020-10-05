@@ -35,7 +35,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -87,7 +87,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.hash_array[self.hash_index(key)] = value
+        # self.hash_array[self.hash_index(key)] = value
+        index = self.hash_index(key)
+        if (self.hash_array[index]) is not None:
+            found = self.hash_array[index].find(key)
+            if found:
+                found.value = value
+            else:
+                self.hash_array[index].insert_at_head(HashTableEntry(key, value))
+        else:
+            self.hash_array[index] = LinkedList()
+            self.hash_array[index].insert_at_head(HashTableEntry(key, value))
+
 
     def delete(self, key):
         """
@@ -98,7 +109,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.hash_array[self.hash_index(key)] = None
+        index = self.hash_index(key)
+        if self.hash_array[index] is not None:
+            found = self.hash_array[index].find(key)
+            if found:
+                found.value = None
+            else:
+                print(f'Key "{key}" not found')
 
     def get(self, key):
         """
@@ -109,7 +126,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.hash_array[self.hash_index(key)]
+        index = self.hash_index(key)
+        if self.hash_array[index] is not None:
+            found = self.hash_array[index].find(key)
+            if found:
+                return found.value
+        return None
 
     def resize(self, new_capacity):
         """
@@ -156,3 +178,38 @@ class HashTable:
 #         print(ht.get(f"line_{i}"))
 #
 #     print("")
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+
+    def find(self, key):
+        current_node = self.head
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node
+            current_node = current_node.next
+
+        return None
+
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+
+    def delete(self, key):
+        if key == self.head.ey:
+            self.head = self.head.next
+            return self.head
+
+        prev = None
+        curr = self.head
+
+        while curr is not None:
+            if curr.key == key:
+                prev.next = curr.next
+                return curr
+
+            prev = curr
+            curr = curr.next
+        return None
