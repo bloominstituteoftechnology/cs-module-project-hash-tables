@@ -8,8 +8,49 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __repr__(self):
+        return f"The key is: {self.key}, and the value is: {self.value}"
 
-# Hash table can't have fewer than this many slots
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+
+    def find(self, key):
+        current_node = self.head
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node
+            current_node = current_node.next
+        return None
+
+    def insert_at_head(self, node):
+        # Link the node to the current HEAD
+        node.next = self.head
+        # Set head pointer to new node
+        self.head = node
+
+    def delete(self, key):
+        # Handle the case where the node to delete is the HEAD
+        if key == self.head.key:
+            self.head = self.head.next
+            return self.head
+
+        prev = None
+        curr = self.head
+
+        while curr is not None:
+            if curr.key == key:
+                prev.next = curr.next
+                return curr
+
+            prev = curr
+            curr = curr.next
+
+    # Hash table can't have fewer than this many slots
+
+
 MIN_CAPACITY = 8
 
 
@@ -47,7 +88,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.count / self.table
+        return self.count / len(self.table)
 
     def fnv1(self, key):
         """
@@ -98,9 +139,13 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        hashed_key = self.djb2(key)
-        hashed_index = self.hash_index(hashed_key)
-        self.table[hashed_index] = value
+        hashed_index = self.hash_index(key)
+        if self.table[hashed_index] is not None:
+            # TODO working on getting linked list to work
+
+        else:
+            self.count = self.count + 1
+            self.table[hashed_index] = (HashTableEntry(key, value))
 
     def delete(self, key):
         """
