@@ -93,9 +93,23 @@ class HashTable:
         """
         index = self.hash_index(key)
         
-        if self.array[index] is not None:
-            print(f"Collision Warning")
-        self.array[index] = value
+        # if self.array[index] is not None:
+        #     print(f"Collision Warning")
+        # self.array[index] = value
+
+        entry = self.array[index]
+
+        if entry is None:
+            self.array[index] = HashTableEntry(key, value)
+            return
+
+        while entry.next != None and entry.key !=key:
+            entry = entry.next
+
+        if entry.key == key:
+            entry.value = value
+        else: 
+            entry.next = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -108,25 +122,47 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        if index is None:
-            print(f"Warning: No value exists within this table for key: '{key}'")
-        self.array[index] = None
+        # if index is None:
+        #     print(f"Warning: No value exists within this table for key: '{key}'")
+        # self.array[index] = None
+
+        entry = self.array[index]
+        prev_entry = None
+
+        if entry is not None:
+            while entry.next != None and entry.key != key:
+                prev_entry = entry
+                entry = entry.next
+
+            if entry.key == key:
+                if prev_entry is None:
+                    self.array[index] = entry.next
+                else: 
+                    prev_entry.next = entry.next
+                return
+
+        print(f"Warning: Attempted to delete value from HashTable but no value exists for key '{key}'")
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
+      
 
-        Returns None if the key is not found.
-
-        Implement this.
-        """
         index = self.hash_index(key)
 
-        if index is None:
-            return None
+        # if index is None:
+        #     return None
 
-        return self.array[index]
+        # return self.array[index]
+
+        entry = self.array[index]
+
+        if entry is None:
+            return None
+        
+        while entry.next != None and entry.key != key:
+            entry = entry.next
+
+        return entry.value if entry.key == key else None
 
 
     def resize(self, new_capacity):
