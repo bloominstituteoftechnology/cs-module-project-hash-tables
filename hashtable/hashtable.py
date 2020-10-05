@@ -21,12 +21,13 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacit=MIN_CAPACITYy):
+    def __init__(self, capacity):
         # Your code here
-        self.capacity =  capacity
-        self.arrLength = capacity * [None]
+        self.capacity = capacity
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        self.hash_array = capacity * [None]
         self.increment = 0
-        
 
     def get_num_slots(self):
         """
@@ -39,9 +40,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.arrLength)
-        
-        
+        print('Capacity is: ', self.capacity)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -51,7 +51,6 @@ class HashTable:
         """
         # Your code here
         return self.increment / self.get_num_slots()
-        
 
     def fnv1(self, key):
         """
@@ -59,8 +58,21 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
+    # source https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
         # Your code here
+        v1Prime = 1099511628211
+        v1OSBasis = 14695981039346656037
+        hash_id = v1OSBasis
+        enc_key = key.encode()
+        # for each byte_of_data to be hashed
+    #     hash := hash × FNV_prime
+    #     hash := hash XOR byte_of_data
+
+    # return hash
+        for byte in enc_key:
+            hash_id = hash_id * v1Prime
+            hash_id = hash_id ^ v1Prime
+        return hash_id
 
     def djb2(self, key):
         """
@@ -68,7 +80,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for byte in key:
+            hash = hash * 33 + ord(byte)
+        return hash
 
     def hash_index(self, key):
         """
@@ -76,6 +91,11 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         # return self.fnv1(key) % self.capacity
+
+        # hash_val = self.fnv1[key]
+        # index = hash_val % len(self.hash_array)
+        # return index
+
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -86,7 +106,33 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # index = self.hash_index(key)
+        # self.hash_array[index] = (key, value)
+        hashIndex = self.hash_index(key)
+
+        # append to empty slot
+        # if not hash_array[self.hash_index(key)]
+        if not self.hash_array[hashIndex]:
+            self.hash_array[hashIndex] = HashTableEntry(key, value)
+            self.increment += 1
+
+            # it now has a place
+            # update the exisiting key value
+            # / create new key value
+        else:
+            curr_node = self.hash_array[hashIndex]
+            while curr_node.key != key and curr_node.next:
+                curr_node = curr_node.next
+            # if curr_node[key] equals that key ...update the value to match
+            if curr_node.key == key:
+                curr_node.value = curr_node.value
+            # else if its not found, create a (key, value )
+            else:
+                curr_node.next = HashTableEntry(key, value)
+                self.increment += 1
+                if self.get_load_factor() > 0.7:
+                    # double capacity in size (*2)
+                    self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -96,7 +142,52 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # first item in the hash arr is the head
+
+        # if key == self.head.key:
+        #     self.head = self.head.key
+        #     return self.head
+
+        prev_head = None
+        # curr_head = self.head
+
+        # while curr_head is not None: # loop through until found
+        #     if curr_head.key == key:
+        #         # if found
+        #         prev_head.next = curr_head.next
+        #         return curr_head
+        #     # move things over -->
+        #     prev_head = curr_head
+        #     curr_head = prev_head.next
+        # return None
+        hashIndex = self.hash_index(key)
+        curr_node = self.hash_array[hashIndex]
+
+        # if curr_node doesnt exist
+        if not curr_node:
+            print('does not exist')
+        # first item in the hash arr is the head
+        elif not curr_node.next:
+            self.hash_array[hashIndex] = None
+            # take -1
+            self.increment -= 1
+        else:
+            prev_head
+        while curr_node.key != key and curr_node.next:
+            prev_head = curr_node
+            curr_node = curr_node.next
+        if not curr_node.next:
+            prev_head.next = None
+            self.increment -= 1
+        else:
+            prev_head.next = curr_node.next
+            self.increment -= 1
+        # When load factor decreases below 0.2,
+        #  automatically rehash the table to half its
+        # previous size, down to a minimum of 8 slots.
+        if self.get_load_factor < 0.2:
+            # divide capacity in size = (1/2 capacity)
+            self.resize(self.capacity // 2)
 
     def get(self, key):
         """
@@ -108,6 +199,31 @@ class HashTable:
         """
         # Your code here
 
+        # current_node = self.head
+        # while current_node is not None:
+        #     # if  cur_key = cur_cur_key
+        #     if current_node.key == key:
+        #         # return cur_key
+        #         return current_node
+        #     # cur_key = cur_key_next
+        #     current_node = current_node.next
+        # return None
+        hashIndex = self.hash_index(key)
+        # if true set current node to that hash_array[index]
+        if self.hash_array[hashIndex]:
+            curr_node = self.hash_array[hashIndex]
+            while curr_node.key is not key and curr_node.next:
+                # set curr_node to curr_node.next
+                curr_node = curr_node.next
+            # if not return the curr_nodes value
+            if not curr_node.next:
+                return curr_node
+            # else return curr_node.value
+            else:
+                return curr_node.value
+        else:
+            return None
+
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -115,7 +231,20 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # set old hash array to current hash array
+        old_hash = self.hash_array
+
+        # create new Hashtable ... capacity = new_capacity
+        self.capacity = new_capacity
+        self.hash_array = new_capacity * [None]
+
+        # loop  and add each node to latest hashtable (if all are true)
+        for node in old_hash:
+            if node:
+                curr_node = node
+                while curr_node is True:
+                    self.put(curr_node.key, curr_node.value)
+                    curr_node = curr_node.next
 
 
 if __name__ == "__main__":
