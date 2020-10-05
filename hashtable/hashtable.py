@@ -23,6 +23,7 @@ class HashTable:
         self.hash_array = [None]*capacity
         self.capacity = capacity
         self.number_of_items = 0
+        self.head = 0
 
     def get_num_slots(self):
         """
@@ -85,12 +86,24 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        if self.hash_array[index] is not None:
-            self.hash_array[index] = HashTableEntry(key, value)
+        new_entry = HashTableEntry(key, value)
+        # if there is an item at the given index, but need to be overwritten
+        current = self.hash_array[index]
+        while current is not None:
+            if current.key == key:
+                #over the current value with the given value
+                current.value = value
+            current = current.next    
+
+        # if there are no items present at the given index
+        if self.hash_array[index] == None:
+            self.hash_array[index] = new_entry
+        # if there is at least one item at the given index    
         else:
-            new_entry = HashTableEntry(key,value)
             new_entry.next = self.hash_array[index]
             self.hash_array[index] =   new_entry
+
+        self.number_of_items += 1    
 
 
 
@@ -102,13 +115,26 @@ class HashTable:
         index = self.hash_index(key)
         if index > self.capacity:
             print("Out of range!!!")
-        if self.hash_array[index] is None:
-            print('Key not found')   
-        current = self.get(key)
-        if current.next is None:
-            self.hash_array[index] = None     
-        if current.next is not None:
-                
+        if self.hash_array[index] == None:
+            print('Key not found') 
+
+        previous = None
+        current = self.hash_array[index]    
+        if key == current.key:
+            self.hash_array[index] = current.next
+            return current.value  
+        while current != None:
+            #keep looping until we find the correct key
+            if current.key == key:
+                previous.next = current.next
+                return current.value
+            previous = current
+            current = current.next 
+        return None      
+
+        print(f"the current head is {current.value}") 
+ 
+
 
 
 
@@ -120,10 +146,13 @@ class HashTable:
         """
         # Your code here
         index_value = self.hash_index(key)
-        if self.hash_array[index_value] is not None:
-            return self.hash_array[index_value].value
-        else:
-            None    
+        current = self.hash_array[index_value]
+        while current != None:
+            if current.key == key:
+                return current.value
+            current = current.next        
+    
+        return None  
 
 
     def resize(self, new_capacity):
@@ -148,10 +177,10 @@ if __name__ == "__main__":
     ht.put("line_6", "The jaws that bite, the claws that catch!")
     ht.put("line_7", "Beware the Jubjub bird, and shun")
     ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
+    # ht.put("line_9", "He took his vorpal sword in hand;")
+    # ht.put("line_10", "Long time the manxome foe he sought--")
+    # ht.put("line_11", "So rested he by the Tumtum tree")
+    # ht.put("line_12", "And stood awhile in thought.")
 
     print("")
 
