@@ -78,7 +78,7 @@ class HashTable:
         # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
-    def put(self, key, value):
+    def put(self, key, value, ha = None):
         """
         Store the value with the given key.
 
@@ -89,15 +89,16 @@ class HashTable:
         # Your code here
         # self.hash_array[self.hash_index(key)] = value
         index = self.hash_index(key)
-        if (self.hash_array[index]) is not None:
-            found = self.hash_array[index].find(key)
+        working_array = ha if ha else self.hash_array
+        if (working_array[index]) is not None:
+            found = working_array[index].find(key)
             if found:
                 found.value = value
             else:
-                self.hash_array[index].insert_at_head(HashTableEntry(key, value))
+                working_array[index].insert_at_head(HashTableEntry(key, value))
         else:
-            self.hash_array[index] = LinkedList()
-            self.hash_array[index].insert_at_head(HashTableEntry(key, value))
+            working_array[index] = LinkedList()
+            working_array[index].insert_at_head(HashTableEntry(key, value))
 
 
     def delete(self, key):
@@ -141,7 +142,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        print('capacity before', self.capacity)
+        self.capacity = max(MIN_CAPACITY, new_capacity)
+        print('capacity after', self.capacity)
+        new_hash_array = [None] * self.capacity
+        for item in self.hash_array:
+            curr = item.head
+            while curr is not None:
+                self.put(curr.key, curr.value, new_hash_array)
+                curr = curr.next
+
+        self.hash_array = new_hash_array
+
+
+
 
 
 # if __name__ == "__main__":
