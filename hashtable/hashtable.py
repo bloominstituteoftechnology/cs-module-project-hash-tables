@@ -2,13 +2,55 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+    def __repr__(self):
+        return f"The key is: {self.key}, and the value is: {self.value}"
 
-# Hash table can't have fewer than this many slots
+
+class LinkedList:
+
+    def __init__(self):
+        self.head = None
+
+    def find(self, key):
+        current_node = self.head
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node
+            current_node = current_node.next
+        return None
+
+    def insert_at_head(self, node):
+        # Link the node to the current HEAD
+        node.next = self.head
+        # Set head pointer to new node
+        self.head = node
+
+    def delete(self, key):
+        # Handle the case where the node to delete is the HEAD
+        if key == self.head.key:
+            self.head = self.head.next
+            return self.head
+
+        prev = None
+        curr = self.head
+
+        while curr is not None:
+            if curr.key == key:
+                prev.next = curr.next
+                return curr
+
+            prev = curr
+            curr = curr.next
+
+    # Hash table can't have fewer than this many slots
+
+
 MIN_CAPACITY = 8
 
 
@@ -22,7 +64,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.table = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -35,7 +79,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return len(self.table)
 
     def get_load_factor(self):
         """
@@ -44,7 +88,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.count / len(self.table)
 
     def fnv1(self, key):
         """
@@ -54,7 +98,15 @@ class HashTable:
         """
 
         # Your code here
+        fnv_prime = 16777619
+        offset_basis = 2166136261
 
+        # FNV-1a Hash Function
+        hashed = offset_basis + key
+        for char in self.capacity:
+            hashed = hashed * fnv_prime
+            hashed = hashed ^ ord(char)
+        return hash
 
     def djb2(self, key):
         """
@@ -63,14 +115,19 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        str_key = str(key).encode()
+        hash_value = 5381
+        for s in str_key:
+            hash_value = ((hash_value << 5) + hash_value) + s
 
+        return hash_value & 0xffffffff
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -82,7 +139,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hashed_index = self.hash_index(key)
+        if self.table[hashed_index] is not None:
+            pass
+        # TODO working on getting linked list to work
 
+        else:
+            self.count = self.count + 1
+            self.table[hashed_index] = (HashTableEntry(key, value))
 
     def delete(self, key):
         """
@@ -93,7 +157,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        hashed_key = self.djb2(key)
+        hashed_index = self.hash_index(hashed_key)
+        self.table[hashed_index] = None
 
     def get(self, key):
         """
@@ -104,7 +170,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        hashed_key = self.djb2(key)
+        hashed_index = self.hash_index(hashed_key)
+        return self.table[hashed_index]
 
     def resize(self, new_capacity):
         """
@@ -114,7 +182,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.count == 0:
+            self.capacity = new_capacity
+            self.table = [None] * self.capacity
 
+        new_table = [None] * new_capacity
+        for item in enumerate(self.table):
+            if item is None:
+                pass
+            hashed_key = self.djb2(item)
+            hashed_index = self.hash_index(hashed_key)
+            new_table.insert(hashed_index, item)
+
+        self.table = new_table
 
 
 if __name__ == "__main__":
