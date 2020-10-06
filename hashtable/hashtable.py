@@ -21,6 +21,7 @@ class HashTable:
     """
 
     def __init__(self, capacity):
+        self.items = 0
         self.capacity = max(capacity, MIN_CAPACITY)
         self.hash_array = [None] * self.capacity
 
@@ -44,7 +45,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        print(self.items, '/', self.capacity)
+        return self.items / self.capacity
 
     def fnv1(self, key):
         """
@@ -96,10 +98,14 @@ class HashTable:
                 found.value = value
             else:
                 working_array[index].insert_at_head(HashTableEntry(key, value))
+                self.items += 0 if ha else 1
         else:
             working_array[index] = LinkedList()
             working_array[index].insert_at_head(HashTableEntry(key, value))
+            self.items += 0 if ha else 1
 
+        # if self.get_load_factor() >= 0.7:
+        #     self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -115,8 +121,12 @@ class HashTable:
             found = self.hash_array[index].find(key)
             if found:
                 found.value = None
+                self.items -= 1
             else:
                 print(f'Key "{key}" not found')
+
+        # if self.get_load_factor() <= 0.2:
+        #     self.resize(self.capacity // 2)
 
     def get(self, key):
         """
@@ -142,9 +152,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        print('capacity before', self.capacity)
         self.capacity = max(MIN_CAPACITY, new_capacity)
-        print('capacity after', self.capacity)
         new_hash_array = [None] * self.capacity
         for item in self.hash_array:
             curr = item.head
