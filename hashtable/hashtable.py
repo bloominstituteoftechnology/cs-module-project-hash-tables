@@ -141,7 +141,8 @@ class HashTable:
         # Your code here
         hashed_index = self.hash_index(key)
         if self.table[hashed_index] is not None:
-            # TODO working on getting linked list to work
+            pass
+        # TODO working on getting linked list to work
 
         else:
             self.count = self.count + 1
