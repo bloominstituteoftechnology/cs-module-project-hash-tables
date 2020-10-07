@@ -1,7 +1,22 @@
 def word_count(s):
     # Your code here
+    dict = {}
+    lower = s.lower()
 
+    ignore = [":", ";", ",", ".", "-", "+", "=", "/", "\\", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&", "\""]
 
+    for item in ignore:
+        lower = lower.replace(item, "")
+
+    words = lower.split()
+
+    for item in words:
+        if item in dict:
+            dict[item] += 1
+        else:
+            dict[item] = 1
+
+    return dict
 
 if __name__ == "__main__":
     print(word_count(""))
