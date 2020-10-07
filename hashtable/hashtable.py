@@ -23,7 +23,7 @@ class HashTable:
         self.hash_array = [None]*capacity
         self.capacity = capacity
         self.number_of_items = 0
-        self.head = 0
+        
 
     def get_num_slots(self):
         """
@@ -34,7 +34,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        return len(self.hash_array)
 
 
     def get_load_factor(self):
@@ -43,6 +43,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        load_factor = self.number_of_items/self.get_load_factor()
+        return load_factor
 
 
     def fnv1(self, key):
@@ -130,6 +132,7 @@ class HashTable:
                 return current.value
             previous = current
             current = current.next 
+        self.number_of_items -= 1    
         return None      
 
         print(f"the current head is {current.value}") 
@@ -159,10 +162,19 @@ class HashTable:
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
         Implement this.
         """
         # Your code here
+        previous_array = self.hash_array
+        new_array = [None] * new_capacity
+        self.hash_array = new_array
+        self.capacity = new_capacity
+        self.number_of_items = 0
+        for hashNode in previous_array:
+            while hashNode != None:
+                self.put(hashNode.key, hashNode.value)
+                hashNode = hashNode.next        
+
 
 
 
