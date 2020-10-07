@@ -1,5 +1,20 @@
 def word_count(s):
-    # Your code here
+    # Replace unwanted chars
+    for char in "\":;,.-+=/\|[]{}()*^&":
+        s = s.replace(char, "")
+
+    words = s.split()
+    res = {}
+    for word in words: 
+        # Lower case just in case
+        w = word.lower()
+        if w in res: 
+            # Word count plus 1 if word already exists
+            res[w] += 1
+        else: 
+            # Add more if the new word not in dic
+            res[w] = 1
+    return res
 
 
 

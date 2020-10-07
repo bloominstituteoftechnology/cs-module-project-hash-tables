@@ -20,7 +20,6 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        
         self.hashtable = [None] * capacity # Initialize with empty array
         self.capacity = capacity
         self.items = 0
@@ -216,7 +215,7 @@ if __name__ == "__main__":
     ht.put("line_8", 'The frumious Bandersnatch!"')
     ht.put("line_9", "He took his vorpal sword in hand;")
     ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_11", "So rested he by the Tumtum tree") 
     ht.put("line_12", "And stood awhile in thought.")
 
     print("")
