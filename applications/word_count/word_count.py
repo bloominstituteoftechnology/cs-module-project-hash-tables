@@ -1,6 +1,14 @@
 def word_count(s):
-    # Your code here
+    dict = {}
 
+    special_chars = ['"', ':', ';', ',', '.', '-', '+', '=', '/', '\\', '|', '[', ']', '{', '}', '(', ')', '*', '^', '&']
+    s2 = ''.join(c.lower() for c in s if not c in special_chars)
+
+
+    for word in s2.split():
+        dict[word] = dict[word] + 1 if word in dict else 1
+
+    return dict
 
 
 if __name__ == "__main__":

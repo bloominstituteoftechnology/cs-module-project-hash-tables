@@ -11,6 +11,8 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+MAX_LOAD_FACTOR = 0.7   
+MIN_LOAD_FACTOR = 0.2
 
 class HashTable:
     """
@@ -20,9 +22,10 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
-
+    def __init__(self, capacity=MIN_CAPACITY):
+        self.capacity = capacity
+        self.array = [None] * capacity
+        self.number_of_items = 0
 
     def get_num_slots(self):
         """
@@ -34,7 +37,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +46,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.number_of_items / self.capacity
 
 
     def fnv1(self, key):
@@ -53,7 +56,12 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        hash = 14638081039346656478  # Offset
+
+        for s in key:
+            hash = hash * 1099511628211 # FVN prime
+            hash = hash ^ ord(s)
+        return hash % len(self.array)
 
 
     def djb2(self, key):
@@ -62,7 +70,11 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xffffffff % self.capacity
 
 
     def hash_index(self, key):
@@ -81,7 +93,29 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        
+        # if self.array[index] is not None:
+        #     print(f"Collision Warning")
+        # self.array[index] = value
+
+        entry = self.array[index]
+
+        if entry is None:
+            self.array[index] = HashTableEntry(key, value)
+            self.number_of_items += 1
+            self.resizeIfNeeded()
+            return
+
+        while entry.next != None and entry.key !=key:
+            entry = entry.next
+
+        if entry.key == key:
+            entry.value = value
+        else: 
+            entry.next = HashTableEntry(key, value)
+            self.number_of_items += 1
+            self.resizeIfNeeded()
 
 
     def delete(self, key):
@@ -92,19 +126,58 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        # if index is None:
+        #     print(f"Warning: No value exists within this table for key: '{key}'")
+        # self.array[index] = None
+
+        entry = self.array[index]
+        prev_entry = None
+
+        if entry is not None:
+            while entry.next != None and entry.key != key:
+                prev_entry = entry
+                entry = entry.next
+
+            if entry.key == key:
+                if prev_entry is None:
+                    self.array[index] = entry.next
+                else: 
+                    prev_entry.next = entry.next
+                    self.number_of_items -= 1
+                    self.resizeIfNeeded()
+                return
+
+        print(f"Warning: Attempted to delete value from HashTable but no value exists for key '{key}'")
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
+      
 
-        Returns None if the key is not found.
+        index = self.hash_index(key)
 
-        Implement this.
-        """
-        # Your code here
+        # if index is None:
+        #     return None
 
+        # return self.array[index]
+
+        entry = self.array[index]
+
+        if entry is None:
+            return None
+        
+        while entry.next != None and entry.key != key:
+            entry = entry.next
+
+        return entry.value if entry.key == key else None
+
+
+    def resizeIfNeeded(self):
+         if self.get_load_factor () > MAX_LOAD_FACTOR:
+                self.resize(self.capacity * 2)
+         elif self.get_load_factor() < MIN_LOAD_FACTOR and int(self.capacity / 2) >= MIN_CAPACITY:
+            self.resize(int(self.capacity / 2))
 
     def resize(self, new_capacity):
         """
@@ -113,8 +186,29 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        old_array = self.array
+        self.array = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for old_entry in old_array:
+            while old_entry is not None:
+                key = old_entry.key
+                value = old_entry.value
+                index = self.hash_index(key)
+                entry = self.array[index]
+
+                # inserts old key/value into resized hash table
+
+                if entry is None:
+                    self.array[index] = HashTableEntry(key, value)
+                else: 
+                    while entry.next != None:
+                        entry = entry.next
+                    entry.next = HashTableEntry(key, value)
+
+                old_entry = old_entry.next
+      
 
 
 if __name__ == "__main__":
