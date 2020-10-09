@@ -20,9 +20,14 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity = MIN_CAPACITY):
         # Your code here
-
+        self.capacity = capacity
+        self.hash_array = [None] * capacity
+        self.number_of_items = 0
+        self.head = None
+        self.tail = None
+        
 
     def get_num_slots(self):
         """
@@ -35,7 +40,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -44,7 +49,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.number_of_items / self.capacity
 
     def fnv1(self, key):
         """
@@ -54,7 +59,19 @@ class HashTable:
         """
 
         # Your code here
+         #Constants
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
 
+        #FNV-1a Hash Function
+        hash = offset_basis 
+
+        for char in key:
+            hash = hash * FNV_prime
+            # ord() returns an integer representing the Unicode character
+            hash = hash ^ ord(char)
+
+        return hash
 
     def djb2(self, key):
         """
@@ -63,7 +80,13 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        byte_array = key.encode('utf-8')
 
+        for byte in byte_array:
+            hash = ((hash * 33) ^ byte) % 0x100000000
+
+        return hash
 
     def hash_index(self, key):
         """
@@ -82,7 +105,38 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        self.number_of_items += 1
+        index = self.hash_index(key)
+        node = self.hash_array[index]
 
+        if node is None:
+            self.hash_array[index] = HashTableEntry(key, value)
+            self.number_of_items += 1
+            return
+        
+        while node.next != None and node.key != key:
+            node = node.next
+        
+        if node.key == key:
+            node.value = value
+        else:
+            node.next = HashTableEntry(key, value)
+            self.number_of_items += 1
+
+
+        # if hash_array is None:
+        #     self.hash_array[index] = HashTableEntry(key, value)
+        #     return
+        # prev = None
+
+        # while node is not None:
+        #     prev = node
+        #     node = node.next
+        # prev.next = HashTableEntry(key, value)
+
+
+
+      
 
     def delete(self, key):
         """
@@ -93,7 +147,35 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        node = self.hash_array[index]
+        prev = None
 
+        if node is not None:
+            while node.next != None and node.key != key:
+                prev = node
+                node = node.next
+            if node.key == key:
+                if prev is None:
+                    self.hash_array[index] = node.next
+                else:
+                    prev.next = node.next
+                self.number_of_items -= 1
+                return
+        
+        # while node is not None and node.key != key:
+        #     prev = node
+        #     node = node.next
+        # if node is None:
+        #     return None
+        # else:
+        #     self.number_of_items -= 1
+        #     result = node.value
+        #     if prev is None:
+        #         node = None
+        #     else:
+        #         prev.next = prev.next.next
+        #         return result
 
     def get(self, key):
         """
@@ -104,7 +186,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        node = self.hash_array[index]
 
+        if node is None:
+            return None
+        while node.next != None and node.key != key:
+            node = node.next
+        return node.value if node.key == key else None
 
     def resize(self, new_capacity):
         """
@@ -114,8 +203,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # new_hash_array = [None] * new_capacity
+        # old_hash_array = self.hash_array
 
+        # self.hash_array = new_hash_array
+        # self.count = 0
+        # self.capacity = new_capacity
 
+        # current_index = 0
+        # while current_index < len(old_hash_array):
+        #     current_node = old_hash_array[current_index]
+        #     if current_node is not None:
+        #         next_node = current_node.next
+        #         current_node.next = None
+        #         self.put(current_node.key, current_node.value)
+        #         old_hash_array[current_index] = next_node
+        #     elif current_node is None:
+        #         current_index += 1 
+        # return
 
 if __name__ == "__main__":
     ht = HashTable(8)
