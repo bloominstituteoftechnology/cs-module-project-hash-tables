@@ -13,3 +13,7 @@ def f(x):
 
 # Your code here
 
+# lol this isnt a hash table problem i cant even think of how to use one to solve it
+# this is an itertools problem.
+# or just like. combinations, permutations, and list building.
+# and that is best case.

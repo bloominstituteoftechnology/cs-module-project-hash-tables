@@ -1,6 +1,11 @@
 def no_dups(s):
-    # Your code here
+    out = []
+    for word in s.split(' '):
+        if word not in out:
+            out.append(word)
+    return ' '.join(out)
 
+# using hashtables for this is kind of a waste yo
 
 
 if __name__ == "__main__":

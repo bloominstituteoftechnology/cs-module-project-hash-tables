@@ -1,9 +1,20 @@
 # Your code here
 
+def memoize(f):
+    memo = {}
+    def helper(*a):
+        if a not in memo:
+            memo[a] = f(*a)
+        return memo[a]
+    return helper
 
+
+@memoize
 def expensive_seq(x, y, z):
-    # Your code here
-
+    if x <= 0:
+        return y + z
+    else:
+        return expensive_seq(x-1, y+1, z) + expensive_seq(x-2, y+2, z*2) + expensive_seq(x-3, y+3, z*3)
 
 
 if __name__ == "__main__":
