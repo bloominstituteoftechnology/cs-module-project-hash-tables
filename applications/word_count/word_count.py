@@ -1,6 +1,22 @@
 def word_count(s):
     # Your code here
+    out = {}
+    # strip ignored characters and bullshit non-space whitespace characters
+    IGNORED = ['"', ':', ';', ',', '.', '-', '+', '=', '/', '\\', '|', '[', ']', '{', '}', '(', ')', '*', '^', '&']
+    words = ''.join(filter(lambda i: i not in IGNORED, s)).translate({ord(c): ' ' for c in '\n\t\r'})
+    print(words)
 
+
+    for word in words.split(' '):
+        word = word.lower()
+        if len(word) > 0:
+            if word not in out:
+                out[word] = 1
+            else:
+                out[word] += 1
+
+    print(out)
+    return out
 
 
 if __name__ == "__main__":
