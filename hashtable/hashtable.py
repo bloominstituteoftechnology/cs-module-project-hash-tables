@@ -167,7 +167,7 @@ class HashTable:
         # Your code here
         previous_array = self.hash_array
         new_array = [None] * new_capacity
-        self.hash_array = new_array
+        self.hash_array = new_arrayANDREW
         self.capacity = new_capacity
         self.number_of_items = 0
         for hashNode in previous_array:
