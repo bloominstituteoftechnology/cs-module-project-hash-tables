@@ -1,5 +1,17 @@
 def no_dups(s):
     # Your code here
+    str = s.split()
+    str_list = []
+    str_dict = {}
+    for word in str:
+        if word not in str_dict:
+            str_dict[word] = 1
+            str_list.append(word)
+    result = ' '.join(str_list)        
+    print(result)
+    return result
+
+
 
 
 
