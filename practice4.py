@@ -65,7 +65,28 @@ def print_department(dep_name):
   return results
 
 total_results = print_department('Engineering')    
-print(total_results)
+# print(total_results)
+
+def build_index(records):
+  idx = {}
+  for record in records:
+    name = record[0]
+    department = record[1]
+    if department in idx:
+      idx[department].append(name)
+    else:
+      idx[department] = [name]
+  return idx
+
+
+index_dict = build_index(records)
+
+def print_department_using_index(dep_name):
+  print(index_dict[dep_name])
+
+print_department_using_index('Engineering')
+
+
 
 
   
