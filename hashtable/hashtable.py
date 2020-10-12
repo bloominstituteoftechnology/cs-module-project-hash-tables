@@ -44,7 +44,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.counter / self.capacity
 
 
     def fnv1(self, key):
@@ -150,8 +150,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        old_storage = self.storage
+        self.__init__(new_capacity)
 
+        for node in old_storage:
+            while node is not None:
+                self.put(node.key, node.value)
+                node = node.next
 
 
 if __name__ == "__main__":
@@ -173,18 +178,18 @@ if __name__ == "__main__":
     print("")
 
     # Test storing beyond capacity
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # # Test if data intact after resizing
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # print("")
+    print("")
