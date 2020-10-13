@@ -6,7 +6,8 @@ from expensive_seq import expensive_seq
 class TestHashTable(unittest.TestCase):
 
     def test_expseq(self):
-        first10 = [0, 73, 712, 5233, 36592, 246773, 1623280, 10496585, 66941152, 421957189]
+        first10 = [0, 73, 712, 5233, 36592, 246773,
+                   1623280, 10496585, 66941152, 421957189]
 
         for i in range(10):
             x = expensive_seq(i*2, i*3, i*4)
