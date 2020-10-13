@@ -1,5 +1,15 @@
 def no_dups(s):
-    # Your code here
+    cache = {}
+    new_string = ""
+
+    for item in s.split():
+        if item not in cache:
+            new_string += item
+            new_string += " "
+            cache[item] = True
+    new_string = new_string[:-1]
+
+    return new_string
 
 
 

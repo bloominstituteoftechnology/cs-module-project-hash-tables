@@ -7,7 +7,6 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
@@ -21,7 +20,11 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        if capacity < MIN_CAPACITY:
+            capacity = MIN_CAPACITY
+        self.capacity = capacity
+        self.count = 0
+        self.array = [None] * capacity
 
 
     def get_num_slots(self):
@@ -62,7 +65,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -81,8 +87,62 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.count += 1
+        load_factor = self.count / self.capacity
+        if load_factor > 0.8:
+            print("need to resize")
+            self.resize(self.capacity * 2)
 
+
+        # get the index in the hash table for the key
+        index = self.hash_index(key)
+
+        # create node with key, value
+        hte = HashTableEntry(key, value)
+
+        # check hash table for a linked list
+        if self.array[index] is not None:
+            cur = self.array[index]
+
+            prev = cur
+
+            while cur is not None:
+                if cur.key == key:
+                    prev.next = hte
+                    self.delete(key)
+                    # cur = hte
+                    self.print_me("PUT (EARLY EXIT)", key)
+                    return
+                else:
+                    prev = cur
+                    cur = cur.next
+            prev.next = hte
+        else:
+            self.array[index] = hte
+
+
+        self.print_me("PUT", key)
+
+    def print_me(self, type, key):
+        print("\nHASH TABLE\n----------")
+        print("Function Type: ", type, key)
+        counter = 0
+        for item in self.array:
+            if item is not None:
+                cur = item
+                string = ""
+                while cur is not None:
+                    string += cur.key
+                    string += ", "
+                    string += cur.value
+                    string += " -> "
+                    # print(counter, ":", cur.key, cur.value)
+                    cur = cur.next
+                string += "None"
+                print(counter, ":", string)
+            else:
+                print(counter, ":", item)
+            counter += 1
 
     def delete(self, key):
         """
@@ -92,7 +152,37 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        # self.array[index] = None
+
+        if self.array[index] is not None:
+            cur = self.array[index]
+            # special case of deleting the head
+            if cur.key == key:
+                if cur.next is not None:
+                    cur = cur.next
+                    self.array[index] = cur
+                    # cur.next = None
+                else:
+                    self.array[index] = None
+                self.print_me("DELETE (EARLY EXIT) w/ KEY:", key)
+                return cur
+
+            prev = cur
+            cur = cur.next
+
+            while cur is not None:
+                if cur.key == key:
+                    prev.next = cur.next  # cuts out the node from the list
+                    cur.next = None
+                    return cur
+                else:
+                    prev = prev.next
+                    cur = cur.next
+            self.print_me("DELETE w/ KEY:", key)
+            return None
+        else:
+            return None
 
 
     def get(self, key):
@@ -103,8 +193,20 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
+        index = self.hash_index(key)
+
+        if self.array[index] is not None:
+            cur = self.array[index]
+
+            while cur is not None:
+                if cur.key == key:
+                    return cur.value
+                cur = cur.next
+        else:
+            return None
+
+        # return self.array[index].value
 
     def resize(self, new_capacity):
         """
@@ -113,7 +215,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.print_me("RESIZE BEFORE W/ CAPACITY", self.capacity)
+        new = [None] * new_capacity
+
+        counter = 0
+        for item in self.array:
+            new[counter] = item
+            counter += 1
+
+        self.array = new
+
+        self.print_me("RESIZE AFTER W/ NEW_CAPACITY", new_capacity)
 
 
 
