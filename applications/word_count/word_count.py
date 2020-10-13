@@ -1,5 +1,16 @@
 def word_count(s):
     # Your code here
+    stop_char = """:;",.-+=/|[]{|}()*^\&"""
+    s_clean = "".join([_ for _ in s if _ not in stop_char])
+    word_list = s_clean.lower().split()
+
+    word_count = {}
+    for x in word_list:
+        if x not in word_count:
+            word_count[x] = 0
+        word_count[x] += 1
+    return word_count
+
 
 
 
