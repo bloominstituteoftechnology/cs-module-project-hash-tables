@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -22,7 +21,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.capacity = capacity
+        self.hashTable = [None] * capacity
 
     def get_num_slots(self):
         """
@@ -35,6 +35,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
 
     def get_load_factor(self):
@@ -44,6 +45,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
 
     def fnv1(self, key):
@@ -54,6 +56,7 @@ class HashTable:
         """
 
         # Your code here
+        pass
 
 
     def djb2(self, key):
@@ -63,7 +66,13 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
+    # OK = djb2("ok","APPLE")
+    # print(OK)
 
     def hash_index(self, key):
         """
@@ -72,6 +81,7 @@ class HashTable:
         """
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
+
 
     def put(self, key, value):
         """
@@ -82,7 +92,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        index = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        self.hashTable[index] = entry
 
     def delete(self, key):
         """
@@ -92,7 +104,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        self.hashTable[index] = None
 
 
     def get(self, key):
@@ -103,7 +116,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        
+        if self.hashTable[index]:
+            return self.hashTable[index].value
+        else: 
+            return None
 
 
     def resize(self, new_capacity):
@@ -114,8 +132,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
-
+new_table = HashTable(8)
 
 if __name__ == "__main__":
     ht = HashTable(8)
@@ -140,14 +159,14 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # # Test if data intact after resizing
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
-    print("")
+    # print("")
