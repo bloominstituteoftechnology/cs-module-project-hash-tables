@@ -21,7 +21,10 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.items_stored = 0
+        self.storage = [None] * capacity
+
 
 
     def get_num_slots(self):
@@ -34,7 +37,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +46,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.items_stored / self.capacity
 
 
     def fnv1(self, key):
@@ -53,7 +56,18 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        FNV_OFFSET = 14695981039346656037
+        FNV_PRIME = 1099511628211
+
+        hash_index = FNV_OFFSET
+
+        bytes_to_process = key.encode()
+
+        for b in bytes_to_process:
+            hash_index *= FNV_PRIME
+            hash_index ^= b
+
+        return hash_index
 
 
     def djb2(self, key):
@@ -62,7 +76,15 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash_index = 5381 # Historical number used in the algo
+
+        bytes_to_process = key.encode()
+
+        for b in bytes_to_process:
+            hash_index *= 33 # for some reason, only 33 works with this algo
+            hash_index += b
+
+        return hash_index
 
 
     def hash_index(self, key):
@@ -81,7 +103,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        hashed_idx = self.hash_index(key)
+
+        self.storage[hashed_idx] = HashTableEntry(key, value)
+        self.items_stored += 1
 
 
     def delete(self, key):
@@ -92,7 +117,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        item_idx = self.hash_index(key)
+
+        self.storage[item_idx] =  None
+        self.items_stored -= 1
 
 
     def get(self, key):
@@ -103,7 +131,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        item_idx = self.hash_index(key)
+
+        if self.storage[item_idx]:
+            return self.storage[item_idx].value
+        else:
+            return None
 
 
     def resize(self, new_capacity):
