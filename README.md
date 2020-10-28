@@ -22,6 +22,7 @@ Task: Implement a basic hash table without collision resolution.
 
 You can test this with:
 
+
 ```
 python test_hashtable_no_collisions.py
 ```
