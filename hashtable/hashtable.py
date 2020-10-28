@@ -22,6 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.total = 0
+        self.capacity = capacity
+        self.storage = [None] * capacity
 
 
     def get_num_slots(self):
@@ -35,6 +38,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,6 +49,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        pass
 
 
     def fnv1(self, key):
@@ -54,6 +60,7 @@ class HashTable:
         """
 
         # Your code here
+        pass
 
 
     def djb2(self, key):
@@ -63,6 +70,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash_value = 5381
+        for c in key:
+            hash_value = ((hash_value << 5) + hash_value) + ord(c)
+        return hash_value & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -82,6 +93,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        new_node = HashTableEntry(key, value)
+        index = self.hash_index(key)
+        if self.storage[index] == None:
+            self.storage[index] = new_node
+        
+        elif self.storage[index].key == key:
+            self.storage[index].value = value
+           
+       
 
 
     def delete(self, key):
@@ -93,7 +113,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        
 
+        if self.storage[index].key == key:
+            self.storage[index] = None
+        
+        
+  
 
     def get(self, key):
         """
@@ -104,6 +131,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
+    
+        index = self.hash_index(key)
+        node = self.storage[index]
+        
+        if node is not None: 
+            
+            if node.key == key:
+                return node.value
+       
+       
+
 
 
     def resize(self, new_capacity):
@@ -114,6 +152,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity * 2
 
 
 
