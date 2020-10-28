@@ -1,7 +1,21 @@
 def word_count(s):
-    # Your code here
+    counts = {}
+    avoid = ['"', ':', ';', ',', '.', '-', '+', '=', '/', '\\', '|', '[', ']', '{', '}', '(', ')', '*', '^', '&']
 
+    for character in avoid:
+        s = s.replace(character, "")
 
+    each_word = s.split()
+
+    for word in each_word:
+        word = word.lower()
+
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    return counts
 
 if __name__ == "__main__":
     print(word_count(""))
