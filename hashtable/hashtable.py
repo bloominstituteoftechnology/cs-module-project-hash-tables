@@ -30,7 +30,7 @@ class HashTable:
         table data. (Not the number of items stored in the hash table,
         but the number of slots in the main list.)
 
-        One of the tests relies on this.
+        One of the tests relies on this. if froggy do tonight 🤣
 
         Implement this.
         """
