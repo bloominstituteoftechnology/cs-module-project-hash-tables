@@ -57,9 +57,26 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        item_count = 0
+        for item in self.hashTable:
+            if item is not None:
+                if item.next:
+                    current = item
+                    while current:
+                        item_count += 1
 
+                        if current.next is not None:
+                            current = current.get_next()
+                        
+                        else:
+                            break
+                else: 
+                    item_count += 1
+
+            # print(" - - - -")
+            # print(item_count)
+                     
+        return item_count / self.get_num_slots()
 
     def fnv1(self, key):
         """
@@ -126,6 +143,10 @@ class HashTable:
                     
         else:
             self.hashTable[index] = entry
+
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+        
 
 
     def delete(self, key):
@@ -203,69 +224,91 @@ class HashTable:
         self.capacity = new_capacity
         blank_array = [None] * new_capacity
         for item in self.hashTable:
-            if item.next:
-                # reHashed = self.hash_index(item.key)
-                current = item
-                while current:
-                    reHashed = self.hash_index(current.key)
+            if item is not None:
+                if item.next is not None:
+                    # reHashed = self.hash_index(item.key)
+                    current = item
+                    while current:
+                        reHashed = self.hash_index(current.key)
 
-                    # doing the put method here basically
-                    if blank_array[reHashed] is not None:
-                        current_node = blank_array[reHashed]
-                        
-                        while current_node:
-                            # checking to see if has the same key
-                            if current_node.get_key() == current.key:
-                                current_node.value = current.value
-                                break
+                        # doing the put method here basically
+                        if blank_array[reHashed] is not None:
+                            current_node = blank_array[reHashed]
                             
-                            # checking if we are still not at the end of the linked lsit
-                            if current_node.next is not None:
-                                current_node = current_node.get_next()
-                            else: 
-                                current_node.next = HashTableEntry(current.key, current.value)
+                            while current_node:
+                                # checking to see if has the same key
+                                if current_node.get_key() == current.key:
+                                    current_node.value = current.value
+                                    break
+                                
+                                # checking if we are still not at the end of the linked lsit
+                                if current_node.next is not None:
+                                    current_node = current_node.get_next()
+                                else: 
+                                    current_node.next = HashTableEntry(current.key, current.value)
 
-                    else: 
-                        blank_array[reHashed] = HashTableEntry(current.key, current.value)
+                        else: 
+                            blank_array[reHashed] = HashTableEntry(current.key, current.value)
 
-                    if current.next is not None:
-                        current = current.next
-                    else:
-                        break
+                        if current.next is not None:
+                            current = current.next
+                        else:
+                            break
 
-            else:
-                reHashed = self.hash_index(item.key)
-                blank_array[reHashed] = HashTableEntry(item.key, item.value)
+                else:
+                    reHashed = self.hash_index(item.key)
+                    blank_array[reHashed] = HashTableEntry(item.key, item.value)
 
-        print(" - - - - - -")
-        for x in blank_array:
-            if x is not None:
-                print(x.key)
-                if x.next is not None:
-                    print("+ + +")
-                    print(x.next.key)
-            else: 
-                print("none")
+        # print(" - - - - - -")
+        # for x in blank_array:
+        #     if x is not None:
+        #         print(x.key)
+        #         if x.next is not None:
+        #             print("+ + +")
+        #             print(x.next.key)
+        #     else: 
+        #         print("none")
 
         self.hashTable = None
         self.hashTable = blank_array
             
 
 
-# new_table = HashTable(8)
+new_table = HashTable(8)
 
-# new_table.put("key-0", "val-0")
-# new_table.put("key-1", "val-1")
-# new_table.put("key-2", "val-2")
-# new_table.put("key-3", "val-3")
-# new_table.put("key-4", "val-4")
-# new_table.put("key-5", "val-5")
-# new_table.put("key-6", "val-6")
-# new_table.put("key-7", "val-7")
-# new_table.put("key-8", "val-8")
-# new_table.put("key-9", "val-9")
-# new_table.put("key-10", "val-10")
-# new_table.put("key-11", "val-11")
+new_table.put("key-0", "val-0")
+new_table.put("key-1", "val-1")
+new_table.put("key-2", "val-2")
+new_table.put("key-3", "val-3")
+new_table.put("key-4", "val-4")
+new_table.put("key-5", "val-5")
+new_table.put("key-6", "val-6")
+new_table.put("key-7", "val-7")
+new_table.put("key-8", "val-8")
+new_table.put("key-9", "val-9")
+new_table.put("key-10", "val-10")
+new_table.put("key-11", "val-11")
+new_table.put("key-12", "val-12")
+new_table.put("key-13", "val-13")
+new_table.put("key-14", "val-14")
+new_table.put("key-15", "val-15")
+new_table.put("key-16", "val-16")
+new_table.put("key-17", "val-17")
+new_table.put("key-18", "val-18")
+new_table.put("key-19", "val-19")
+new_table.put("key-20", "val-20")
+print(" - - - - - -")
+print(len(new_table.hashTable))
+for x in new_table.hashTable:
+    if x is not None:
+        print(x.key)
+        if x.next is not None:
+            print("+ + +")
+            print(x.next.key)
+            print("+ + +")
+        else: 
+            print("none")
+
 # new_table.resize()
 
 
