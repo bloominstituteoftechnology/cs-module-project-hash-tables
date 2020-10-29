@@ -21,7 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = MIN_CAPACITY
+        self.count = 0
+        self.storage = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +36,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Return the length of the list you're using to hold the hashtable data.
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +46,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Return the load factor for this hash table.
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -62,7 +66,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for element in key:
+            hash = (hash * 33) + ord(element)
+        return hash
 
 
     def hash_index(self, key):
@@ -81,7 +88,18 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Store the value with the given key.
+        index = self.hash_index(key)
+        entry = HashTableEntry(key, value)
+        storage = self.storage[index]
+        self.count += 1
+
+        # Hash collisions should be handled with Linked List Chaining.
+        if storage:
+            self.storage[index] = entry
+            self.storage[index].next = storage
+        else:
+            self.storage[index] = entry
 
 
     def delete(self, key):
@@ -92,7 +110,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # Remove the value stored with the given key.
+        if self.get(key):
+            self.put(key, None)
+            self.count -= 1
+        # Print a warning if the key is not found.
+        else:
+            print("Key not foud")
 
 
     def get(self, key):
@@ -103,9 +127,16 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        # Retrieve the value stored with the given key.
+        index = self.hash_index(key)
+        storage = self.storage[index]
+        while storage:
+            if storage.key == key:
+                return storage.value
+            storage = storage.next
+        # Returns None if the key is not found.
+        return None
+    
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -113,10 +144,39 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
-
+        load = self.get_load_factor()
+        # When load factor increases above 0.7, 
+        if load > 0.7:
+            # automatically rehash the table to double its previous size.
+            new_table = [None] * (new_capacity)
+            old_table = self.storage
+            self.storage = new_table
+            # Update capacity to new balue
+            self.capacity = new_capacity
+            # for each slot in table:
+            for entry in old_table:
+		    # for each element in the linked list in that slot:
+                cur = entry
+                # PUT that element in new_table
+                while cur is not None:
+                    self.put(cur.key, cur.value)
+                    cur = cur.next
+        # When load factor decreases below 0.2
+        # down to a minimum of 8 slots.
+        if load < 0.2 and new_capacity > 8:      
+            # automatically rehash the table to half its previous size, 
+            new_table = [None] * (new_capacity)
+            old_table = self.storage
+            self.storage = new_table
+            # Update capacity to new value
+            self.capacity = new_capacity
+            # for each slot in table:
+            for entry in old_table:
+		    # for each element in the linked list in that slot:
+                for element in entry:
+		        # 	PUT that element in new_table
+                    self.put(element.key, element.value)
+        
 if __name__ == "__main__":
     ht = HashTable(8)
 
