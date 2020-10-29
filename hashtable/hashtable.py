@@ -45,7 +45,7 @@ class HashTable:
 
         Implement this.
         """
-        self.count / self.capacity
+        return self.count / self.capacity
 
 
     # def fnv1(self, key):
@@ -66,8 +66,8 @@ class HashTable:
         """
         hash = 5381
 
-        for elem in key:
-            hash = (hash * 33) + ord(elem)
+        for i in key:
+            hash = (hash * 33) + ord(i)
         return hash
 
 
@@ -127,11 +127,12 @@ class HashTable:
         """
 
         index = self.hash_index(key) 
-        storage = self.storage[index]
-        while storage:
-            if storage.key == key:
-                return storage.value
-            storage = storage.next
+        hash_entry = self.storage[index]
+        while hash_entry:
+            if hash_entry.key == key:
+                return hash_entry.value
+            else:    
+                hash_entry = hash_entry.next
 
         return None           
 
@@ -142,7 +143,15 @@ class HashTable:
 
         Implement this.
         """
-        pass 
+        old_storage = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * self.capacity
+        self.count = 0
+
+        for entry in old_storage:
+            while entry:
+                self.put(entry.key, entry.value)
+                entry = entry.next
 
 
 
