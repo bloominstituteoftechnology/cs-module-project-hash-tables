@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -21,8 +22,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = capacity
+        self.bucket = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -36,7 +38,6 @@ class HashTable:
         """
         # Your code here
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -45,66 +46,54 @@ class HashTable:
         """
         # Your code here
 
-
-    def fnv1(self, key):
+    def fnv1_64(self, key):
         """
         FNV-1 Hash, 64-bit
 
         Implement this, and/or DJB2.
         """
 
-        # Your code here
+        prime_64 = 1099511628211
+        hash_64 = 14695981039346656037
 
+        for char in key:
+            hash_64 = hash_64 * prime_64
+            hash_64 = hash_64 ^ ord(char)
+        return hash
+
+    def fnv1_32(self, key):
+        prime_32 = 16777619
+        hash_32 = 2166136261
+        for char in key:
+            hash_32 = hash_32 * prime_32
+            hash_32 = hash_32 ^ ord(char)
+        return hash
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
-
+        hash = 5381
+        for x in key:
+            hash = (hash*33) + ord(x)
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
-
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
-
+        index = self.hash_index(key)
+        self.bucket[index] = value
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
+        index = self.hash_index(key)
+        self.bucket[index] = None
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
+        index = self.hash_index(key)
+        return self.bucket[index]
 
     def resize(self, new_capacity):
         """
@@ -114,7 +103,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
 
 if __name__ == "__main__":
