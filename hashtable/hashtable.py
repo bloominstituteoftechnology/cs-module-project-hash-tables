@@ -74,6 +74,20 @@ class HashTable:
             hash = (hash * 33) + ord(c)
         return hash & 0xFFFFFFFF
 
+    def simp_hash_fn(self, key, value):
+        # key that gets hashed
+        byte = key.encode()
+        print('simp hash func', byte)
+        total = 0
+
+        for char in byte:
+            print(char)
+            total += char
+            total &= 0xffffffff
+            print("total 32 bit", total)
+        print(total % self.capacity)
+        return total % self.capacity  # 8
+
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
@@ -144,6 +158,7 @@ if __name__ == "__main__":
     ht.put("line_12", "And stood awhile in thought.")
 
     print("")
+    ht.simp_hash_fn("yodd dyo ma", "black88")
 
     # Test storing beyond capacity
     for i in range(1, 13):
