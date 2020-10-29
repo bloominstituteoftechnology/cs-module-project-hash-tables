@@ -10,8 +10,44 @@ Task: Implement a basic hash table without collision resolution.
 
    Recommend either of:
 
-   * DJB2
-   * FNV-1 (64-bit)
+   * DJB2 - research
+"""
+   def hash_djb2(s):                                                                                                                                
+    hash = 5381
+    for x in s:
+        hash = (( hash << 5) + hash) + ord(x)
+    return hash & 0xFFFFFFFF
+
+
+hex(hash_djb2(u'something'))
+"""
+   * FNV-1 (64-bit) - BIG RESEARCH
+
+   core:
+      hash = offset_basis
+      for each octet_of_data to be hashed
+         hash = hash * FNV_prime
+         hash = hash xor octet_of_data
+      return hash
+
+   alt:
+      hash = offset_basis
+      for each octet_of_data to be hashed
+         hash = hash xor octet_of_data
+         hash = hash * FNV_prime
+      return hash
+
+   Parameter for 64-bit:
+      64 bit FNV_prime = 240 + 28 + 0xb3 = 1099511628211
+
+   Offset Basis: (dependent on n, the size of the hash)
+      64 bit offset_basis = 14695981039346656037
+
+[https://stackoverflow.com/questions/50542882/create-minimum-perfect-hash-for-sparse-64-bit-unsigned-integer]
+
+[https://github.com/sup/pyhash/blob/master/pyhash/pyhash.py]
+
+[https://github.com/sup/pyhash]
 
    You are allowed to Google for these hashing functions and implement
    from psuedocode.
