@@ -21,7 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.ht_arr = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -34,13 +35,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return len(self.ht_arr)
 
 
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
-
+        TODO: Skip
         Implement this.
         """
         # Your code here
@@ -55,14 +56,18 @@ class HashTable:
 
         # Your code here
 
-
+    # * Visualization of djb2:
+    # * http://pythontutor.com/visualize.html#code=def%20djb2%28key%29%3A%0A%20%20%20%20%20%20%20%20%22%22%22%0A%20%20%20%20%20%20%20%20DJB2%20hash,%2032-bit%0A%0A%20%20%20%20%20%20%20%20Implement%20this,%20and/or%20FNV-1.%0A%20%20%20%20%20%20%20%20%22%22%22%0A%20%20%20%20%20%20%20%20hash%20%3D%205381%0A%20%20%20%20%20%20%20%20for%20x%20in%20key%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20hash%20%3D%20%28%28hash%20%3C%3C%205%29%20%2B%20hash%29%20%2B%20ord%28x%29%0A%20%20%20%20%20%20%20%20return%20hash%20%26%200xFFFFFFFF%0A%20%20%20%20%20%20%20%20%0Adjb2%28%22hello%22%29&cumulative=false&curInstr=16&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -81,8 +86,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # ? Put
+        # ? 1. Hash our string/key, get out a number
+        # ? 2. Take this number and modulo it by the length of the array
+        # ? 3. This new number can be used as an index, so put the value at that index in our array
+        
+        self.ht_arr[self.hash_index(key)] = value
 
     def delete(self, key):
         """
@@ -92,8 +101,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        # ? Delete: find the value, then set to None
+        if self.ht_arr[self.hash_index(key)] is None:
+            print(f"The key '{key}' does not exist.'")
+        else:
+            self.ht_arr[self.hash_index(key)] = None
 
     def get(self, key):
         """
@@ -103,14 +115,22 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # ? Get
+        # ? 1. Hash our string/key, string --> number
+        # ? 2. Mod this number by length of array
+        # ? 3. Use this modded number / index to get the value there
+        
+        if self.ht_arr[self.hash_index(key)] is None:
+            print(f"The key '{key}' does not exist.'")
+        else:
+            return self.ht_arr[self.hash_index(key)]
 
 
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
-
+        TODO: Skip
         Implement this.
         """
         # Your code here
