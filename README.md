@@ -1,5 +1,5 @@
 # Hash Tables
-
+### https://github.com/LambdaSchool/cs-module-project-hash-tables/pull/173
 ## Day 1
 
 Task: Implement a basic hash table without collision resolution.
