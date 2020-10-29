@@ -22,6 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        
+
+
 
 
     def get_num_slots(self):
@@ -44,6 +48,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # dont do yet 
 
 
     def fnv1(self, key):
@@ -104,6 +109,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
 
 
     def resize(self, new_capacity):
@@ -114,8 +120,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # dont do yet 
 
-
+hash_table = HashTable(100)
 
 if __name__ == "__main__":
     ht = HashTable(8)
