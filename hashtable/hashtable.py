@@ -57,6 +57,7 @@ class HashTable:
         """
 
         # Your code here
+        pass
 
 
     def djb2(self, key):
@@ -88,6 +89,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+        self.table[index] = HashTableEntry(key, value)
+        self.count += 1
+        
 
 
     def delete(self, key):
@@ -99,6 +104,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        delete_at_index = self.hash_index(key)
+
+        if self.table[delete_at_index] is None:
+            print("No key found")
+            return
+
+        self.table[delete_at_index] = None
+        self.count -= 1
 
 
     def get(self, key):
@@ -110,6 +123,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        index = self.hash_index(key)
+
+        return self.table[index].value
 
 
     def resize(self, new_capacity):
@@ -120,6 +136,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        old_table = self.table
+        self.table = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for entry in old_table:
+            while entry is not None:
+                old_key = entry.key
+                old_value = entry.value
+                index = self.hash_index(old_key)
+                self.table[index] = HashTableEntry(old_key, old_value)
 
 
 
