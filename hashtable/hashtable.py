@@ -57,6 +57,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -99,8 +100,8 @@ class HashTable:
         Length of Table.
         """
         # Your code here
-        return len(self.table)
-
+        # return len(self.table)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -111,18 +112,18 @@ class HashTable:
         I assume Load refers to how much work it needs to use.
         """
         # Your code here
-        total = 0
-        for index in range(len(self.table)):
-            if self.table[index] is not None:
-                current = self.table[index]
-                while current is not None:
-                    total += 1
-                    current = current.next
+        # total = 0
+        # for index in range(len(self.table)):
+        #     if self.table[index] is not None:
+        #         current = self.table[index]
+        #         while current is not None:
+        #             total += 1
+        #             current = current.next
 
-        load = total/len(self.table)
+        # load = total/len(self.table)
 
-        return load
-
+        # return load
+        return self.count / self.capacity
 
     def fnv1(self, key):
         """
@@ -145,8 +146,6 @@ class HashTable:
 
         return hash
 
-
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
@@ -161,7 +160,7 @@ class HashTable:
         # Your code here
         hashDBJ2 = 5381
         for byte in key:
-            hashDBJ2 = hashDBJ2 * 33 + ord(byte)
+            hashDBJ2 = (hashDBJ2 * 33) + ord(byte)
 
         return hashDBJ2
 
@@ -170,8 +169,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        return self.fnv1(key) % self.capacity
-        # return self.djb2(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
+        return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -192,14 +191,23 @@ class HashTable:
         return value
         """
         # Your code here
-        index = self.hash_index(key) # WHAT? BUILT IN???
-        #save location in store
+        index = self.hash_index(key)
+        new = HashTableEntry(key, value)
+        
+        # save location in store
         store = self.table[index]
         # set up to launch record of the store, place as entry for recovery
-        self.table[index] = HashTableEntry(key, value)
+        # self.table[index] = HashTableEntry(key, value)
         # place in storage next location to continue on.
-        self.table[index].next = store
+        # self.table[index].next = store
 
+        if self.table[index] !=None:
+            self.table[index] = new
+            self.table[index].next = store
+        else:
+            self.table[index] = new
+
+        self.count += 1
 
     def delete(self, key):
         """
@@ -215,16 +223,35 @@ class HashTable:
         Apply new key to location if there are some after.
         """
         # Your code here
-        index = self.hash_index(key) # set location
+        index = self.hash_index(key)  # set location
+        removed = False
 
         # if Head
         # pointer = self.table[index] # set item
-        # if pointer.key == key: # match item
-        #     self.table[index] = pointer.next # skip item
-        #     pointer.next = None 
-        #     self.count -=1 # lower count
 
-        #if not head
+        if self.table[index].key == key:  # match item
+            self.table[index] = self.table[index].next  # skip item
+            # pointer.next = None
+            self.count -= 1  # lower count
+            removed = True
+        else:
+            current = self.table[index]
+            prev = None
+
+            while current != None:
+                if current.key == key:
+                    prev.next = current.next
+                    self.count -= 1
+                    removed = True
+
+                    return
+
+                prev = current
+                current = current.next
+        if removed == False:
+            print(f"Check key: {key} is missing.")
+
+        # if not head
 
         # prev = self.table[index] # set Previous node/item
         # pointer = prev.next # set item as next in line
@@ -235,10 +262,9 @@ class HashTable:
         #     return pointer # return the item itself.
 
         # return None
-        if self.table[index].key == key:
-            self.table[index] = None
+        # if self.table[index].key == key:
+        #     self.table[index] = None
 
-        
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -252,11 +278,12 @@ class HashTable:
         # Your code here
         index = self.hash_index(key)
         entry = self.table[index]
-        while entry:
+        while entry !=None:
             if entry.key == key:
                 return entry.value
-            else:
-                entry = entry.next
+            entry = entry.next
+            # else:
+            #     entry = entry.next
 
         return None
 
@@ -289,28 +316,40 @@ class HashTable:
         """
         # Your code here
         # establish call to load
-        load = self.get_load_factor()
-        # reduce if load is small
-        # set to minimum
-        if load < 0.2: # if not filled much
-            if self.capacity > 16: # doubled
-                new_capacity = self.capacity/2 # 8
-            else:
-                return
-        elif load > 0.7: # if filled close to complete
-            new_capacity = 2 * self.capacity # double
-        else:
-            return
-        if new_capacity < 8: # if more than minimum
-            return # do nothing
+        # load = self.get_load_factor()
+        # # reduce if load is small
+        # # set to minimum
+        # if load < 0.2:  # if not filled much
+        #     if self.capacity > 16:  # doubled
+        #         new_capacity = self.capacity/2  # 8
+        #     else:
+        #         return
+        # elif load > 0.7:  # if filled close to complete
+        #     new_capacity = 2 * self.capacity  # double
+        # else:
+        #     return
+        # if new_capacity < 8:  # if more than minimum
+        #     return  # do nothing
 
-        current_tab = self.table
-        self.table = [None] * new_capacity
+        # current_tab = self.table
+        # self.table = [None] * new_capacity
+        # self.capacity = new_capacity
+        # # replace all info in old and write to new
+        # for i in range(len(current_tab)):
+        #     current = current_tab[i]
+        #     while current is not None:
+        #         self.put(current.key, current.value)
+        #         current = current.next
+
+        old = self.table.copy()
+
         self.capacity = new_capacity
-        #replace all info in old and write to new
-        for i in range(len(current_tab)):
-            current = current_tab[i]
-            while current is not None:
+        self.table = [None] * self.capacity
+        self.count = 0
+
+        for index in range(len(old)):
+            current = old[index]
+            while current != None:
                 self.put(current.key, current.value)
                 current = current.next
 
