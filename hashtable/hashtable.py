@@ -1,3 +1,4 @@
+# http://www.goodmath.org/blog/2013/10/20/basic-data-structures-hash-tables/
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -21,7 +22,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self._table = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -62,7 +64,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
@@ -81,7 +86,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        location = self.hash_index(key)
+        self._table[location] = value
 
 
     def delete(self, key):
@@ -92,7 +98,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        location = self.hash_index(key)
+        self._table[location] = None
 
 
     def get(self, key):
@@ -103,7 +110,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self._table[self.hash_index(key)]
 
 
     def resize(self, new_capacity):
@@ -114,7 +121,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
 
 if __name__ == "__main__":
@@ -151,3 +157,10 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
+"""
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
+"""
