@@ -7,10 +7,8 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
-
 
 class HashTable:
     """
@@ -21,8 +19,103 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        self.storage = [None] * capacity
+        self.count = 0
 
+    def djb2(self, key):
+        hash = 5381
+        for item in key:
+            hash = (hash * 33) + ord(item)
+        return hash
+
+    def hash_index(self, key):
+        """
+        Take an arbitrary key and return a valid integer index
+        between within the storage capacity of the hash table.
+        """
+
+        return self.djb2(key) % self.capacity
+
+    def put(self, key, value):
+        """
+        Store the value with the given key.
+
+        Hash collisions should be handled with Linked List Chaining.
+
+        Implement this.
+
+        For a given key, store a value in the hash table"""
+        # Store the value with the given key.
+        index = self.hash_index(key)
+        hash_entry = HashTableEntry(key, value)
+        storage = self.storage[index]
+        self.count += 1
+
+        # Hash Collisions --> Linked List Chaining.
+        if storage:
+            self.storage[index] = hash_entry
+            self.storage[index].next = storage
+        else:
+            self.storage[index] = hash_entry
+
+    def delete(self, key):
+        """
+        Remove the value stored with the given key.
+
+        Print a warning if the key is not found.
+
+        Implement this.
+        """
+        # Remove the value stored through the key.
+        if self.get(key):
+            self.put(key, None)
+            self.count -= 1
+        else:
+            print("The key twas not found")
+
+    def get(self, key):
+        """
+        Retrieve the value stored with the given key.
+
+        Returns None if the key is not found.
+
+        Implement this.
+        """
+        # get the value stored with the key.
+        index = self.hash_index(key)
+        storage = self.storage[index]
+        while storage:
+            if storage.key == key:
+                return storage.value
+            storage = storage.next
+        # key was not found.
+        return None
+
+    def resize(self, new_capacity):
+        """
+        Changes the capacity of the hash table and
+        rehashes all key/value pairs.
+
+        Implement this.
+        """
+
+        load = self.get_load_factor()
+        if load > 0.7:
+            # Make a new array of double the size
+            new_table = [None] * (new_capacity)
+            old_table = self.storage
+            self.storage = new_table
+            self.capacity = new_capacity
+            # Go through all the elements in the old hash table
+            for element in old_table:
+                current = element
+                # we want to then put the element into the new_table
+                while current is not None:
+                    self.put(current.key, current.value)
+                    current = current.next
 
     def get_num_slots(self):
         """
@@ -34,7 +127,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,78 +136,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
-    def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
-
-
-    def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
-
-
-    def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
-
-    def put(self, key, value):
-        """
-        Store the value with the given key.
-
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
-
-
-    def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
-
-    def get(self, key):
-        """
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
-
-    def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
-        # Your code here
-
+        return self.count / self.capacity
 
 
 if __name__ == "__main__":
