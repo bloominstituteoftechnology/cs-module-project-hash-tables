@@ -52,22 +52,22 @@ class HashTable:
         return(self.node_count/len(self.capacity))
 
 
-    def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
+    # def fnv1(self, key):
+    #     """
+    #     FNV-1 Hash, 64-bit
 
-        Implement this, and/or DJB2.
-        """
+    #     Implement this, and/or DJB2.
+    #     """
 
-        hash_key = 14695981039346656037
-        fnv_prime = 1099511628211  
-        word = str(key)
-        key_bytes = word.encode()
+    #     hash_key = 14695981039346656037
+    #     fnv_prime = 1099511628211  
+    #     word = str(key)
+    #     key_bytes = word.encode()
 
-        for byte in key_bytes:
-            hash_key = (hash_key * fnv_prime) ^ byte
+    #     for byte in key_bytes:
+    #         hash_key = (hash_key * fnv_prime) ^ byte
         
-        return hash_key
+    #     return hash_key
 
 
     def djb2(self, key):
@@ -190,22 +190,15 @@ class HashTable:
 
         Implement this.
         """
+        previous_array = self.array
         new_array = [None] * new_capacity
-        array = self.array
-
-        for index in range(len(array)):
-            if array[index] is None:
-                pass
-            node = array[index]
-            while node.next is not None:
-                key = node.key
-                value = node.value
-                self.put(key, value)
-                node = node.next
-            self.put(node.key, node.value)
-
         self.array = new_array
-
+        self.capacity = new_capacity
+        self.number_of_items = 0
+        for hash_Node in previous_array:
+            while hash_Node != None:
+                self.put(hash_Node.key, hash_Node.value)
+                hash_Node = hash_Node.next    
 
 
 if __name__ == "__main__":
