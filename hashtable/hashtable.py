@@ -22,7 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = capacity
+        self.capacity = MIN_CAPACITY
+        self.size = 0
+        self.table = [None] * self.capacity
+
         
 
 
@@ -39,6 +42,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.capacity
+
 
 
     def get_load_factor(self):
@@ -59,6 +64,26 @@ class HashTable:
         """
 
         # Your code here
+        # what is a FNV-1 Hash, 64 bit?
+        # Non-crytographic hash function created by Glenn Fowler, London Curt Noll, and Kiem-Phong Vo.
+        # Constatnts 
+        # Start with an initail hash value 
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
+        key_of_data_bytes = key.encode()
+
+        hash = offset_basis 
+        for letter in key_of_data_bytes:
+            hash = hash * FNV_prime
+            # Use the XOR operator ^ between two values to perform bitwise "exclusive or" on their binary representations. When used between two integers, the XOR operator returns an integer.
+            hash = hash^letter
+            
+            return hash
+     
+
+
+        
+
 
 
     def djb2(self, key):
@@ -68,6 +93,7 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+      
 
 
     def hash_index(self, key):
@@ -75,8 +101,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -87,6 +113,10 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hashed_string = self.hash_index(key)
+        idx = hashed_string % len(self.table)
+        self.table[idx] = value
+
 
 
     def delete(self, key):
@@ -98,6 +128,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hashed_string = self.hash_index(key)
+        
+        if self.table[hashed_string]:
+           self.table[hashed_string] = None
+        else:
+            print(f'{key} not found ')
+
+
 
 
     def get(self, key):
@@ -109,6 +147,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        hashed_string = self.hash_index(key)
+        idx = hashed_string % len(self.table)
+        value = self.table[idx]
+
+        return value if value else None
         
 
 
