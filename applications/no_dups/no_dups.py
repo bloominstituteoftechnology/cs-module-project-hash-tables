@@ -1,6 +1,20 @@
 def no_dups(s):
-    # Your code here
+    d = {}
+    output = ""
+    for w in s.split(" "):
+        if d.get(w, None) is None:
+            if len(output) > 0:
+                output += " "
+            output += w
+            d[w] = True
+    return output
+            
 
+# def no_dups(s):
+#     d = {}
+#     for w in s.split(" "):
+#         d[w] = True
+#     return " ".join(d.keys())
 
 
 if __name__ == "__main__":
