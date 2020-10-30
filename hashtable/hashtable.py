@@ -22,7 +22,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = MIN_CAPACITY
+        self.capacity = capacity
         self.size = 0
         self.table = [None] * self.capacity
 
@@ -78,7 +78,7 @@ class HashTable:
             # Use the XOR operator ^ between two values to perform bitwise "exclusive or" on their binary representations. When used between two integers, the XOR operator returns an integer.
             hash = hash^letter
             
-            return hash
+        return hash
      
 
 
@@ -114,8 +114,10 @@ class HashTable:
         """
         # Your code here
         hashed_string = self.hash_index(key)
-        idx = hashed_string % len(self.table)
-        self.table[idx] = value
+        
+        self.table[hashed_string] = value
+
+        
 
 
 
@@ -133,7 +135,7 @@ class HashTable:
         if self.table[hashed_string]:
            self.table[hashed_string] = None
         else:
-            print(f'{key} not found ')
+            print('key not found ')
 
 
 
@@ -148,8 +150,8 @@ class HashTable:
         """
         # Your code here
         hashed_string = self.hash_index(key)
-        idx = hashed_string % len(self.table)
-        value = self.table[idx]
+        
+        value = self.table[hashed_string]
 
         return value if value else None
         
