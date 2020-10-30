@@ -7,6 +7,18 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    #  def __repr__(self):
+    #     contents = ''
+    #     current_node = self
+
+    #     while current_node.next:
+    #         contents += str(self.value) + ' => '
+    #         current_node = current_node.next
+
+    #     contents += 'None'
+
+    #     return contents
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -21,7 +33,15 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.items_stored = 0
+        self.storage = [None] * capacity
+
+    def __repr__(self):
+        report = f"Hashtable\n {self.items_stored}/{self.capacity} items stored.\n"
+        contents = "\n".join([str(index) + ": " + str(linked_list) for index, linked_list in enumerate(self.storage)])
+
+        return report + contents
 
 
     def get_num_slots(self):
@@ -44,6 +64,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.items_stored / self.capacity
 
 
     def fnv1(self, key):
@@ -63,6 +84,14 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        key_bytes = key.encode()
+        hash = 5381
+        for k_byte in key_bytes:
+            hash = hash * 33 + k_byte
+            hash &= 0xffffffff
+            
+        return hash
+                
 
 
     def hash_index(self, key):
@@ -83,6 +112,32 @@ class HashTable:
         """
         # Your code here
 
+        # i = self.hash_index(key)
+        # self.storage[i] = value
+
+        hash_index = self.hash_index(key)
+
+        if not self.storage[hash_index]:
+            self.storage[hash_index] = HashTableEntry(key, value)
+            self.items_stored += 1
+
+        else:
+            current_node = self.storage[hash_index]
+
+            while current_node.key != key and current_node.next:
+                current_node = current_node.next
+
+            if current_node.key == key:
+                current_node.value = value
+
+            else:
+                current_node.next = HashTableEntry(key, value)
+                self.items_stored += 1
+
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+
+            return value
 
     def delete(self, key):
         """
@@ -94,6 +149,43 @@ class HashTable:
         """
         # Your code here
 
+        # i = self.hash_index(key)
+        # self.storage[i] = None
+
+        index = self.hash_index(key)
+
+        current_node = self.storage[index]
+
+        if not current_node:
+            return 'none'
+
+        elif not current_node.next:
+            self.storage[index] = None
+            self.items_stored -= 1
+
+        else:
+            previous_node = None
+
+            while current_node.key != key and current_node.next:
+                previous_node = current_node
+                current_node = current_node.next
+
+            if not current_node.next:
+                previous_node.next = None
+                self.items_stored -= 1
+
+            else:
+                previous_node.next = current_node.next
+                self.items_stored -= 1
+
+        if self.get_load_factor() < 0.2:
+
+            new_capacity = self.capacity // 2
+
+            if  new_capacity < MIN_CAPACITY:
+                new_capacity = MIN_CAPACITY
+
+            self.resize(new_capacity)
 
     def get(self, key):
         """
@@ -104,7 +196,28 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        
+        # i = self.hash_index(key)
+        # return self.storage[i]
 
+        index = self.hash_index(key)
+
+        if self.storage[index]:
+            current_node = self.storage[index]
+
+            while current_node.key != key and current_node.next:
+                current_node = current_node.next
+
+            if not current_node.next:
+                return current_node.value
+
+            else:
+                return current_node.value
+
+        else:
+            return None
+
+                
 
     def resize(self, new_capacity):
         """
@@ -115,6 +228,22 @@ class HashTable:
         """
         # Your code here
 
+        old_storage = self.storage
+
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+
+        for item in old_storage:
+
+            if item:
+
+                current_node = item
+
+                while current_node:
+
+                    self.put(current_node.key, current_node.value)
+
+                    current_node = current_node.next
 
 
 if __name__ == "__main__":
@@ -141,7 +270,7 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
+    ht.resize(len(ht.capacity) * 2)
     new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
