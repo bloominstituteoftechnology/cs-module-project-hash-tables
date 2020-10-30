@@ -6,7 +6,7 @@ class HashTable:
     A hash table that with `capacity` buckets
     that accepts string keys
 
-    Implement this.
+    Implement this.dfs
     """
 
     def __init__(self, capacity=8):

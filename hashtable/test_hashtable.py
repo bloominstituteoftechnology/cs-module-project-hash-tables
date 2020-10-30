@@ -7,7 +7,6 @@ class TestHashTable(unittest.TestCase):
 
     def test_hash_table_insertion_and_retrieval(self):
         ht = HashTable(8)
-
         ht.put("key-0", "val-0")
         ht.put("key-1", "val-1")
         ht.put("key-2", "val-2")
@@ -158,6 +157,7 @@ class TestHashTable(unittest.TestCase):
         self.assertTrue(return_value is None)
         return_value = ht.get("key-9")
         self.assertTrue(return_value is None)
+
 
 if __name__ == '__main__':
     unittest.main()

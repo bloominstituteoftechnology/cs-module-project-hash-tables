@@ -59,3 +59,4 @@ dude = LinkedList()
 dude.add_to_head("hello", "mate")
 dude.delete("hello")
 print(dude.find("hello"))
+# this should work
