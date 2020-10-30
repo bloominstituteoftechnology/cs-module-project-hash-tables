@@ -22,6 +22,8 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = 8
+        self.arr = [none for i in range(self.capacity)]
 
 
     def get_num_slots(self):
