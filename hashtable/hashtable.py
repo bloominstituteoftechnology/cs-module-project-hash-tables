@@ -1,16 +1,4 @@
-class HashTableEntry:
-    """
-    Linked List hash table key/value pair
-    """
-
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
-
-
-# Hash table can't have fewer than this many slots
-# MIN_CAPACITY = 8
+from linked_list import LinkedList, HashTableEntry
 
 
 class HashTable:
@@ -105,9 +93,19 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if self.buckets[index] != None:
-            print("Something already exists at this index.")
-        self.buckets[index] = value
+        if self.buckets[index] == None:
+            self.buckets[index] = LinkedList()
+            self.buckets[index].add_to_head(key, value)
+        elif self.buckets[index].find(key):
+            self.buckets[index].delete(key)
+            self.buckets[index].add_to_head(key, value)
+
+        else:
+            self.buckets[index].add_to_head(key, value)
+        # index = self.hash_index(key)
+        # if self.buckets[index] != None:
+        #     print("Something already exists at this index.")
+        # self.buckets[index] = value
 
     def delete(self, key):
         """
@@ -118,7 +116,10 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.buckets[index] = None
+        if self.buckets[index] == None:
+            return None
+        else:
+            return self.buckets[index].delete(key)
 
     def get(self, key):
         """
@@ -129,16 +130,22 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        return self.buckets[index]
+        if self.buckets[index]:
+            if self.buckets[index].find(key):
+                answer = self.buckets[index].find(key)
+                return answer
+            else:
+                return None
 
     # def resize(self, new_capacity):
-    #     """
-    #     Changes the capacity of the hash table and
-    #     rehashes all key/value pairs.
-
-    #     Implement this.
-    #     """
     #     # Your code here
+    #     # make a new array that is double the current size.
+    #     # go through each linked list in the array
+    #     # go through each item and rehash it
+    #     # insert the items into their new locations
+
+    #     # def shrink
+    #     # # same as resize just cut in half.
 
 
 if __name__ == "__main__":
@@ -153,6 +160,7 @@ if __name__ == "__main__":
     ht.put("line_7", "Beware the Jubjub bird, and shun")
     ht.put("line_8", 'The frumious Bandersnatch!"')
     ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_9", "test;")
     ht.put("line_10", "Long time the manxome foe he sought--")
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
@@ -176,3 +184,25 @@ if __name__ == "__main__":
     #     print(ht.get(f"line_{i}"))
 
     # print("")
+
+    # def putLL(self, key, value):
+    #     # find start of the linked list using index
+    #     index = self.hash_index(key)
+    #     # insert into this linked list a new HashtableEntry
+    #     # insert into the head.
+    #     # if key already exists,
+    #     # replace the value with the new value
+    #     # else add new value to head.
+    #     self.buckets[index] = value
+
+    # def get(self, key):
+    #     # get index
+    #     # get the linked list at the computed index
+    #     # search through for key
+    #     # if it exists, return the key
+    #     # else, return None
+
+    # def delete(key):
+    #     # search through linked list for key
+    #     # delete that node
+    #     # return value of deleted node
