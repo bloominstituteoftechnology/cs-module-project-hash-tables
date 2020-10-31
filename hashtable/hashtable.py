@@ -30,6 +30,8 @@ class HashTable:
         self.bucket = [None] * self.capacity
         self.count = 0
 
+    def __repr__(self):
+        return str(self.capacity)
 
     def get_num_slots(self):
         """
