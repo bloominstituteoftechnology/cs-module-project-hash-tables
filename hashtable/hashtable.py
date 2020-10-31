@@ -12,6 +12,8 @@ class HashTable:
     def __init__(self, capacity=8):
         self.buckets = [None] * capacity
         self.capacity = capacity
+        self.used = 0
+        self.load = self.get_load_factor()
 
     def get_num_slots(self):
         """
@@ -23,7 +25,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.capacity
+        return len(self.buckets)
 
     def get_load_factor(self):
         """
@@ -31,7 +33,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        load = self.used/self.capacity
+        return load
 
     def fnv1(self, key):
         """
@@ -69,10 +72,10 @@ class HashTable:
         total = 0
 
         for char in byte:
-            print(char)
+            # print(char)
             total += char
             total &= 0xffffffff
-            print("total 32 bit", total)
+            # print("total 32 bit", total)
         print(total % self.capacity)
         return total % self.capacity  # 8
 
@@ -96,12 +99,13 @@ class HashTable:
         if self.buckets[index] == None:
             self.buckets[index] = LinkedList()
             self.buckets[index].add_to_head(key, value)
+
         elif self.buckets[index].find(key):
             self.buckets[index].delete(key)
             self.buckets[index].add_to_head(key, value)
-
         else:
             self.buckets[index].add_to_head(key, value)
+        self.used += 1
         # index = self.hash_index(key)
         # if self.buckets[index] != None:
         #     print("Something already exists at this index.")
@@ -119,6 +123,7 @@ class HashTable:
         if self.buckets[index] == None:
             return None
         else:
+            self.used -= 1
             return self.buckets[index].delete(key)
 
     def get(self, key):
@@ -137,15 +142,29 @@ class HashTable:
             else:
                 return None
 
-    # def resize(self, new_capacity):
-    #     # Your code here
-    #     # make a new array that is double the current size.
-    #     # go through each linked list in the array
-    #     # go through each item and rehash it
-    #     # insert the items into their new locations
+    def resize(self, new_capacity):
+        # Your code here
+        # make a new array that is double the current size.
+        oldArr = self.buckets
+        self.buckets = [None] * new_capacity
+        self.capacity = new_capacity
+        print(len(self.buckets))
+        for i in oldArr:
+            if i != None:
+                current = i.head
+                while current != None:
+                    self.put(current.key, current.value)
+                    current = current.next
+            else:
+                continue
 
-    #     # def shrink
-    #     # # same as resize just cut in half.
+        # go through each linked list in the array
+        # go through each item and rehash it
+        # insert the items into their new locations
+
+    def print_out_hashtable(self):
+        for i in self.buckets:
+            print(i)
 
 
 if __name__ == "__main__":
@@ -160,49 +179,30 @@ if __name__ == "__main__":
     ht.put("line_7", "Beware the Jubjub bird, and shun")
     ht.put("line_8", 'The frumious Bandersnatch!"')
     ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_9", "test;")
     ht.put("line_10", "Long time the manxome foe he sought--")
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
 
     print("")
-    ht.simp_hash_fn("yodd dyo ma", "black88")
+    # ht.simp_hash_fn("yodd dyo ma", "black88")
 
     # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
-
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
-
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-
-    # # Test if data intact after resizing
     # for i in range(1, 13):
     #     print(ht.get(f"line_{i}"))
 
-    # print("")
+    # print(ht.resize(ht.capacity * 2))
 
-    # def putLL(self, key, value):
-    #     # find start of the linked list using index
-    #     index = self.hash_index(key)
-    #     # insert into this linked list a new HashtableEntry
-    #     # insert into the head.
-    #     # if key already exists,
-    #     # replace the value with the new value
-    #     # else add new value to head.
-    #     self.buckets[index] = value
+    # # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity*2)
+    new_capacity = ht.get_num_slots()
 
-    # def get(self, key):
-    #     # get index
-    #     # get the linked list at the computed index
-    #     # search through for key
-    #     # if it exists, return the key
-    #     # else, return None
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # def delete(key):
-    #     # search through linked list for key
-    #     # delete that node
-    #     # return value of deleted node
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
+
+    print("")
+    print(ht.get_load_factor())
+    ht.print_out_hashtable()
