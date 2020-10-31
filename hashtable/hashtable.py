@@ -23,7 +23,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
-        self.size = 0
+        self.load = 0
         self.table = [None] * self.capacity
 
         
@@ -114,8 +114,13 @@ class HashTable:
         """
         # Your code here
         hashed_string = self.hash_index(key)
+
+        if self.table[hashed_string] != None:
+            print("warning collistion!!!")
         
         self.table[hashed_string] = value
+
+        self.load += 1
 
         
 
@@ -131,11 +136,16 @@ class HashTable:
         """
         # Your code here
         hashed_string = self.hash_index(key)
-        
-        if self.table[hashed_string]:
-           self.table[hashed_string] = None
+        if self.table == None:
+            print("warning no key!!")
+
         else:
-            print('key not found ')
+           
+           self.table[hashed_string] = None
+
+           self.load -= 1
+     
+            
 
 
 
