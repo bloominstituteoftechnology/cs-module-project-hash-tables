@@ -22,6 +22,13 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+          # Your code here
+        # initialize the hash table with empty storage list entries
+        # size of the array = min 8
+        # will store our data in - set equal to None force python to get a list that has a fixed length
+        self.capacity = MIN_CAPACITY
+        self.bucket = [None] * self.capacity
+        self.count = 0
 
 
     def get_num_slots(self):
