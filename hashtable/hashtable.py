@@ -36,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.capacity
+        return len(self._table)
 
 
     def get_load_factor(self):
@@ -64,9 +64,9 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         hash = 5381
-        for c in key:
-            hash = (hash * 33) + ord(c)
-        return hash
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -85,8 +85,8 @@ class HashTable:
 
         Implement this.
         """
-        location = self.hash_index(key)
-        self._table[location] = value
+
+        self._table[self.hash_index(key)] = value
 
 
     def delete(self, key):
@@ -97,9 +97,11 @@ class HashTable:
 
         Implement this.
         """
-        location = self.hash_index(key)
-        self._table[location] = None
 
+        value = self._table[self.hash_index(key)]
+        if value == None:
+            print('value is already None')
+        self._table[self.hash_index(key)] = None
 
     def get(self, key):
         """
