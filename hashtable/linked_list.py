@@ -63,3 +63,15 @@ class LinkedList:
             existingNode.value = node.value
         else:
             self.insert_at_head(node) # O(1)
+
+    def add_to_tail(self, value):
+        # 0. create new node from value
+        new_node = Node(value, None)
+        # 1. check if list is empty
+        if not self.head:
+            # if list is empty, set both head and tail to new node
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.set_next(new_node)
+            self.tail = new_node

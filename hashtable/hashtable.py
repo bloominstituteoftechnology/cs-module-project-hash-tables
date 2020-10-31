@@ -1,3 +1,5 @@
+from linked_list import LinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -93,7 +95,12 @@ class HashTable:
         # Your code here
         # self.table[self.hash_index(key)] = value
 
-        
+        # h = self.hash_index(key)
+        for element in self.table:
+            if len(element) == 2 and element[0] == key:
+                self.table[key][value].add_to_tail()
+            else:
+                self.table[self.hash_index(key)] = value
 
 
     def delete(self, key):
