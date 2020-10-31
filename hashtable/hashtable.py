@@ -54,8 +54,13 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
-        # Your code here
+        hval = 0x811c9dc5
+        fnv_32_prime = 0x01000193
+        uint32_max = 2 ** 32
+        for s in key:
+            hval = hval ^ ord(s)
+            hval = (hval * fnv_32_prime) % uint32_max
+        return hval
 
 
     def djb2(self, key):
@@ -75,8 +80,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
