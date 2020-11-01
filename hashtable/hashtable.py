@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -23,6 +24,15 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
 
+        # if self.capacity > MIN_CAPACITY:
+        #     self.capacity = capacity
+        # else:
+        #     self.capacity = MIN_CAPACITY
+        self.capacity = capacity
+
+        self.HashTable = [None] * capacity
+
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -36,6 +46,7 @@ class HashTable:
         """
         # Your code here
 
+        return len(self.HashTable)
 
     def get_load_factor(self):
         """
@@ -45,6 +56,7 @@ class HashTable:
         """
         # Your code here
 
+        return self.size / self.get_num_slots()
 
     def fnv1(self, key):
         """
@@ -55,6 +67,18 @@ class HashTable:
 
         # Your code here
 
+        FNV_offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
+
+        hashed_var = FNV_offset_basis
+
+        string_bytes = key.encode()
+
+        for b in string_bytes:
+            hashed_var = hashed_var * FNV_prime
+            hashed_var = hashed_var ^ b
+
+        return hashed_var
 
     def djb2(self, key):
         """
@@ -64,13 +88,17 @@ class HashTable:
         """
         # Your code here
 
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -82,7 +110,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        idx = self.hash_index(key)
 
+        if self.HashTable[idx] is None:
+            self.HashTable[idx] = HashTableEntry(key, value)
+            self.size += 1
+            return
+
+        curr = self.HashTable[idx]
+        self.HashTable[idx] = HashTableEntry(key, value)
+        self.HashTable[idx].next = curr
+        self.size += 1
+
+        # Hash Table Without Collisions - Day # 1
+
+        # entry = HashTableEntry(key, value)
+        # index = self.hash_index(key)
+        # self.HashTable[index] = entry
+        # self.size += 1
 
     def delete(self, key):
         """
@@ -94,6 +139,19 @@ class HashTable:
         """
         # Your code here
 
+        self.put(key, None)
+        self.size -= 1
+
+        # if self.HashTable[idx] is None:
+        #     print(f"The key {key} cannot be found!")
+
+        # else:
+        #     self.HashTable[idx] = None
+        #     self.size -= 1
+
+      # The following code is for no Collisions - Day # 1
+      # index = self.hash_index(key)
+      # self.HashTable[index].value = None
 
     def get(self, key):
         """
@@ -105,6 +163,24 @@ class HashTable:
         """
         # Your code here
 
+        idx = self.hash_index(key)
+        node = self.HashTable[idx]
+
+        while node is not None and node.key != key:
+
+            node = node.next
+
+        if node is None:
+            return None
+
+        else:
+            return node.value
+
+        # Get method for no collisions = Day # 1
+
+        # index = self.hash_index(key)
+
+        # return self.HashTable[index].value
 
     def resize(self, new_capacity):
         """
@@ -114,7 +190,20 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if new_capacity < MIN_CAPACITY:
+            new_capacity = MIN_CAPACITY
 
+        prev_HashTable = self.HashTable
+        self.capacity = new_capacity
+        self.HashTable = [None] * new_capacity
+        self.size = 0
+
+        # Rehash all the values from prev_HashTable and mod them into new table
+        for item in prev_HashTable:
+            current = item
+            while current:
+                self.put(current.key, current.value)
+                current = current.next
 
 
 if __name__ == "__main__":
