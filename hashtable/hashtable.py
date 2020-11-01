@@ -1,12 +1,66 @@
-class HashTableEntry:
-    """
-    Linked List hash table key/value pair
-    """
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
+class Node:
+  def __init__(self, value):
+    self.value = value
+    self.next = None
 
+class LinkedList:
+  def __init__(self):
+    self.head = None
+
+  def __repr__(self):
+    currStr = ""
+    curr = self.head
+    while curr != None:
+      currStr += f"{str(curr.value)} ->"
+      curr = curr.next
+    return currStr
+
+  def find(self, value):
+    # return node with value
+    curr = self.head
+
+    #walk through the LL and check the value
+    while curr != None:
+      if curr.value == value:
+        return curr
+      curr = curr.next
+
+    return None
+
+  def delete(self, value):
+    curr = self.head
+
+    # special case for remove head
+    if curr.value == value:
+      self.head = curr.next
+      curr.next = None
+      return curr
+
+    prev = None
+
+    while curr != None:
+      if curr.value == value:
+        prev.next = curr.next
+        curr.next = None
+        return curr
+      else:
+        prev = curr
+        curr = curr.next
+
+    return None
+
+  # insert node at head of list
+  def add_to_head(self, node):
+    node.next = self.head
+    self.head = node
+
+  # overwrite node or insert node at head
+  def insert_at_head_or_overwrite(self, node):
+    existing_node = self.find(node.value)
+    if existing_node != None:
+      existing_node.value = node.value
+    else:
+      self.add_to_head(node)
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -23,7 +77,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.table = [None] * capacity
-        # self.count = 0
+        self.count = 0
 
 
     def get_num_slots(self):
@@ -36,8 +90,7 @@ class HashTable:
 
         Implement this.
         """
-        # return len(self.table)
-        pass
+        return len(self.table)
         
 
 
@@ -47,26 +100,14 @@ class HashTable:
 
         Implement this.
         """
-        # return self.count / self.get_num_slots()
+        return self.count / self.get_num_slots()
 
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
         pass
 
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
         hash = 5381
         for s in key:
             hash = ((hash << 5) + hash) + ord(s)
@@ -74,33 +115,29 @@ class HashTable:
 
 
     def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
-        #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+        # hash the key and get the index
+        index = self.hash_index(key)
+        # check if the table at index is empty
+        if self.table[index] == None:
+            # if it is -> initialize new LinkedList
+            ll = LinkedList()
+            # set table at index to newly created LL
+            self.table[index] = ll
+            # add created node to the head of the LL
+            ll.add_to_head(Node(value))
+            # increase count
+            self.count += 1
+        else:
+            # if table at index already has a LL, get reference to current LL
+            curr_ll: LinkedList = self.table[index]
+            # set the new Node as the head
+            curr_ll.add_to_head(Node(value))
+            # increase count
+            self.count += 1
 
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
-        # index = self.hash_index(key)
-        # entry = self.table[index]
-
-        # if self.count == (len(self.table)):
-        #     self.resize(len(self.table) + 1)
-        
-        # if entry is None:
-        #     self.table[index] = HashTableEntry(key, value)
-        #     self.count += 1
-
-        self.table[self.hash_index(key)] = value
         
 
 

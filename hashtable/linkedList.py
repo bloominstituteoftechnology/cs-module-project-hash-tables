@@ -63,16 +63,16 @@ class LinkedList:
       self.add_to_head(node)
 
 
-a = Node(1)
-b = Node(2)
-c = Node(3)
+# a = Node(1)
+# b = Node(2)
+# c = Node(3)
 
-ll = LinkedList()
+# ll = LinkedList()
 
-ll.add_to_head(c)
-ll.add_to_head(b)
-ll.add_to_head(a)
-ll.insert_at_head_or_overwrite(c)
-ll.delete(2)
+# ll.add_to_head(c)
+# ll.add_to_head(b)
+# ll.add_to_head(a)
+# ll.insert_at_head_or_overwrite(c)
+# ll.delete(2)
 
-print(ll)
+# print(ll)
