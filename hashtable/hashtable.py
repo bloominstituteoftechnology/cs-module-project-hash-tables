@@ -21,7 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.storage = [None]*capacity
+        self.total = 0 
 
 
     def get_num_slots(self):
@@ -34,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -57,12 +59,15 @@ class HashTable:
 
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        hash = 5381
+        for x in s:
+        # ord(x) simply returns the unicode rep of the
+        # character x
+            hash = (( hash << 5) + hash) + ord(x)
+            # Note to clamp the value so that the hash is 
+            # related to the power of 2
+            return hash & 0xFFFFFFFF
+        
 
 
     def hash_index(self, key):
