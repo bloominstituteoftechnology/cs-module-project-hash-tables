@@ -26,7 +26,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self._table = [None] * capacity
-        self.number_of_records = 0
+        self.capacity_occupied = 0
 
 
     def get_num_slots(self):
@@ -48,7 +48,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.number_of_records / self.capacity
+        return self.capacity_occupied / self.capacity
 
 
     def fnv1(self, key):
@@ -95,19 +95,19 @@ class HashTable:
         if self._table[address] == None:
             linked_list = LinkedList()
             self._table[address] = linked_list
+            self.capacity_occupied +=1
 
         location = self._table[address]
-        curr_node = location.head
+        curr = location.head
 
-        while curr_node:
-            if curr_node.key == key:
-                curr_node.value = value
+        while curr:
+            if curr.key == key:
+                curr.value = value
 
-            curr_node = curr_node.next
+            curr = curr.next
 
         entry = HashTableEntry(key, value)
         location.insert_at_head_or_overwrite(entry)
-        self.number_of_records +=1
 
     def delete(self, key):
         """
@@ -117,9 +117,16 @@ class HashTable:
 
         Implement this.
         """
+        entry = self.find_key(key)
+        if entry == None:
+            return None
 
-        self.put(key, None)
-        self.number_of_records -=1
+        address = self.hash_index(key)
+        self._table[address].delete(entry.value)
+
+        # decrement
+        if self._table[address].head == None:
+            self.capacity_occupied -=1
 
     def get(self, key):
         """
@@ -129,17 +136,22 @@ class HashTable:
 
         Implement this.
         """
+        entry = self.find_key(key)
+        if entry == None:
+            return None
+
+        return entry.value
+
+
+    def find_key(self, key):
         address = self.hash_index(key)
-        curr_node = self._table[address]
+        curr = self._table[address].head
 
-        while curr_node:
-            if curr_node.key == key:
-                return curr_node.value
-            curr_node = curr_node.next
-
+        while curr:
+            if curr.key == key:
+                return curr
+            curr = curr.next
         return None
-
-
 
     def resize(self, new_capacity):
         """
@@ -150,9 +162,17 @@ class HashTable:
         """
 
         if self.get_load_factor() > 0.7:
-            
+            old_table = self._table
+            self._table = [None] * new_capacity
+            self.capacity = new_capacity
 
+            for linked_list in old_table:
+                if linked_list != None:
+                    curr = linked_list.head
 
+                    while curr:
+                        self.put(curr.key, curr.value)
+                        curr = curr.next
 
 
 if __name__ == "__main__":
@@ -190,9 +210,21 @@ if __name__ == "__main__":
 
     print("")
 
+    # ht.delete("line_12")
+
+    ht.resize(16)
+
 """
+Assignment 1
 ----------------------------------------------------------------------
 Ran 3 tests in 0.001s
+
+OK
+
+Assignment 2
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
 
 OK
 """
