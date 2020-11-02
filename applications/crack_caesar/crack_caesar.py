@@ -2,38 +2,43 @@
 # decode it.
 
 # Your code here
-from collections import OrderedDict
+with open('ciphertext.txt','r') as f_open:
+    data = f_open.read()
 
-def readText():
-    letterDict = {}
-    cipherArray = ['E', 'T', 'A', 'O', 'H', 'N', 'R', 'I', 'S', 'D', 'L', 'W', 'U', 'G', 'F', 'B', 'M', 'Y', 'C', 'P', 'K', 'V', 'Q', 'J', 'X', 'Z']
-    decodedDict = {}
+myKey = {
+    "H": "A",
+    "R": "F",
+    "I": "K",
+    "X": "P",
+    "A": "U",
+    "S": "Z",
+    "Z": "B",
+    "J": "G",
+    "G": "L",
+    "K": "Q",
+    "M": "V",
+    "Y": "C",
+    "D": "H",
+    "L": "M",
+    "U": "R",
+    "B": "W",
+    "W": "D",
+    "P": "I",
+    "C": "N",
+    "N": "S",
+    "Q": "X",
+    "O": "E",
+    "T": "J",
+    "E": "O",
+    "F": "T",
+    "V": "Y"
+}
 
-    f = open("applications/crack_caesar/ciphertext.txt", "r")
-    contents = f.read()
+def decoder(textFile):
+    for i in range(0, len(textFile)):
+        for each in myKey:
+            if each in textFile[i]:
+                textFile = textFile[i].replace(each, myKey[each])
+    return textFile
 
-    for x in contents:
-        if x in letterDict:
-            letterDict[x] += 1
-        else:
-            if x.isalpha():
-                letterDict[x] = 1
-    
-    sorted_letterDict = sorted(letterDict.items(), key=lambda x: (x[1], x[0]), reverse=True)
-
-    index = 0
-    for x in sorted_letterDict:
-        for letter in x[-2]:
-            decodedDict[letter] = cipherArray[index]
-            index += 1
-    print(decodedDict)
-
-    decodedText = ""
-    for x in contents:
-        if x in decodedDict:
-            decodedText += decodedDict[x]
-        else:
-            decodedText += x
-    return print(decodedText)
-
-readText()
+print(decoder(data))
