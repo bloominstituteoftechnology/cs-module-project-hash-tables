@@ -24,30 +24,6 @@ def word_count(s):
     return words_dict
         
 
-
-
-    # listWords = []
-
-    
-    # for word in words:
-    #     listWords.append(word)
-    #     return listWords
-    # return words
-
-    
-
-    # for word in s:
-    #     if words_dict[word]:
-    #         words_dict[word] += 1
-    #     else:
-    #         words_dict[word] = 1
-
-    # ignore these characters
-    # : ; , . - + = / \ | [ ] { } ( ) * ^ & 
-
-
-    # return a dictioany of words and their counts
-
 if __name__ == "__main__":
     # print(word_count(""))
     # print(word_count("Hello"))
