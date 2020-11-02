@@ -30,87 +30,71 @@ class HashTable:
         self.bucket = [None] * self.capacity
         self.count = 0
 
+    def __repr__(self):
+        return str(self.capacity)
 
     def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-
-        One of the tests relies on this.
-
-        Implement this.
-        """
         # Your code here
+        return len(self.bucket)
 
 
     def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
         # Your code here
+        return self.count / len(self.bucket)
 
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
-
+        pass
+       
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        hash = 5381
+        # iterates characters in key,
+        for character in key:
+            # ord: numerical value of that character -->
+            hash = ((hash << 5) + hash) + ord(character)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
-        #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+        idx = self.hash_index(key)
+        
+        node = HashTableEntry(key,value)
+        
+        key = self.bucket[idx]
+        
+        self.count += 1
 
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
-
+        # the key exist
+        if key:
+            # overwrite with the node
+            self.bucket[idx] = node
+            self.bucket[idx].next = key
+        # if self.capacity[index] exist,
+        # use LL to set next to the repeated key and value
+        else:
+            self.bucket[idx] = node
+        # print('adding node', node.next)
+        print(self.bucket)
+        return self.bucket[idx]
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
-
+        self.count -= 1
+        self.put(key, None)
+       
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
+        idx = self.hash_index(key)
+        
+        arr = self.bucket[idx]
+        
+        while arr:
+            if arr.key == key:
+                return arr.value
+            arr = arr.next
+       
 
 
     def resize(self, new_capacity):
