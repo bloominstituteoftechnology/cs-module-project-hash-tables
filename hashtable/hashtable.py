@@ -60,36 +60,41 @@ class HashTable:
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+        idx = self.hash_index(key)
+        
+        node = HashTableEntry(key,value)
+        
+        key = self.bucket[idx]
+        
+        self.count += 1
 
-        Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
-        """
-        # Your code here
-
+        # the key exist
+        if key:
+            # overwrite with the node
+            self.bucket[idx] = node
+            self.bucket[idx].next = key
+        # if self.capacity[index] exist,
+        # use LL to set next to the repeated key and value
+        else:
+            self.bucket[idx] = node
+        # print('adding node', node.next)
+        print(self.bucket)
+        return self.bucket[idx]
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
-
-
+        self.count -= 1
+        self.put(key, None)
+       
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
-
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
+        idx = self.hash_index(key)
+        
+        arr = self.bucket[idx]
+        
+        while arr:
+            if arr.key == key:
+                return arr.value
+            arr = arr.next
+       
 
 
     def resize(self, new_capacity):
