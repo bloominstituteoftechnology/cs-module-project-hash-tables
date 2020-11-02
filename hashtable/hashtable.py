@@ -2,6 +2,7 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -21,8 +22,12 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        if capacity >= MIN_CAPACITY:
+            self.capacity = capacity
+        else:
+            self.capacity = MIN_CAPACITY
+        self.bucket = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -35,7 +40,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return len(self.bucket)
 
     def get_load_factor(self):
         """
@@ -44,66 +49,122 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.count / self.get_num_slots()
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
+         prime_32 = 16777619
+         hash_32 = 2166136261
+         fnv_prime_64 = 1099511628211  # (in hex: 0x100000001b3)
+         hash_64 = 14695981039346656037  # (in hex: 0xcbf29ce484222325)
 
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
-
+        for char in key:
+            hash_64 = hash_64 * fnv_prime_64
+            hash_64 = hash_64 ^ ord(char)
+        return hash
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
-
+        hash = 5381
+        for x in key:
+            # shift variable, then add it, then add the ord
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xffffffff
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+        # first_day
+        # index = self.hash_index(key)
+        # self.bucket[index] = value
 
-        Hash collisions should be handled with Linked List Chaining.
+        # second_day
+        index = self.hash_index(key)  # returns a number
+        new_node = HashTableEntry(key, value)  # returns a node Object
+        cur_node = self.bucket[index]  # returns node Object or None
+        if self.bucket[index] == None:
+            # if node at index does NOT exist, then insert new_node at index
+            self.bucket[index] = new_node
+            self.count += 1
+        elif self.bucket[index] is not None and self.bucket[index].key == key:
+            # if node at index exists, and node.key matches key, replace value at key
+            self.bucket[index].value = value
 
-        Implement this.
-        """
-        # Your code here
+        elif self.bucket[index] is not None:
+            # if node at index exits...
+            while cur_node is not None:
+                # loop while cur_node exists...
+                if cur_node.next is None:
+                    # ...if next node is None, then insert node into next index
+                    cur_node.next = new_node
+                    self.count += 1
+                    return cur_node
+                elif cur_node.next is not None and cur_node.next.key == key:
+                    # ...if next node exists, and next node.key matches, replace value
+                    cur_node.next.value = value
+                    return cur_node.next
+                else:
+                    # move over to next node, run through the loop again
+                    cur_node = cur_node.next
+
+
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
+        # first_day
+        # index = self.hash_index(key)
+        # self.bucket[index] = None
 
-        Print a warning if the key is not found.
+        
+        # second_day
+        index = self.hash_index(key)  # returns a number
+        is_traversing = True
+        cur_node = self.bucket[index]  # returns a node Object
+        prev_node = None
 
-        Implement this.
-        """
-        # Your code here
+        while is_traversing:
+            # while is_traversing is true
+            if cur_node.key:
+                # ...if current node key exists
+                if cur_node.key == key:
+                    # ...if current node key matches, set current to none
+                    cur_node.value = None
+                if cur_node.next:
+                    # ...if next node exists, set current node to next node
+                     self.bucket[index] = cur_node.next
+                     cur_node = cur_node.next
+                else:
+                    self.bucket[index] = None
+                    cur_node = None
+            else:
+                return "Error"
 
+        
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
+        # first_day
+        # index = self.hash_index(key)
+        # return self.bucket[index]
 
-        Returns None if the key is not found.
+        # second_day
+        index = self.hash_index(key)
+        cur_node = self.bucket[index]
 
-        Implement this.
-        """
-        # Your code here
+        # if cur_node exists, and the key matches node key: return the node value
+        if cur_node is not None and cur_node.key == key:
+            return cur_node.value
+        else:
+            while cur_node is not None:
+                if cur_node.key == key:
+                    return cur_node.value
+                cur_node = cur_node.next
+
+        return None
+
 
 
     def resize(self, new_capacity):
@@ -114,6 +175,26 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        oldBucket = self.bucket
+        # create a new, empty bucket with new_capacity length
+        self.bucket = [None] * new_capacity
+        self.count = 0
+        self.capacity = new_capacity
+        index = 0
+
+        while index < len(oldBucket):
+            cur_node = oldBucket[index]
+
+            if cur_node is not None:
+                next_node = cur_node.next
+                cur_node.next = None
+                self.put(cur_node.key, cur_node.value)
+                oldBucket[index] = next_node
+            elif cur_node is None:
+                # index ONLY increments when cur_node is None
+                index += 1
+
+
 
 
 
