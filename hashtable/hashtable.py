@@ -66,8 +66,9 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         hash = 5381
-        for c in key:
-            hash = (hash * 33) + ord(c)
+        bytes_to_hash = key.encode()
+        for byte in bytes_to_hash:
+            hash = (hash * 33) + byte
         return hash & 0xFFFFFFFF
 
     def simp_hash_fn(self, key, value):
