@@ -146,12 +146,12 @@ class HashTable:
         elif not current.next:
             self.storage[hash_index] = None
             self.item_stored -= 1
-        #store a pointer to the previous node
+        #store a pointer to the previous node 
         else:
             prev = None
             
             #move to next node 
-            #if key won't match and there is a next
+            #if key won't match and there is a next 
             while current.key != key and current.next:
                 prev = current
                 current = current.next
@@ -196,7 +196,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        old_storage = self.storage
+        old_storage = self.storage 
 
         # initialize new hashtable
         self.capacity = new_capacity
