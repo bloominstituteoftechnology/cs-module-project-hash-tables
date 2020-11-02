@@ -1,5 +1,8 @@
 # Your code here
+import math
+import random
 
+table = {}
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -15,7 +18,14 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
+    v = math.pow(x, y)
+    if v not in table:
+        table[v] = math.factorial(v)
+    v = table[v]
+    v //= (x + y)
+    v %= 982451653
 
+    return v
 
 
 # Do not modify below this line!
