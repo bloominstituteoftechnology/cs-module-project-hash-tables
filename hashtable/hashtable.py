@@ -41,17 +41,22 @@ class HashTable:
         FNV-1 Hash, 64-bit
 
         Implement this, and/or DJB2.
+        - start hash at some large number(fnv offset_basis)
+        - the hash variable maintains our total.
+        - xor (looking at number in binary form)
+        looks at every pair of bits and treats 1 as true and 0 as false. 
         """
         pass
         # FNV_prime = 1099511628211
         # offset_basis = 14695981039346656037
 
         # #FNV-1a Hash Function
-        # hash = offset_basis + seed
+        # hash = offset_basis
+        #bytes_t0_hash = key.encode()
         # what is seed here?
-        # for char in key:
+        # for bytes in bytes_to_hash:
         #     hash = hash * FNV_prime
-        #     hash = hash ^ ord(char)
+        #     hash = hash ^ byte
         # return hash
 
     def djb2(self, key):
