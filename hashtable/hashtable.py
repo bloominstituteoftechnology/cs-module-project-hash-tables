@@ -164,12 +164,26 @@ class HashTable:
     def resize(self, new_capacity):
         old_table = self.table
         self.table = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for ll in old_table:
+            while ll != None:
+                index = self.hash_index(ll.node.key)
+                entry = self.table[index]
+                if entry is None:
+                    entry = Node(node.value, node.key)
+                else:
+                    while entry.next != None:
+                        entry = entry.next
+                    entry.next = Node(node.value, node.key)
+
+                node = node.next
 
     def check_and_resize(self):
         if self.get_load_factor() > 0.7:
             self.resize(self.capacity * 2)
         elif self.get_load_factor() < 0.2:
-            self.resize(self.capacity / 2)
+            self.resize(self.capacity // 2)
 
 
 
