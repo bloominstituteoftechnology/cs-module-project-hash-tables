@@ -1,4 +1,6 @@
 # http://www.goodmath.org/blog/2013/10/20/basic-data-structures-hash-tables/
+from linkedlist import *
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -24,6 +26,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self._table = [None] * capacity
+        self.number_of_records = 0
 
 
     def get_num_slots(self):
@@ -36,7 +39,7 @@ class HashTable:
 
         Implement this.
         """
-        return len(self._table)
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -45,7 +48,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.number_of_records / self.capacity
 
 
     def fnv1(self, key):
@@ -77,6 +80,7 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
+
     def put(self, key, value):
         """
         Store the value with the given key.
@@ -85,9 +89,25 @@ class HashTable:
 
         Implement this.
         """
+        # LinkedList.insert_at_head_or_overwrite({key, value})
+        address = self.hash_index(key)
 
-        self._table[self.hash_index(key)] = value
+        if self._table[address] == None:
+            linked_list = LinkedList()
+            self._table[address] = linked_list
 
+        location = self._table[address]
+        curr_node = location.head
+
+        while curr_node:
+            if curr_node.key == key:
+                curr_node.value = value
+
+            curr_node = curr_node.next
+
+        entry = HashTableEntry(key, value)
+        location.insert_at_head_or_overwrite(entry)
+        self.number_of_records +=1
 
     def delete(self, key):
         """
@@ -98,10 +118,8 @@ class HashTable:
         Implement this.
         """
 
-        value = self._table[self.hash_index(key)]
-        if value == None:
-            print('value is already None')
-        self._table[self.hash_index(key)] = None
+        self.put(key, None)
+        self.number_of_records -=1
 
     def get(self, key):
         """
@@ -111,7 +129,16 @@ class HashTable:
 
         Implement this.
         """
-        return self._table[self.hash_index(key)]
+        address = self.hash_index(key)
+        curr_node = self._table[address]
+
+        while curr_node:
+            if curr_node.key == key:
+                return curr_node.value
+            curr_node = curr_node.next
+
+        return None
+
 
 
     def resize(self, new_capacity):
@@ -121,7 +148,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+
+        if self.get_load_factor() > 0.7:
+            
+
+
 
 
 if __name__ == "__main__":
