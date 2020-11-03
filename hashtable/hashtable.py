@@ -98,13 +98,38 @@ class HashTable:
 
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
-        # Your code here
+        
+        if self.get_load_factor() < 0.2:
+            self.capacity = new_capacity // 2                           
+            prev_bucket = self.bucket             # [None, None, None, None, None, None, None, None].
+            self.bucket = [None] * self.capacity  # [None, None, None, None]
+             
+            for node in prev_bucket:    # Traverse thru all the nodes. 
+                               
+                if node != None:
+                    self.put( node.key, node.value )
+                else:
+                    continue
+        
+        
+        if self.get_load_factor() > 0.7:
+            self.capacity = new_capacity * 2                           
+            prev_bucket = self.bucket            # [None, None, None, None, None, None, None, None].
+            self.bucket = [None] * self.capacity
+            
+            for node in prev_bucket:    # Traverse thru all the nodes. 
+                               
+                if node != None:
+                    self.put( node.key, node.value )
+                else:
+                    continue
+                
+                        
+        
+        
+        
+        
+        
 
 
 
