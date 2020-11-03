@@ -21,9 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
+        
+        self.table = [None] * capacity
         self.capacity = capacity
-        self.storage = [None]*capacity
-        self.total = 0 
 
 
     def get_num_slots(self):
@@ -36,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.capacity
+        return len(self.table) #self.capacity
 
 
     def get_load_factor(self):
@@ -58,15 +58,15 @@ class HashTable:
         # Your code here
 
 
-    def djb2(self, key):
+    def djb2(self, key):  #http://pythontutor.com/visualize.html#mode=display 
         hash = 5381
-        for x in s:
+        for x in key:
         # ord(x) simply returns the unicode rep of the
         # character x
             hash = (( hash << 5) + hash) + ord(x)
             # Note to clamp the value so that the hash is 
             # related to the power of 2
-            return hash & 0xFFFFFFFF
+        return hash & 0xFFFFFFFF
         
 
 
@@ -77,6 +77,7 @@ class HashTable:
         """
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
+        
 
     def put(self, key, value):
         """
@@ -86,7 +87,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.table[self.hash_index(key)] = value
+        
 
 
     def delete(self, key):
@@ -97,7 +99,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        val = self.table[self.hash_index(key)]
+        if val == None:
+            print('Value is already None')
+        self.table[self.hash_index(key)] = None
 
 
     def get(self, key):
@@ -107,9 +112,10 @@ class HashTable:
         Returns None if the key is not found.
 
         Implement this.
-        """
-        # Your code here
 
+        """
+        return self.table[self.hash_index(key)]
+        
 
     def resize(self, new_capacity):
         """
