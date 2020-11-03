@@ -7,6 +7,66 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+class Node:
+    def __init__(self,value):
+        self.value = value
+        self.next = None
+
+    class LinkedList:
+        def __init__(self):
+            self.head = None
+
+        def __repr__(self): # Walking through Linked list and printing it out whats within it. 
+            currStr = ""
+            curr = self.head
+            while curr != None:
+                currStr += f'{str('curr.value')}-->'
+                curr = curr.next
+                return currStr
+        #Helper Methods
+        #O(n) where n is number of nodes 
+        def find(self,value):
+            # return node with 'value'
+            curr = self.head
+            while curr != None:
+                if curr.value == value
+                    return curr 
+                curr = curr.next 
+            return None
+        #O(n) where n is number of nodes 
+        def delete(self,value):
+            # deletes node with given value
+            curr = self.head
+
+            #Special case if we want to delete the head
+            if curr.value == value:
+                self.head = curr.next
+                curr.next = None
+                return curr
+
+            prev = None
+            while curr != None:
+                if curr.value == value:
+                    prev.next = curr.next 
+                    curr.next = None
+                    return curr
+                else:
+                    prev = curr
+                    curr = curr.next 
+
+            return None
+        #O(1) where n is number of nodes             
+        def insert_at_head(self,node):
+            node.next = self.head
+            self.head = node
+        #O(n) where n is number of nodes  because of 'find'
+        def insert_at_head_or_overwrite(self,node):
+            #insert node at head or overwrite the node
+            existing_node = self.find(node.value)
+            if existing_node != None:
+                existing_node.value = node.value
+            else:
+                self.insert_at_head(node)
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
