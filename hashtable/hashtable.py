@@ -1,8 +1,18 @@
 class Node:
-  def __init__(self, value, key):
+  def __init__(self, value):
     self.value = value
-    self.key = key
     self.next = None
+
+class HashTableEntry:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    def __eq__(self, other):
+        if isinstance(other, HashTableEntry):
+            return self.key == other.key
+        return False
+
 
 class LinkedList:
   def __init__(self):
@@ -28,11 +38,11 @@ class LinkedList:
 
     return None
 
-  def delete(self, key):
+  def delete(self, value):
     curr = self.head
 
     # special case for remove head
-    if curr.key == key:
+    if curr.value == value:
       self.head = curr.next
       curr.next = None
       return curr
@@ -40,7 +50,7 @@ class LinkedList:
     prev = None
 
     while curr != None:
-      if curr.key == key:
+      if curr.value == value:
         prev.next = curr.next
         curr.next = None
         return curr
@@ -60,8 +70,10 @@ class LinkedList:
     existing_node = self.find(node.value)
     if existing_node != None:
       existing_node.value = node.value
+      return False
     else:
       self.add_to_head(node)
+      return True
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -94,7 +106,6 @@ class HashTable:
         return len(self.table)
         
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -125,65 +136,79 @@ class HashTable:
         if self.table[index] == None:
             # if it is -> initialize new LinkedList
             ll = LinkedList()
-            # set table at index to newly created LL
+            ll.add_to_head(Node(HashTableEntry(key, value)))
             self.table[index] = ll
-            # add created node to the head of the LL
-            ll.add_to_head(Node(value, key))
             # increase count
             self.count += 1
-            self.check_and_resize()
         else:
             # if table at index already has a LL, get reference to current LL
             curr_ll: LinkedList = self.table[index]
             # set the new Node as the head
-            curr_ll.add_to_head(Node(value, key))
+            did_add_new_node = curr_ll.insert_at_head_or_overwrite(Node(HashTableEntry(key, value)))
+            if did_add_new_node:
             # increase count
-            self.count += 1
-            self.check_and_resize()
+                self.count += 1
+
+        if self.get_load_factor() > 0.7:
+            self.resize(self.get_num_slots() * 2)
 
         
 
 
     def delete(self, key):
-
-        # value = self.table[self.hash_index(key)]
-        # if value == None:
-        #     print("No value for index")
-        # self.table[self.hash_index(key)] = None
         index = self.hash_index(key)
-        ll: LinkedList = self.table[index]
-        ll.delete(key)
-        self.check_and_resize()
+        if self.table[index] != None:
+            ll: LinkedList = self.table[index]
+            did_delete_node = ll.delete(HashTableEntry(key, None))
+            if did_delete_node != None:
+                self.count -= 1
+                if self.get_load_factor() < 0.2:
+                    self.resize(self.get_num_slots() / 2)
+        else:
+            print("Warning Node not found")
 
 
     def get(self, key):
+        index = self.hash_index(key)
+        if self.table[index] != None:
+            ll: LinkedList = self.table[index]
+            node = ll.find(HashTableEntry(key, None))
+            if node != None:
+                return node.value.value
+        return None
 
-        return self.table[self.hash_index(key)]
 
 
     def resize(self, new_capacity):
         old_table = self.table
-        self.table = [None] * new_capacity
+        self.table = [None] * int(new_capacity)
+        self.count = 0
         self.capacity = new_capacity
 
-        for ll in old_table:
-            while ll != None:
-                index = self.hash_index(ll.node.key)
-                entry = self.table[index]
-                if entry is None:
-                    entry = Node(node.value, node.key)
-                else:
-                    while entry.next != None:
-                        entry = entry.next
-                    entry.next = Node(node.value, node.key)
+        for element in old_table:
+            if element == None:
+                continue
+            curr_node: Node = element.head
+            while curr_node != None:
+                temp = curr_node.next
+                curr_node.next = None
+                index = self.hash_index(curr_node.value.key)
 
-                node = node.next
+                if self.table[index] != None:
+                    self.table[index].add_to_head(curr_node)
+                else:
+                    ll = LinkedList()
+                    ll.add_to_head(curr_node)
+                    self.table[index] = ll
+
+                curr_node = temp
+                self.count += 1
 
     def check_and_resize(self):
         if self.get_load_factor() > 0.7:
             self.resize(self.capacity * 2)
         elif self.get_load_factor() < 0.2:
-            self.resize(self.capacity // 2)
+            self.resize(self.capacity / 2)
 
 
 
@@ -216,14 +241,14 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # # Test if data intact after resizing
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # print("")
+    print("")
