@@ -1,6 +1,20 @@
 def word_count(s):
     # Your code here
+    
+    lowercase = s.lower()
+    word_count = {}
+    ignore = '":;,.-+=/\\|[]{}()*^&'
+    for char in lowercase:
+        if char in ignore:
+            lowercase = lowercase.replace(char, "")
 
+    words = lowercase.split()
+    for word in words:
+        if word not in word_count:
+            word_count[word] = 1
+        else:
+            word_count[word] += 1
+    return word_count
 
 
 if __name__ == "__main__":
