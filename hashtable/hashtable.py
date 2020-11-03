@@ -19,10 +19,10 @@ class HashTable:
 
     Implement this.
     """
-
+    # updated from class
     def __init__(self, capacity):
-        self.capacity = capacity
-        self.buckets = [None] * capacity
+        self.capacity = max(capacity, MIN_CAPACITY)
+        self.buckets = [None] * self.capacity
 
     def get_num_slots(self):
         """
@@ -70,11 +70,14 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # make a variable == to 5381
+        # make hash == to 5381
         hash = 5381
-        byte_array = str.encode(key)
+        # encode
+        byte_array = key.encode()
         for arr in byte_array:
-            hash = ((hash * 33) ^ arr) % 0x100000000
+            # hash math
+            hash = ((hash << 5) + arr)
+            # hash = ((hash * 33) + arr)
         return hash
 
 
@@ -94,10 +97,14 @@ class HashTable:
 
         Implement this.
         """
-        key_hash = self.djb2(key)
-        idx = key_hash % self.capacity
-        new_hash_table_entry = HashTableEntry(key, value)
-        self.buckets[idx] = new_hash_table_entry
+        # hash the key - self.hash_index will modulo it
+        idx = self.hash_index(key)
+        if self.buckets[idx] != None:
+            print( "Collision warning!!!")
+        # insert the value at the location
+        self.buckets[idx] = value
+        
+        self.load += 1
 
 
     def delete(self, key):
@@ -108,13 +115,13 @@ class HashTable:
 
         Implement this.
         """
-        key_hash = self.djb2(key)
-        idx = key_hash % self.capacity
-        current_hash_table_entry = self.buckets[idx]
-        if current_hash_table_entry != None:
-            self.buckets[idx] = None
-        else:
-            return "Sorry, nonexistent hash"
+        # hash the key to find index
+        idx = self.hash_index(key)
+        # if nothing is there...
+        if self.buckets[idx] == None:
+            print( "Sorry, nonexistent hash")
+        self.buckets[idx] = None
+
 
     def get(self, key):
         """
@@ -124,8 +131,8 @@ class HashTable:
 
         Implement this.
         """
-        key_hash = self.djb2(key)
-        idx = key_hash % self.capacity
+        # hash the key to find index
+        idx = self.hash_index(key)
         current_hash_table_entry = self.buckets[idx]
         if current_hash_table_entry:
             return current_hash_table_entry.value

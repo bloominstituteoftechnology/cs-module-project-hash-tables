@@ -171,3 +171,4 @@ get('hello') ## get the key
 what they solve - look at each item in an index, first, second, third - Linear searching - that's O(n) - Standard array search
 if we double the list - twice as long to search, triple = 3 times as long
 
+"""
