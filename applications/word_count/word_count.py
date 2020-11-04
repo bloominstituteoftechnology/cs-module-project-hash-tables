@@ -1,6 +1,22 @@
 def word_count(s):
-    # Your code here
+    dictionary = {}
+    special_characters = ['"', ":", ";", ",", ".", "-", "+", "=", "/", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&", "\\"]
 
+    lower_case = s.lower()
+
+    for i in special_characters:
+        lower_case = lower_case.replace(i, "")
+
+    split_string = lower_case.split()
+    if split_string.count == 0:
+        return dictionary
+
+    for word in split_string:
+        if word in dictionary:
+            dictionary[word] += 1
+        else:
+            dictionary[word] = 1
+    return dictionary
 
 
 if __name__ == "__main__":
