@@ -14,12 +14,23 @@ word_dictionary = {}
 
 for index, word in enumerate(split_words):
   if word not in word_dictionary and index != len(split_words) - 1:
-    word_dictionary[word] = split_words[index + 1] + " "
+    word_dictionary[word] = [split_words[index + 1]]
   elif word in word_dictionary:
-    word_dictionary[word] += split_words[index + 1] + " "
+    word_dictionary[word] += [split_words[index + 1]]
 
-print(word_dictionary)
-
+# print(word_dictionary)
 
 # TODO: construct 5 random sentences
-# Your code here
+stop_chars = [".", "?", "!"]
+
+for _ in range(5):
+    begin_word = random.choice(list(word_dictionary.keys()))
+    curr_word = begin_word
+    sentence = ""
+
+    while curr_word[-1] not in stop_chars:
+        sentence += curr_word + " "
+        word = word_dictionary[curr_word]
+        curr_word = random.choice(list(word))
+
+    print(sentence)
