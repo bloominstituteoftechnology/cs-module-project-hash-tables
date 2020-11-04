@@ -12,4 +12,5 @@ def f(x):
     return x * 4 + 6
 
 # Your code here
-
+ok = f(1) + f(1)
+print(ok)
