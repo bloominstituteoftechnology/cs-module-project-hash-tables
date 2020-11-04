@@ -1,5 +1,5 @@
 # Hash Tables
-
+### https://github.com/LambdaSchool/cs-module-project-hash-tables/pull/173
 ## Day 1
 
 Task: Implement a basic hash table without collision resolution.
@@ -73,10 +73,10 @@ For these, you can use either the built-in `dict` type, or the hashtable
 you built. (Some of these are easier with `dict` since it's more
 full-featured.)
 
-* [Lookup Table](applications/lookup_table/)
-* [Expensive Sequence](applications/expensive_seq/)
-* [Word Count](applications/word_count/)
-* [No Duplicates](applications/no_dups/)
+* XXXXX[Lookup Table](applications/lookup_table/)
+* XXXXX[Expensive Sequence](applications/expensive_seq/)
+* XXXXX[Word Count](applications/word_count/)
+* XXXXX[No Duplicates](applications/no_dups/)
 * [Markov Chains](applications/markov/)
 * [Histogram](applications/histo/)
 * [Cracking Caesar Ciphers](applications/crack_caesar/)
