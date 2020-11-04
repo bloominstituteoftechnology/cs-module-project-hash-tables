@@ -2,14 +2,103 @@ class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
-    def __init__(self, key, value):
+    def __init__(self, key, value, next=None):
         self.key = key
         self.value = value
-        self.next = None
+        self.next = next
 
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
+
+class LinkedHash:
+    
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def tail_add(self, key, value):
+        new_entry = HashTableEntry(key, value, None)
+        
+        # There is a tail
+        if self.tail:
+            self.tail.next = new_entry
+
+        # There in No tail
+        else: 
+            self.head = new_entry
+        
+        # In either case
+        self.tail = new_entry
+    
+    def search(self, key):
+        if not self.head:
+            return None
+        
+        else:
+            checkingnode = self.head
+
+            while checkingnode is not None:
+                if checkingnode.key == key:
+                    return checkingnode
+
+                else:
+                    pass
+                checkingnode = checkingnode.next
+
+            return None
+    
+    def delete(self, key):
+        checkingnode = self.head
+
+        # Empty list case
+        if checkingnode is None:
+            return None
+        
+        # List with one object case
+        elif self.head == self.tail:
+            delkey = self.head.key
+            self.head = None
+            self.tail = None
+            return delkey
+        
+        # Deleting head case
+        elif self.head.key == key:
+            delkey = self.head.key
+            next_head = self.head.next
+            self.head = next_head
+            return delkey
+        
+        # Deleting tail case
+        elif self.tail.key == key:
+            delkey = self.tail.key
+
+            while checkingnode.next != self.tail:
+                checkingnode = checkingnode.next
+            
+            delkey = self.tail.key
+            self.tail = checkingnode
+            return delkey
+        
+        # Deleting anything else
+        else:
+            prev = checkingnode
+            checkingnode = checkingnode.next
+
+            while checkingnode is not None:
+                if checkingnode.key == key:
+                    prev.next = checkingnode.next_head
+                    return checkingnode
+                
+                else:
+                    prev = checkingnode
+                    checkingnode = checkingnode.next
+            
+            return None
+
+        
+            
+
 
 
 class HashTable:
@@ -21,8 +110,15 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
 
+        if capacity > MIN_CAPACITY:
+            self.capacity = capacity
+        else:
+            self.capacity = MIN_CAPACITY
+
+        # self.hash = LinkedHash() * capacity
+        self.hash = [LinkedHash() for i in range(capacity)]
+        self.obj_counter = 0
 
     def get_num_slots(self):
         """
@@ -32,9 +128,10 @@ class HashTable:
 
         One of the tests relies on this.
 
-        Implement this.
+        Implement this.# Your code here
         """
-        # Your code here
+        # print('The Capacity of this HashTable is:', self.capacity)
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,7 +140,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        loadfactor = self.obj_counter/self.capacity
+
+        return loadfactor
 
 
     def fnv1(self, key):
@@ -62,8 +161,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
-
+        hash = 5381 # this is one of the magic dfb2 numbers
+        for c in key:
+            hash = ((hash << 5) + hash) + ord(c)
+        return hash
 
     def hash_index(self, key):
         """
@@ -77,22 +178,20 @@ class HashTable:
         """
         Store the value with the given key.
 
-        Hash collisions should be handled with Linked List Chaining.
+        Hash # Your code herecollisions should be handled with Linked List Chaining.
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        hashlist = self.hash[index]
+        checkobject = hashlist.search(key)
 
-
-    def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
+        if checkobject == None: # new key
+            self.hash[index].tail_add(key, value)
+            self.obj_counter +=1
+        
+        else: # overwrite
+            checkobject.value = value
 
 
     def get(self, key):
@@ -103,7 +202,28 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        hashlist = self.hash[index]
+        getobject = hashlist.search(key)
+
+        if getobject == None:
+            return None
+        
+        else:
+            return getobject.value
+
+
+    def delete(self, key):
+        """
+        Remove the value stored with the given key.
+
+        Print a warning if the key is not found.
+
+        Implement this.
+        """
+        index = self.hash_index(key)
+        hashlist = self.hash[index]
+        hashlist.delete(key)
 
 
     def resize(self, new_capacity):
@@ -113,17 +233,26 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # if self.get_load_factor() > 0.7:
+            # newcap = self.capacity * 2
+        oldhash = self.hash.copy()
+        self.__init__(new_capacity)
 
+        for i in oldhash:
+            checkingnode = i.head
+            while checkingnode is not None:
+                self.put(checkingnode.key, checkingnode.value)
+                checkingnode = checkingnode.next
+            
 
 
 if __name__ == "__main__":
     ht = HashTable(8)
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
+    ht.put("line_1", "'Twas brillig, and the slithy toves")# Your code here
     ht.put("line_2", "Did gyre and gimble in the wabe:")
     ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_4", "And the language:english$mome raths outgrabe.")
     ht.put("line_5", '"Beware the Jabberwock, my son!')
     ht.put("line_6", "The jaws that bite, the claws that catch!")
     ht.put("line_7", "Beware the Jubjub bird, and shun")

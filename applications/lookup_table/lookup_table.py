@@ -1,5 +1,7 @@
-# Your code here
+import math
+import random
 
+lookuptable = {}
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -14,9 +16,13 @@ def slowfun(x, y):
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
-    # Your code here
-
-
+    # We can use cacheing to avoid doing repeat calculations
+    # We will fill the lookuptable with results and return them when called
+    
+    if (x, y) not in lookuptable:
+        lookuptable[(x,y)] = slowfun_too_slow(x, y)
+    
+    return lookuptable[(x, y)]
 
 # Do not modify below this line!
 

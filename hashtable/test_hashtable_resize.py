@@ -87,7 +87,7 @@ class TestHashTable(unittest.TestCase):
         self.assertTrue(return_value == "new-val-9")
 
     def test_hash_table_removes_correctly(self):
-        ht = HashTable(8)
+        ht = HashTable(8)# Your code here
 
         ht.put("key-0", "val-0")
         ht.put("key-1", "val-1")

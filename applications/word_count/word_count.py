@@ -1,6 +1,31 @@
 def word_count(s):
-    # Your code here
+    count_dict = {}
+    words = ""
+    punct_ignore = '":;,.-+=/\|[]{}()*^&'
+    punct_count = 0
 
+    for char in s:
+        if char in punct_ignore:
+            punct_count +=1
+
+        if char not in punct_ignore:
+            words = words + char
+    
+    if punct_count == 0:
+        return count_dict
+    
+    else:
+        words = words.split()
+        words = [word.lower() for word in words]
+
+        for word in words:
+            if word in count_dict:
+                count_dict[word] +=1
+        
+            else:
+                count_dict[word] = 1
+        
+        return count_dict
 
 
 if __name__ == "__main__":
