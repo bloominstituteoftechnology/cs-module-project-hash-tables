@@ -42,7 +42,7 @@ class HashTable:
         Return the load factor for this hash table.
         Implement this.
         """
-        return self.items / self.capacity
+        return self.items / self.get_num_slots()
 
 
     def fnv1(self, key):
