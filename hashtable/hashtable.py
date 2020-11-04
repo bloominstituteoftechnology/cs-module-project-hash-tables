@@ -11,7 +11,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -167,16 +166,21 @@ class HashTable:
 
         Implement this.
         """
+        # keep track of the index of the hashtable
         index = self.hash_index(key)
         # return self.storage[index]
 
+        # this is to keep track of the linked list inside each container
         node = self.storage[index]
-
+        
+        # we are going to loop through the entire linked list until we run out of entries
+        # or we find a match
         while node is not None and node.key != key:
+            # if we find a match then we assign the value of the next node to our node. 
             node = node.next
-
+        # if we don't find the value we return none 
+        # if we find it then we return the value
         return None if node is None else node.value
-
 
     def resize(self, new_capacity):
         """
