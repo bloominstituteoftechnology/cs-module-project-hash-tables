@@ -26,9 +26,11 @@ encryption_key = ['e', 't', 'a', 'o', 'h', 'n', 'r', 'i', 's', 'd', 'l', 'w', 'u
 transfer_dict = {}
 result = ""
 
+# Create a tranfer Dictionary
 for index, key in enumerate(sorted_encrypted_dict):
   transfer_dict[key] = encryption_key[index]
 
+# Use Transfer dictionary to replace characters in CypherText.txt
 for char in lowercase_words:
   if char.isalpha() != True:
     result += char
