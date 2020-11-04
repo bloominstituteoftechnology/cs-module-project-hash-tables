@@ -36,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.capacity
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -45,7 +45,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.count / self.capacity
+        return self.count / self.get_num_slots()
 
 
     # def fnv1(self, key):
@@ -99,6 +99,7 @@ class HashTable:
         else:
             self.storage[index] = entry
 
+
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -111,7 +112,10 @@ class HashTable:
         if self.get(key):
             self.put(key, None)
             self.count -= 1
-    
+
+        # if self.get_load_factor() < 0.2: 
+        #     self.resize(self.get_num_slots() / 2)
+
         else:
             print("Error: key not found")
 
@@ -153,6 +157,8 @@ class HashTable:
                 self.put(entry.key, entry.value)
                 entry = entry.next
 
+        if self.get_load_factor() > 0.7: 
+            self.resize(self.get_num_slots() * 2)
 
 
 if __name__ == "__main__":
