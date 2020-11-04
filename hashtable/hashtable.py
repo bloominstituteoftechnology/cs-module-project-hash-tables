@@ -1,12 +1,79 @@
+class Node:
+  def __init__(self, value):
+    self.value = value
+    self.next = None
+
 class HashTableEntry:
-    """
-    Linked List hash table key/value pair
-    """
     def __init__(self, key, value):
         self.key = key
         self.value = value
-        self.next = None
 
+    def __eq__(self, other):
+        if isinstance(other, HashTableEntry):
+            return self.key == other.key
+        return False
+
+
+class LinkedList:
+  def __init__(self):
+    self.head = None
+
+  def __repr__(self):
+    currStr = ""
+    curr = self.head
+    while curr != None:
+      currStr += f"{str(curr.value)} ->"
+      curr = curr.next
+    return currStr
+
+  def find(self, value):
+    # return node with value
+    curr = self.head
+
+    #walk through the LL and check the value
+    while curr != None:
+      if curr.value == value:
+        return curr
+      curr = curr.next
+
+    return None
+
+  def delete(self, value):
+    curr = self.head
+
+    # special case for remove head
+    if curr.value == value:
+      self.head = curr.next
+      curr.next = None
+      return curr
+
+    prev = None
+
+    while curr != None:
+      if curr.value == value:
+        prev.next = curr.next
+        curr.next = None
+        return curr
+      else:
+        prev = curr
+        curr = curr.next
+
+    return None
+
+  # insert node at head of list
+  def add_to_head(self, node):
+    node.next = self.head
+    self.head = node
+
+  # overwrite node or insert node at head
+  def insert_at_head_or_overwrite(self, node):
+    existing_node = self.find(node.value)
+    if existing_node != None:
+      existing_node.value = node.value
+      return False
+    else:
+      self.add_to_head(node)
+      return True
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -21,7 +88,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.table = [None] * capacity
+        self.count = 0
 
 
     def get_num_slots(self):
@@ -34,8 +103,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return len(self.table)
+        
 
     def get_load_factor(self):
         """
@@ -43,77 +112,103 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.count / self.get_num_slots()
 
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
+        pass
 
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        hash = 5381
+        for s in key:
+            hash = ((hash << 5) + hash) + ord(s)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
-        #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+        # hash the key and get the index
+        index = self.hash_index(key)
+        # check if the table at index is empty
+        if self.table[index] == None:
+            # if it is -> initialize new LinkedList
+            ll = LinkedList()
+            ll.add_to_head(Node(HashTableEntry(key, value)))
+            self.table[index] = ll
+            # increase count
+            self.count += 1
+        else:
+            # if table at index already has a LL, get reference to current LL
+            curr_ll: LinkedList = self.table[index]
+            # set the new Node as the head
+            did_add_new_node = curr_ll.insert_at_head_or_overwrite(Node(HashTableEntry(key, value)))
+            if did_add_new_node:
+            # increase count
+                self.count += 1
 
-        Hash collisions should be handled with Linked List Chaining.
+        if self.get_load_factor() > 0.7:
+            self.resize(self.get_num_slots() * 2)
 
-        Implement this.
-        """
-        # Your code here
+        
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
-
-        Print a warning if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
+        index = self.hash_index(key)
+        if self.table[index] != None:
+            ll: LinkedList = self.table[index]
+            did_delete_node = ll.delete(HashTableEntry(key, None))
+            if did_delete_node != None:
+                self.count -= 1
+                if self.get_load_factor() < 0.2:
+                    self.resize(self.get_num_slots() / 2)
+        else:
+            print("Warning Node not found")
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
+        index = self.hash_index(key)
+        if self.table[index] != None:
+            ll: LinkedList = self.table[index]
+            node = ll.find(HashTableEntry(key, None))
+            if node != None:
+                return node.value.value
+        return None
 
-        Returns None if the key is not found.
-
-        Implement this.
-        """
-        # Your code here
 
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
+        old_table = self.table
+        self.table = [None] * int(new_capacity)
+        self.count = 0
+        self.capacity = new_capacity
 
-        Implement this.
-        """
-        # Your code here
+        for element in old_table:
+            if element == None:
+                continue
+            curr_node: Node = element.head
+            while curr_node != None:
+                temp = curr_node.next
+                curr_node.next = None
+                index = self.hash_index(curr_node.value.key)
+
+                if self.table[index] != None:
+                    self.table[index].add_to_head(curr_node)
+                else:
+                    ll = LinkedList()
+                    ll.add_to_head(curr_node)
+                    self.table[index] = ll
+
+                curr_node = temp
+                self.count += 1
+
+    def check_and_resize(self):
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+        elif self.get_load_factor() < 0.2:
+            self.resize(self.capacity / 2)
 
 
 
@@ -136,6 +231,12 @@ if __name__ == "__main__":
     print("")
 
     # Test storing beyond capacity
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
+
+    ht.delete("line_1")
+
+    print("deleted")
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
