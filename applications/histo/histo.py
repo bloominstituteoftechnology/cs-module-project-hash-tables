@@ -10,8 +10,11 @@ with open(input_text) as f:
 lower_case_words = words.lower()
 split_words = lower_case_words.split()
 dictionary = {}
+largest_word = 0
 
 for word in split_words:
+  if len(word) > largest_word:
+    largest_word = len(word)
   if word not in dictionary:
     dictionary[word] = 1
   elif word in dictionary:
@@ -21,4 +24,5 @@ sorted_dictionary = {k: v for k, v in sorted(dictionary.items(), key=lambda item
 
 for key, value in sorted_dictionary.items():
   hash_number = "#" * value
-  print(f"{key:15} {hash_number}")
+  space = largest_word + 2
+  print(f"{key:{space}} {hash_number}")
