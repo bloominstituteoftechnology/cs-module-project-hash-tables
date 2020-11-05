@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../hashtable/linked_list')
+from linked_list import LinkedList
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -8,7 +12,6 @@ class HashTableEntry:
         self.next = None
 
 
-# Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
 
@@ -20,9 +23,10 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
-
+    def __init__(self, capacity = MIN_CAPACITY):
+        self.storage = [LinkedList()] * MIN_CAPACITY
+        self.count = 0
+        self.capacity = capacity
 
     def get_num_slots(self):
         """
@@ -34,7 +38,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -43,8 +47,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return self.count / self.capacity
 
     def fnv1(self, key):
         """
@@ -52,9 +55,7 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
-
-        # Your code here
-
+        pass
 
     def djb2(self, key):
         """
@@ -62,7 +63,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for k in key:
+            hash = (hash * 33) + ord(k)
+        return hash
 
 
     def hash_index(self, key):
@@ -70,7 +74,6 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,9 +84,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        slot = self.hash_index(key)
+        current = self.storage[slot].head
+        while current:
+            if current.key == key:
+                current.value = value
+            current = current.next
+            
+        entry = HashTableEntry(key, value)
+        self.storage[slot].insert_at_head(entry)
+        self.count += 1
+            
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -92,9 +103,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        self.put(key, None)
+        self.count -= 1
+            
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -103,8 +114,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        slot = self.hash_index(key)
+        current = self.storage[slot].head
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
+        return None
 
     def resize(self, new_capacity):
         """
@@ -113,9 +129,15 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
-
+        if self.get_load_factor() > 0.7:
+            old_storage = self.storage
+            self.storage = [LinkedList()] * new_capacity
+            for item in old_storage:
+                current = item.head
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
+            self.capacity = new_capacity
 
 if __name__ == "__main__":
     ht = HashTable(8)

@@ -13,3 +13,11 @@ def f(x):
 
 # Your code here
 
+import itertools
+
+combinations = list(itertools.product(q, q))
+
+for x in combinations:
+    for y in combinations:
+        if f(x[0]) + f(x[1]) == f(y[0]) - f(y[1]):
+            print(f"f({x[0]}) + f({x[1]}) = f({y[0]}) - f({y[1]})" + "    " + str(f(x[0])) + " + " + str(f(x[1])) + " = " + str(f(y[0])) + " - " + str(f(y[1])))
