@@ -11,5 +11,15 @@ q = (1, 3, 4, 7, 12)
 def f(x):
     return x * 4 + 6
 
-# Your code here
+def function(a):
+  if a <= 5:
+   return a + 5
+  elif 5 < a < 30:
+   return a + 7
+  else:
+   return a * 100 
+
+x = function(10)
+
+print(x)
 

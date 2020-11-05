@@ -1,5 +1,15 @@
-def word_count(s):
-    # Your code here
+from functools import reduce 
+
+# global vars
+ignore_str = '":;,.-+=/\\|[]{}()*^&'
+
+def word_count(words: str) -> dict:
+    no_punct_words = words.translate(
+        str.maketrans('','',ignore_str)).lower().split()
+    # return dict((word, no_punct_words.count(word)) for word in no_punct_words)
+    return (reduce( lambda return_dict, 
+        count: return_dict.update([(count, return_dict.get(count,0)+1)]) 
+        or return_dict, no_punct_words, {}) )
 
 
 
