@@ -28,24 +28,24 @@ class LinkedList:
     # deletes node w/ given value then return that node
     # runtime: O(n) where n = number of nodes
     def delete(self, value):
-        curr = self.head
+        cur = self.head
 
         # special case if we need to delete the head
-        if curr.value == value:
-            self.head = curr.next
-            curr.next = None
-            return curr
+        if cur.value == value:
+            self.head = cur.next
+            return cur
 
         prev = None
+        cur = cur.next
 
-        while curr != None:
-            if curr.value == value:
-                prev.next = curr.next
-                curr.next = None
-                return curr
+        while cur != None:
+            if cur.value == value:
+                prev.next = cur.next
+                cur.next = None
+                return cur
             else:
-                prev = curr
-                curr = curr.next
+                prev = cur
+                cur = cur.next
 
         return None
 
@@ -61,8 +61,10 @@ class LinkedList:
         existingNode = self.find(node.value) # O(n)
         if existingNode != None:
             existingNode.value = node.value
+            return False
         else:
             self.insert_at_head(node) # O(1)
+            return True
 
     def add_to_tail(self, value):
         # 0. create new node from value
