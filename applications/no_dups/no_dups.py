@@ -1,5 +1,16 @@
+from collections import Counter
+
 def no_dups(s):
-    # Your code here
+    s = s.split(' ') 
+
+    for i in range (0, len(s)): 
+        s[i] = "".join(s[i]) 
+    
+    diff = Counter(s) 
+
+    k = " ".join(diff.keys())
+
+    return k 
 
 
 

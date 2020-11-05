@@ -1,5 +1,16 @@
+import re
+
 def word_count(s):
-    # Your code here
+    count = dict() 
+    words = re.sub("[^w'a-z]+", " ", s.lower()).split()
+
+    for i in words: 
+        if i in count: 
+            count[i] += 1 
+        else: 
+            count[i] = 1 
+        
+    return count
 
 
 
