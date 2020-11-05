@@ -88,6 +88,7 @@ class HashTable:
             self.storage[idx] = new_node
 
         self.load += 1
+        
 
     def delete(self, key):
         # ? Remove the value stored with the given key.
@@ -165,6 +166,23 @@ class HashTable:
         if self.get_load_factor() > 0.7:
             if new_capacity is None:
                 new_capacity = self.capacity * 2
+
+            old_storage = self.storage
+            self.storage = [None] * new_capacity
+
+            for node in old_storage:
+                if node is not None:
+                    self.put(node.key, node.value)
+
+                    curr_node = node
+                    while curr_node.next is not None:
+                        self.put(curr_node.next.key, curr_node.next.value)
+                        curr_node = curr_node.next
+        elif self.get_load_factor() < 0.2:
+            if new_capacity is None and self.capacity / 2 >= 8:
+                new_capacity = self.capacity / 2
+            else:
+                new_capacity = 8
 
             old_storage = self.storage
             self.storage = [None] * new_capacity
