@@ -1,5 +1,17 @@
 def word_count(s):
-    # Your code here
+    counts = {}
+    ignore = '"":;,.-+=/\\|[]{}()*^&'
+    clean_str = s.lower().replace("\r", " ").replace(
+        "\t", " ").replace("\n", " ").split(" ")
+
+    for word in clean_str:
+        word = word.strip(ignore)
+        if word not in counts and word != "":
+            counts[word] = 1
+        elif word != "":
+            counts[word] += 1
+
+    return counts
 
 
 
