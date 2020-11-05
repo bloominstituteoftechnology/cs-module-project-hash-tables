@@ -13,107 +13,121 @@ MIN_CAPACITY = 8
 
 
 class HashTable:
-    """
-    A hash table that with `capacity` buckets
-    that accepts string keys
 
-    Implement this.
-    """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = capacity
+        self.storage = [None] * capacity
+        self.elements = 0
 
     def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
+        
+        return self.capacity
 
-        One of the tests relies on this.
-
-        Implement this.
-        """
-        # Your code here
 
 
     def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
-        # Your code here
+ 
+        return self.elements/self.capacity
 
 
     def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
 
-        Implement this, and/or DJB2.
-        """
 
-        # Your code here
-
+        fnvPrime = 2**40 + 2**8 + 0xb3 # 64 bit prime
+        hash = 14695981039346656037 #offset basis
+        for i in key:
+            hash *= fnvPrime
+            hash = hash ^ ord(i)
+        return hash & 0xFFFFFFFFFFFFFFFF
 
     def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
 
-        Implement this, and/or FNV-1.
-        """
-        # Your code here
+        hash = 5381
+        for c in key:
+            hash = (hash * 33) + ord(c)
+        return hash
 
 
     def hash_index(self, key):
-        """
-        Take an arbitrary key and return a valid integer index
-        between within the storage capacity of the hash table.
-        """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+
+        return self.fnv1(key) % self.capacity
+        #return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
 
-        Hash collisions should be handled with Linked List Chaining.
+        index = self.hash_index(key) 
+        hst = HashTableEntry(key, value) 
+        node = self.storage[index]
+        
 
-        Implement this.
-        """
-        # Your code here
+        if node is not None:
+            self.storage[index] = hst
+            self.storage[index].next = node
+        else:
+            self.storage[index] = hst
+        self.elements +=1
+        
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
 
-        Print a warning if the key is not found.
+        index = self.hash_index(key) 
+        node = self.storage[index] 
+        prev = None 
 
-        Implement this.
-        """
-        # Your code here
+        if node.key == key:
+            self.storage[index] = node.next
+            return
+
+        while node != None:
+            if node.key == key:
+                prev.next = node.next
+                self.storage[index].next = None
+                return
+
+            prev = node
+            node = node.next
+        self.elements -=1
+        return
 
 
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
 
-        Returns None if the key is not found.
+        index = self.hash_index(key)
+        node = self.storage[index]
 
-        Implement this.
-        """
-        # Your code here
+        if node is not None:
+            while node:
+                if node.key == key:
+                    return node.value
+                node = node.next
+        return node
 
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
 
-        Implement this.
-        """
-        # Your code here
+        # Step 1: make a new, bigger table/array
+        # ....Update capacity on new capacity
+        # ....Update storage with new capacity
+        prev_stor = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+        # Step 2: go through all the old elements, and hash into the new list
+        # Look through each key value pair in previous storage
+        for i in range(len(prev_stor)):
+            # Check previous storage with i as index
+            old = prev_stor[i]
+            # Check to see if that hash index exists:
+            if old:
+                # Look through this hash index list
+                while old:
+                    if old.key:
+                        # If found, rehash to new storage
+                        self.put(old.key, old.value)
+                        # Continue looking through list until None
+                        old = old.next
+        
 
 
 
