@@ -12,7 +12,7 @@ class HashTableEntry:
 
     def __eq__(self, other):
         if isinstance(other, HashTableEntry):
-            return self.key == other.keys
+            return self.key == other.key
         return False
 
 
