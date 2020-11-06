@@ -166,6 +166,9 @@ class HashTable:
             linked_list = LinkedList()
             linked_list.insert_at_head(Node(HashTableEntry(key, value)))
             self.table[hash_index] = linked_list
+            self.count += 1
+        if self.get_load_factor() > 0.7:
+            self.resize(self.get_num_slots() * 2)
 
 
     def delete(self, key):
@@ -180,6 +183,10 @@ class HashTable:
         if self.table[hash_index] != None:
             linked_list = self.table[hash_index]
             did_delete_node = linked_list.delete(HashTableEntry(key, None))
+            if did_delete_node != None:
+                self.count -= 1
+                if self.get_load_factor() < 0.2:
+                    self.resize(max(self.get_num_slots() / 2, MIN_CAPACITY))
         else:
             print('WARNING! Node not found')
 
@@ -208,7 +215,28 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        old_table = self.table
+        self.table = [None] * int(new_capacity)
+        # self.count = 0
+
+        for element in old_table:
+            if element == None:
+                continue
+            curr_node = element.head
+            while curr_node != None:
+                temp = curr_node.next
+                curr_node.next = None
+                hash_index = self.hash_index(curr_node.value.key)
+
+                if self.table[hash_index] != None:
+                    self.table[hash_index].insert_at_head(curr_node)
+                else:
+                    linked_list = LinkedList()
+                    linked_list.insert_at_head(curr_node)
+                    self.table[hash_index] = linked_list
+                
+                curr_node = temp
+                # self.count += 1
 
 
 
