@@ -46,7 +46,7 @@ class HashTable:
         """
         # number of items divided by number of buckets
         # try to keep between 20 - 70%
-        return self.load / self.capacity
+        return self.count / self.get_num_slots()
 
 
     def fnv1(self, key):
@@ -142,15 +142,24 @@ class HashTable:
 
         Implement this.
         """
-        # hash the key to find index
-        idx = self.hash_index(key)
-        # if nothing is there...
-        if self.buckets[idx] == None:
-            print( "Sorry, nonexistent hash")
-        else:
-            self.buckets[idx] = None
+        delete_at_index = self.hash_index(key)
+        existing_node = self.table[delete_at_index]
 
-            self.load -= 1
+        if existing_node:
+            self.count -= 1
+            last_node = None
+            while existing_node:
+                if existing_node.key == key:
+                    if last_node:
+                        last_node.next = existing_node.next
+                    else:
+                        self.table[delete_at_index] = existing_node.next
+                last_node = existing_node
+                existing_node = existing_node.next
+        if self.get_load_factor() < 0.2:
+            return self.resize(int(self.capacity / 2))
+        else:
+            print("Key not found")
 
 
     def get(self, key):

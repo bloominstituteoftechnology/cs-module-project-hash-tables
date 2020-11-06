@@ -1,4 +1,3 @@
-
 # expensive calculation on the fly
 
 import math
