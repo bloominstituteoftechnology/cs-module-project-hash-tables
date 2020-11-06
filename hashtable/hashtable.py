@@ -1,3 +1,63 @@
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def __repr__(self):
+        currStr = ''
+        curr = self.head
+        while curr != None:
+            currStr += f'{str(curr.value)} -> '
+            curr = curr.next
+        return currStr + 'None'
+
+    # return node w/ value
+    def find(self, value):
+        curr = self.head
+        while curr != None:
+            if curr.value == value:
+                return curr
+            curr = curr.next
+        return None
+
+    # deletes node w/ given value then returns that node
+    def delete(self, value):
+        curr = self.head
+        prev = None
+
+        # special case to delete head
+        if curr.value == value:
+            self.head = curr.next
+            curr.next = None
+            return curr
+
+        while curr != None:
+            if curr.value == value:
+                prev.next = curr.next
+                curr.next = None
+                return curr
+            else:
+                prev = curr
+                curr = curr.next
+    
+    def insert_at_head(self, node):
+        node.next = self.head
+        self.head = node
+
+    # overwrite node or insert node at head
+    def insert_at_head_or_overwrite(self, node):
+        existingNode = self.find(node.value)
+        if existingNode != None:
+            existingNode.value = node.value
+            return False
+        else:
+            self.insert_at_head(node)
+            return True
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
