@@ -19,11 +19,14 @@ class HashTable:
 
     Implement this.
     """
-    # updated from class
+
     def __init__(self, capacity):
-        self.capacity = capacity
-        self.table = [None] * capacity
-        self.count = 0
+        
+        self.capacity = max(capacity, MIN_CAPACITY)
+        self.storage = [None] * self.capacity
+
+        self.load = 0
+
 
     def get_num_slots(self):
         """
@@ -35,7 +38,7 @@ class HashTable:
 
         Implement this.
         """
-        return len(self.table)
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -44,44 +47,119 @@ class HashTable:
 
         Implement this.
         """
-        # number of items divided by number of buckets
-        # try to keep between 20 - 70%
-        return self.load / self.capacity
+        # Your code here
+
+# hashing functions used in:
+# git
+# cryptocurrencies
+# hash tables
+# store passwords
+
+# choose between hashing functions
+## some are fast, some are slow
+
+# "Can a hash be reversed?"
+# "How/Why not?"
+
+## What's reversing a hash mean?
+## take a hash number and try to get back to the string it was made from
+
+## p@$$w0rd
+## 0x23283287ad878f983efc
+
+# deterministic
+# irreversible
+
+# an attacker can't reverse, but could try hashing common passwords
+
+## for a hash table, you want a fast function --> O(1)
+## for passwords, you want a slow function
+
+
+
+
+# Different strategies to handle collisions?
+## chaining: array of linked lists, with one LL per index, each node.next points to the second element
+## Array of arrays, with one array per index, just append
+## Disallow collisions?
+## Open addressing. Linear probing, quadratic probing. [None, 'hello', 'world', None]
+
+
+
 
 
     def fnv1(self, key):
         """
-        FNV-1 Hash, 64-bit
+        set hash to 0?
+        maintain a total?
 
-        Implement this, and/or DJB2.
+        - start hash at some large number(FNV_offset_basis)
+        - the hashed variable maintains our total
+
+        some_big_prime * some_other_big_prime = some_mysterious_number
+
+        
+        Comp Arch - bitwise operations, including XOR
+
+        0101010101010
+     ^  1101101011001
+        -------------
+        1000111110011
+
+
         """
-        # FNV1 parameters
-        offset_basis = 14695981039346656037
+        FNV_offset_basis = 14695981039346656037 
         FNV_prime = 1099511628211
-        # hash function, alternate version
-        hash = offset_basis
-        key_bytes = key.encode()
-        # for each byte of data to be hashed
-        for byte in key_bytes:
-            hash = hash * FNV_prime
-            hash = hash ^ byte
-        return hash
+        hashed = FNV_offset_basis
+
+        bytes_to_hash = key.encode()
+
+        for byte in bytes_to_hash:
+            hashed = hashed * FNV_prime
+
+            hashed = hashed ^ byte
+
+        return hashed
 
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
 
         Implement this, and/or FNV-1.
+
+        unsigned long
+        hash(unsigned char *str)
+        {
+            unsigned long hash = 5381;
+            int c;
+
+            while (c = *str++)
+                hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+            return hash;
+        }
+        Left bitshifting
+        Left shift
+                   |
+   0101010101000000
+                   |
+       
+       Why 5381 and * 33? because they work!
+
+       What's "work" - what makes these good?
+       - irreversible
+       - nice distribution, spreads them out over the array --> minimizes collisions
+        
         """
-        # make hash == to 5381
-        hash = 5381
-        # encode
-        byte_array = key.encode()
-        for arr in byte_array:
-            # hash math
-            hash = ((hash << 5) + arr)
-            # hash = ((hash * 33) + arr)
-        return hash
+        hashed = 5381
+
+        bytes_to_hash = key.encode()
+
+        for byte in bytes_to_hash:
+            hashed = ((hashed << 5) + byte)
+            # hashed = ((hashed * 33) + byte)
+
+        return hashed
 
 
     def hash_index(self, key):
@@ -92,46 +170,28 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
-
     def put(self, key, value):
         """
+        self.put(key, None)
+        -- will break our count!!
+
         Store the value with the given key.
 
         Hash collisions should be handled with Linked List Chaining.
 
         Implement this.
         """
-        index = self.hash_index(key)
-        new_node = HashTableEntry(key, value)
-        existing_node = self.table[index]
-        self.count += 1
-        if existing_node:
-            last_node = None
-            while existing_node:
-                if existing_node.key == key:
-                    existing_node.value = value
-                    return
-                last_node = existing_node
-                existing_node = existing_node.next
-            last_node.next = new_node
-        else:
-            self.table[index] = new_node
-        if self.get_load_factor() > 0.7:
-            return self.resize(self.capacity * 2)
+        # hash the key - self.hash_index will modulo it
+        idx = self.hash_index(key)
 
+        # check for a collision
+        if self.storage[idx] != None:
+            print('warning! collision!!!')
 
-        # HANDLING COLLISSIONS WITH A LINKED LIST
+        # insert the value at that location
+        self.storage[idx] = value
 
-        # if there's None, just make a node. That's the LL head
-        ## increment your load by 1
-
-        # if there's already a node, iterate down and check keys
-        # if you find the key, overwrite the value
-        ## don't increment the load
-        ### stop incrementing and return
-
-        # if you reach the end, then add a node at the head or the tail
-        ## increment the load by 1
+        self.load += 1
 
 
     def delete(self, key):
@@ -141,14 +201,16 @@ class HashTable:
         Print a warning if the key is not found.
 
         Implement this.
+
         """
         # hash the key to find index
         idx = self.hash_index(key)
-        # if nothing is there...
-        if self.buckets[idx] == None:
-            print( "Sorry, nonexistent hash")
+
+        if self.storage[idx] == None:
+            print('Warning! no key!!!')
+
         else:
-            self.buckets[idx] = None
+            self.storage[idx] = None
 
             self.load -= 1
 
@@ -161,16 +223,8 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # Your code here
 
-        existing_node = self.table[index]
-        if existing_node:
-            while existing_node:
-                if existing_node.key == key:
-                    return existing_node.value
-                existing_node = existing_node.next
-        else:
-            return None
 
     def resize(self, new_capacity):
         """
@@ -179,28 +233,9 @@ class HashTable:
 
         Implement this.
         """
-        if new_capacity > 8:
-            self.capacity = new_capacity
-        else:
-            self.capacity = 8
-        old_array = self.table
-        self.table = [None] * self.capacity
-        old_size = self.count
-
-        current_node = None
-
-        for entry in old_array:
-            current_node = entry
-            while current_node != None:
-                self.put(current_node.key, current_node.value)
-                current_node = current_node.next
-        self.count = old_size
+        # Your code here
 
 
-[None, None, Node(key: 'key', value: 'val', next: None), None, None]
-my_ht = HashTable()
-my_ht.put('key', 'val1')
-my_ht.put('key', 'val2')
 
 if __name__ == "__main__":
     ht = HashTable(8)
