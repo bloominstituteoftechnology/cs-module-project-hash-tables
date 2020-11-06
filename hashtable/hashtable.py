@@ -22,7 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        self.buckets = [LinkedList()] * capacity
+        self.capacity = capacity
+        
+        
 
     def get_num_slots(self):
         """
@@ -35,7 +38,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -63,7 +66,13 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
 
+        for char in key:
+            hash = ((hash << 5) + hash) + ord(char)
+
+        return hash & 0xFFFFFFFF    
+            
 
     def hash_index(self, key):
         """
@@ -82,7 +91,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        h = self.djb2(key)
+        i = self.hash_index(key)
+        
+        # create a new node from the key value pair
+        new_node = Node(key, value)
 
+        #check to see if a node exists in the spot where we want to place this node
+        existing_node = self.buckets[i].head
+
+        if existing_node:
+            last_node = None
+            while existing_node:
+                if existing_node.key == key:
+                    existing_node.value = value
+                    return 
+                last_node =  existing_node
+                existing_node = existing_node.next
+
+            last_node.next = new_node
+
+        else:
+            self.buckets[i].append(new_node)
+
+        return self.buckets[i].head    
+         
 
     def delete(self, key):
         """
@@ -93,7 +126,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        h = self.djb2(key)
+        i = self.hash_index(key)
 
+        #check to see if the entry exists
+        e = self.buckets[i].head
+        #check to see if exists is not None.
+        while e:
+            #If we find a match, then remove it.
+            if e.key == key:
+                if last:
+                    last.next = e.next
+                else:
+                    self.buckets[i].remove(e.next)    
+            #swap removed item so a newer item is stored.
+            last = e
+            e = e.next        
+            
 
     def get(self, key):
         """
@@ -104,7 +153,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        h = self.djb2(key)
+        i = self.hash_index(key)
+        
+        # check the head node 
+        look_up = self.buckets[i].head
+        # if the head exists
+        if look_up is not None:
+            # while there is still something in the array
+            while look_up is not None:
+            #found 
+                if look_up.key == key:
+                    return look_up.value  
 
+                look_up = look_up.next      
+            
+        return None
 
     def resize(self, new_capacity):
         """
@@ -114,8 +178,63 @@ class HashTable:
         Implement this.
         """
         # Your code here
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
+    def find(self, value):
+        cur = self.head
+        while cur is not None:
+            if cur.value == value:
+                return cur
+
+            cur = cur.next                
+
+        return None
+     #add to tail
+    def append(self, value): 
+        n = Node(value, value)  
+
+        #no head
+        if self.head is None:
+            self.head = n  
+
+        else:
+            cur = self.head
+
+            while cur.next is not None:
+                cur = cur.next
+
+            cur.next = n       
+
+    def remove(self, value):
+        cur = self.head
+
+        # empty list 
+        if cur is None:
+            return None
+
+        # remove head
+        if cur.value == value:
+            self.head = cur.next
+            return cur
+
+        else:
+            prev = cur
+            cur = cur.next
+            while cur is not None:
+                if cur.value == value:
+                    prev.next = cur.next
+                    return cur
+                else:
+                    prev = cur
+                    cur = cur.next                     
 
 if __name__ == "__main__":
     ht = HashTable(8)
