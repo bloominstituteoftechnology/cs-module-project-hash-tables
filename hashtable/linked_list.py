@@ -13,13 +13,13 @@ class HashTableEntry:
 class LinkedList:
     def __init__(self):
         self.head = None
-        self.tail = None
+        # self.tail = None
 
     def add_to_head(self, key, value):
         new_node = HashTableEntry(key, value)
         if self.head == None:
             self.head = new_node
-            self.tail = new_node
+            # self.tail = new_node
             self.next = None
         else:
             oldhead = self.head
