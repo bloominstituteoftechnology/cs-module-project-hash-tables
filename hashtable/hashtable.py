@@ -6,6 +6,8 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+    # def __repr__(self):
+    #     return f"{self.key}, {self.value}"
 
 
 # Hash table can't have fewer than this many slots
@@ -22,28 +24,21 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.capacity = capacity
+        self.storage = [None] * capacity
+        self.total = 0
+       
 
 
     def get_num_slots(self):
-        """
-        Return the length of the list you're using to hold the hash
-        table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-
-        One of the tests relies on this.
-
-        Implement this.
-        """
-        # Your code here
+       
+        return len(self.storage)
 
 
     def get_load_factor(self):
-        """
-        Return the load factor for this hash table.
-
-        Implement this.
-        """
-        # Your code here
+       
+        return self.total / self.capacity
+        # pass
 
 
     def fnv1(self, key):
@@ -54,6 +49,7 @@ class HashTable:
         """
 
         # Your code here
+        pass
 
 
     def djb2(self, key):
@@ -63,6 +59,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash_value = 5381
+        for c in key:
+            hash_value = ((hash_value << 5) + hash_value) + ord(c)
+        return hash_value & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -74,48 +74,102 @@ class HashTable:
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
-        """
-        Store the value with the given key.
+       
+      
+        # Day 1   
+        # new_node = HashTableEntry(key, value)
+        # index = self.hash_index(key)
+        # if self.storage[index] == None:
+        #     self.storage[index] = new_node
+        
+        # elif self.storage[index].key == key:
+        #     self.storage[index].value = value
+        index = self.hash_index(key)
+        cur_entry = self.storage[index]
 
-        Hash collisions should be handled with Linked List Chaining.
+        while cur_entry is not None and cur_entry != key:
+            cur_entry = cur_entry.next
 
-        Implement this.
-        """
-        # Your code here
+        if cur_entry is not None:
+            cur_entry.value = value
+        else:
+            new_entry = HashTableEntry(key, value)
+            new_entry.next = self.storage[index]
+            self.storage[index] = new_entry
+
+            self.total += 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity * 2)
+  
+       
 
 
     def delete(self, key):
-        """
-        Remove the value stored with the given key.
+    
+        # Day 1
+        # index = self.hash_index(key)
+        # if self.storage[index].key == key:
+        #     self.storage[index] = None
+        index = self.hash_index(key)
 
-        Print a warning if the key is not found.
+        current_entry = self.storage[index]
+        last_entry = None
 
-        Implement this.
-        """
-        # Your code here
+        while current_entry is not None and current_entry.key != key:
+            last_entry = current_entry
+            current_entry = last_entry.next
 
+        if current_entry is None:
+            print("ERROR: Unable to remove entry with key " + key)
+        else:
+            if last_entry is None: 
+                self.storage[index] = current_entry.next
+            else:
+                last_entry.next = current_entry.next
 
+            self.total -= 1
+            if self.get_load_factor() < 0.2:
+                if self.capacity > MIN_CAPACITY:
+                    new_capacity = self.capacity // 2
+                    if new_capacity < MIN_CAPACITY:
+                        new_capacity = MIN_CAPACITY
+
+                    self.resize(new_capacity)
+        
     def get(self, key):
-        """
-        Retrieve the value stored with the given key.
 
-        Returns None if the key is not found.
+        # Day 1
+        # index = self.hash_index(key)
+        # node = self.storage[index]
+        
+        # if node is not None: 
+            
+        #     if node.key == key:
+        #         return node.value
+        index = self.hash_index(key)
 
-        Implement this.
-        """
-        # Your code here
-
-
+        if (self.storage[index] and self.storage[index].key == key):
+            return self.storage[index].value
+        else:
+            return None
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
 
-        Implement this.
-        """
-        # Your code here
+        old_storage = self.storage
+        self.capacity = new_capacity
+        self.storage = [None] * self.capacity
 
+        cur_entry = None
+        old_total = self.total
 
+        for total_item in old_storage:
+            cur_entry = total_item
+            while cur_entry is not None:
+                self.put(cur_entry.key, cur_entry.value)
+                cur_entry = cur_entry.next
+
+        self.total = old_total
+
+    
 
 if __name__ == "__main__":
     ht = HashTable(8)
@@ -136,6 +190,10 @@ if __name__ == "__main__":
     print("")
 
     # Test storing beyond capacity
+    print("Should only print 8 lines")
+    print("   ")
+    print(f"Prints {ht.capacity} lines")
+    print("   ")
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
