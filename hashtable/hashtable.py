@@ -197,11 +197,6 @@ class HashTable:
         self.count = old_size
 
 
-[None, None, Node(key: 'key', value: 'val', next: None), None, None]
-my_ht = HashTable()
-my_ht.put('key', 'val1')
-my_ht.put('key', 'val2')
-
 if __name__ == "__main__":
     ht = HashTable(8)
 
