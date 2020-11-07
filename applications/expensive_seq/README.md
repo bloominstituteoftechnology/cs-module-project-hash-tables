@@ -25,5 +25,8 @@ ends.
 Hint: Va Clguba, n qvpg xrl pna or nal vzzhgnoyr glcr... vapyhqvat n
 ghcyr.
 
+In Python, a dict key can be any immutable type... including a
+tuple.
+
 (That's encrypted with ROT13--Google `rot13 decoder` to decode it if you
 want the hint.)

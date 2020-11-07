@@ -1,6 +1,16 @@
 def word_count(s):
     # Your code here
+    counts = {}
+    words = s.lower()
+    lowerWords = words.split()
 
+    for word in lowerWords:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    return counts
 
 
 if __name__ == "__main__":
