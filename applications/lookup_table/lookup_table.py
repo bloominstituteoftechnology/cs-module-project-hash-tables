@@ -1,14 +1,16 @@
 # Your code here
 import random
 
+prevV = {}
+
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
     v = math.factorial(v)
     v //= (x + y)
     v %= 982451653
 
+    prevV[x, y] = v
     return v
-
 
 def slowfun(x, y):
     """
@@ -16,7 +18,11 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
-    
+    if x and y in prevV:
+        return prevV[x, y]
+
+    else:
+        slowfun_too_slow(x, y)
 
 
 # Do not modify below this line!
