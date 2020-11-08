@@ -1,15 +1,4 @@
-class HashTableEntry:
-    """
-    Linked List hash table key/value pair
-    """
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
-
-
-# Hash table can't have fewer than this many slots
-MIN_CAPACITY = 8
+from linked_list import LinkedList, HashTableEntry
 
 
 class HashTable:
@@ -17,12 +6,14 @@ class HashTable:
     A hash table that with `capacity` buckets
     that accepts string keys
 
-    Implement this.
+    Implement this.dfs
     """
 
-    def __init__(self, capacity):
-        # Your code here
-
+    def __init__(self, capacity=8):
+        self.buckets = [None] * capacity
+        self.capacity = capacity
+        self.used = 0
+        self.load = self.get_load_factor()
 
     def get_num_slots(self):
         """
@@ -34,8 +25,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        return len(self.buckets)
 
     def get_load_factor(self):
         """
@@ -43,18 +33,31 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        load = self.used/self.capacity
+        return load
 
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
 
         Implement this, and/or DJB2.
+        - start hash at some large number(fnv offset_basis)
+        - the hash variable maintains our total.
+        - xor (looking at number in binary form)
+        looks at every pair of bits and treats 1 as true and 0 as false. 
         """
+        pass
+        # FNV_prime = 1099511628211
+        # offset_basis = 14695981039346656037
 
-        # Your code here
-
+        # #FNV-1a Hash Function
+        # hash = offset_basis
+        #bytes_t0_hash = key.encode()
+        # what is seed here?
+        # for bytes in bytes_to_hash:
+        #     hash = hash * FNV_prime
+        #     hash = hash ^ byte
+        # return hash
 
     def djb2(self, key):
         """
@@ -62,15 +65,32 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        bytes_to_hash = key.encode()
+        for byte in bytes_to_hash:
+            hash = (hash * 33) + byte
+        return hash & 0xFFFFFFFF
 
+    def simp_hash_fn(self, key, value):
+        # key that gets hashed
+        byte = key.encode()
+        print('simp hash func', byte)
+        total = 0
+
+        for char in byte:
+            # print(char)
+            total += char
+            total &= 0xffffffff
+            # print("total 32 bit", total)
+        print(total % self.capacity)
+        return total % self.capacity  # 8
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,8 +101,21 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+        if self.buckets[index] == None:
+            self.buckets[index] = LinkedList()
+            self.buckets[index].add_to_head(key, value)
 
+        elif self.buckets[index].find(key):
+            self.buckets[index].delete(key)
+            self.buckets[index].add_to_head(key, value)
+        else:
+            self.buckets[index].add_to_head(key, value)
+        self.used += 1
+        # index = self.hash_index(key)
+        # if self.buckets[index] != None:
+        #     print("Something already exists at this index.")
+        # self.buckets[index] = value
 
     def delete(self, key):
         """
@@ -92,8 +125,12 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        index = self.hash_index(key)
+        if self.buckets[index] == None:
+            return None
+        else:
+            self.used -= 1
+            return self.buckets[index].delete(key)
 
     def get(self, key):
         """
@@ -103,18 +140,37 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        index = self.hash_index(key)
+        if self.buckets[index]:
+            if self.buckets[index].find(key):
+                answer = self.buckets[index].find(key)
+                return answer
+            else:
+                return None
 
     def resize(self, new_capacity):
-        """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
-        """
         # Your code here
+        # make a new array that is double the current size.
+        oldArr = self.buckets
+        self.buckets = [None] * new_capacity
+        self.capacity = new_capacity
+        print(len(self.buckets))
+        for i in oldArr:
+            if i != None:
+                current = i.head
+                while current != None:
+                    self.put(current.key, current.value)
+                    current = current.next
+            else:
+                continue
 
+        # go through each linked list in the array
+        # go through each item and rehash it
+        # insert the items into their new locations
+
+    def print_out_hashtable(self):
+        for i in self.buckets:
+            print(i)
 
 
 if __name__ == "__main__":
@@ -134,14 +190,17 @@ if __name__ == "__main__":
     ht.put("line_12", "And stood awhile in thought.")
 
     print("")
+    # ht.simp_hash_fn("yodd dyo ma", "black88")
 
     # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
-    # Test resizing
+    # print(ht.resize(ht.capacity * 2))
+
+    # # Test resizing
     old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
+    ht.resize(ht.capacity*2)
     new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
@@ -151,3 +210,5 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+    print(ht.get_load_factor())
+    ht.print_out_hashtable()
