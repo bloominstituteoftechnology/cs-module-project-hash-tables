@@ -1,6 +1,14 @@
 def no_dups(s):
+    data = {}
     # Your code here
-
+    s_array = s.split()
+    print(s_array)
+    for word in s_array:
+        if word in data:
+            continue
+        else:
+            data[word] = 1
+    return " ".join(data.keys())
 
 
 if __name__ == "__main__":
