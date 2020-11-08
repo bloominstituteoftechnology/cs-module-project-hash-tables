@@ -13,15 +13,20 @@ encode_table = {
     'Z': 'S',
 }
 
+decode_table = {}
 
-def encode(old_string):
+for key, value in encode_table.items():
+    decode_table[value] = key
+
+
+def decode(old_string):
     new_letter = ""
     for i in old_string:
-        if i in encode_table:
-            new_letter = new_letter + encode_table[i]
+        if i in decode_table:
+            new_letter = new_letter + decode_table[i]
         else:
-            return i
+            new_letter = new_letter + i
     return new_letter
 
 
-print(encode(words))
+print(decode(words))
