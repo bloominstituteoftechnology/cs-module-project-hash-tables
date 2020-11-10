@@ -8,15 +8,22 @@ class HashTableEntry:
         self.next = None
 
     def __eq__(self, other):
-        if isinstance(other,HashTableEntry):
+        if isinstance(other, HashTableEntry):
             return self.key == other.key
         return False
 
-class Node:
-    def __init__(self,value):
-        self.value = value
-        self.next = None
+    def __repr__(self):
+        return f'HashTableEntry({self.key},{self.value}'
 
+# class Node:
+#     def __init__(self,value):
+#         self.value = value
+#         self.next = None
+    
+#     def __repr__(self):
+#         return f'Node({self.value})'
+
+    
 class LinkedList:
     def __init__(self):
         self.head = None
@@ -25,18 +32,20 @@ class LinkedList:
         currStr = ""
         curr = self.head
         while curr != None:
-            currStr += f'{str(curr.value)}-->'
+            currStr += f'{str(curr)}'
             curr = curr.next
             return currStr
         #Helper Methods
         #O(n) where n is number of nodes 
-    def find(self,value):
-            # return node with 'value'
-        curr = self.head
-        while curr != None:
-            if curr.value == value:
-                return curr 
-            curr = curr.next 
+    def find(self, value):
+        cur = self.head
+        
+        while cur is not None:
+            if cur == value:
+                return cur
+
+            cur = cur.next
+
         return None
         #O(n) where n is number of nodes 
     def delete(self,value):
@@ -136,8 +145,6 @@ class HashTable:
             # related to the power of 2
         return hash & 0xFFFFFFFF
         
-
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
@@ -146,7 +153,6 @@ class HashTable:
         #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
         
-
     def put(self, key, value):
 
         """
@@ -160,18 +166,22 @@ class HashTable:
         hash_index = self.hash_index(key)
         if self.table[hash_index] != None:
             linked_list = self.table[hash_index]
-            did_add_new_node = linked_list.insert_at_head_or_overwrite(HashTableEntry(key,None))
+            did_add_new_node = linked_list.insert_at_head_or_overwrite(HashTableEntry(key,value))
+            
             if did_add_new_node:
                 self.num_elements +=1 
             
         else:
             linked_list = LinkedList()
-            linked_list.insert_at_head(HashTableEntry(key,None))
+            linked_list.insert_at_head(HashTableEntry(key,value))
+            
             self.table[hash_index] = linked_list
             self.num_elements +=1
 
         if self.get_load_factor() > 0.7:
-            self.resize(self.get_num_slots*2)
+            self.resize(self.get_num_slots()*2)
+        
+        
 
     def delete(self, key):
         """
@@ -191,29 +201,29 @@ class HashTable:
             did_delete_node = linked_list.delete(HashTableEntry(key,None))
             if did_delete_node != None:
                 self.num_elements -= 1
-            if self.get_load_factor < 0.2:
+            if self.get_load_factor() < 0.2:
+                print(f'load factor is {self.get_load_factor()}')
+                print(f'self.get_num_slots()/2 is {self.get_num_slots()/2}')
                 self.resize(self.get_num_slots()/2)
 
         else:
             print(f'This key does not exist!')
 
     def get(self, key):
-
         """
         Retrieve the value stored with the given key.
 
         Returns None if the key is not found.
 
         Implement this.
-
         """
-       # return self.table[self.hash_index(key)] --> Array implementation 
         hash_index = self.hash_index(key)
         if self.table[hash_index] != None:
-            link_list = self.table[hash_index]
-            node = link_list.find(HashTableEntry(key,None))
+            linked_list = self.table[hash_index]
+            
+            node = linked_list.find(HashTableEntry(key,None))
             if node != None:
-                return node.value.value
+                return node.value
         return None
 
     def resize(self, new_capacity):
@@ -224,17 +234,20 @@ class HashTable:
         Implement this.
         """
         old_table = self.table
-        new_table = [None]* int(new_capacity)
+        self.table = [None]* int(new_capacity)
         self.num_elements = 0
 
         for element in old_table:
             if element is None:
                 continue
             curr_node = element.head
+            
             while curr_node != None:
-                temp = curr_node 
+                temp = curr_node.next 
                 curr_node.next = None # remove the reference since its moving to new table 
+                print(curr_node.key)
                 hash_index = self.hash_index(curr_node.value.key) # this is where its going to be in new table 
+                print (hash_index)
 
                 if self.table[hash_index] != None:
                     self.table[hash_index].insert_at_head(curr_node) # Inseert at head if a linked list already exists in this new table
@@ -245,9 +258,6 @@ class HashTable:
 
                 curr_node = temp
                 self.num_elements += 1 
-        
-
-
 
 if __name__ == "__main__":
     ht = HashTable(8)
