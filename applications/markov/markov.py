@@ -4,7 +4,7 @@ import random
 with open("input.txt") as f:
     words = f.read()
     
-texts = words.split(' ')   
+texts = words.lower().split(' ')   
 # TODO: analyze which words can follow other words
 word_dic ={}
 for i  in range(len(texts)-1):
